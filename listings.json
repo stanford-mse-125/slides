@@ -1,0 +1,14 @@
+[
+  {
+    "listing": "/index.html",
+    "items": [
+      "/lec01-introduction.html",
+      "/lec02-eda-visualization.html",
+      "/lec03-data-munging.html",
+      "/lec04-linear-models.html",
+      "/lec05-feature-engineering.html",
+      "/lec06-validation.html",
+      "/lec07-classification.html"
+    ]
+  }
+]

@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>lec01-script – MSE 125 — Slides</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-244ce1b9ec229af56bb6f90d24b3371d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">MSE 125 — Slides</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+
+
+
+
+<section id="lecture-1-script-introduction-to-applied-statistics" class="level1">
+<h1>Lecture 1 Script: Introduction to Applied Statistics</h1>
+<p><strong>Target time:</strong> 75 minutes (50-min lecture + 25 min discussion spread across)</p>
+<hr>
+<section id="opening-montage-slides-110-5-min" class="level2">
+<h2 class="anchored" data-anchor-id="opening-montage-slides-110-5-min">Opening Montage (slides 1–10, ~5 min)</h2>
+<p>Advance through all 10 vignettes at a steady pace — roughly 30 seconds each. Don’t explain. Let the questions land. The point is <em>range</em>: students should feel the breadth of what statistics touches before hearing a single definition.</p>
+<section id="slide-1-hospital-readmissions" class="level3">
+<h3 class="anchored" data-anchor-id="slide-1-hospital-readmissions">Slide 1: Hospital Readmissions</h3>
+<p><strong>Background.</strong> The Centers for Medicare &amp; Medicaid Services (CMS) runs the Hospital Readmissions Reduction Program. Since 2012, hospitals with “too many” patients returning within 30 days of discharge lose up to 3% of their Medicare payments — $500K–$1M/year for a large hospital. In 2023, 2,217 hospitals were penalized.</p>
+<p><strong>Data.</strong> CMS publishes the Excess Readmission Ratio (ERR) for every hospital, for six conditions (heart attack, heart failure, pneumonia, hip/knee replacement, COPD, CABG). ERR is risk-adjusted: it compares a hospital’s <em>predicted</em> readmissions (based on its actual patients) to the <em>expected</em> number (based on a national model of similar patients). ERR &gt; 1.0 triggers a penalty.</p>
+<p><strong>Decision.</strong> Imagine you’re an administrateoWhich hospitals should be fined? Should a hospital with ERR = 1.05 be penalized the same as one with ERR = 1.30? What if a hospital serves a disproportionately sick populatio - how should the risk adjustment account for that?</p>
+<p><strong>Statistics challenge.</strong> <em>Estimation under structured missingness.</em> Small and rural hospitals are coded “Too Few to Report” — their data is systematically suppressed, not randomly absent. Any analysis that drops these rows is biased toward large urban hospitals. The ERR itself is a ratio estimator: how much uncertainty surrounds a ratio when the denominator is modeled? This is a hypothesis testing problem (is ERR significantly &gt; 1.0?) layered on an estimation problem (is the risk adjustment correct?).</p>
+<hr>
+</section>
+<section id="slide-2-nba-shot-selection" class="level3">
+<h3 class="anchored" data-anchor-id="slide-2-nba-shot-selection">Slide 2: NBA Shot Selection</h3>
+<p><strong>Background.</strong> The Houston Rockets under GM Daryl Morey were among the first NBA teams to use analytics systematically. By 2017–18, the Rockets had virtually eliminated the mid-range two-pointer from their offense — the “Moreyball” thesis was that mid-range twos are the worst shot in basketball: too far for a high-percentage two, too close for a three.</p>
+<p><strong>Data.</strong> NBA play-by-play logs record every shot attempt: location (x, y coordinates on the court), outcome (make/miss), shot type, game context (score, time, defender distance). Kirk Goldsberry’s shot charts visualize these as heatmaps.</p>
+<p><strong>Decision.</strong> Should a team stop shooting mid-range twos entirely? At what expected-value threshold should a shot type be abandoned? How do you account for the fact that defenses adjust — if you never shoot from mid-range, defenders sag off and contest your threes?</p>
+<p><strong>Statistics challenge.</strong> <em>Conditional expected value and selection bias.</em> The expected points per shot depends on shot location, but also on game state, fatigue, and defender positioning. A team that only shoots threes when wide open will have a higher three-point percentage than one that shoots contested threes — comparing raw percentages is misleading. This is a problem of estimating conditional distributions: E[points | location, context].</p>
+<hr>
+</section>
+<section id="slide-3-tax-loss-harvesting" class="level3">
+<h3 class="anchored" data-anchor-id="slide-3-tax-loss-harvesting">Slide 3: Tax-Loss Harvesting</h3>
+<p><strong>Background.</strong> Wealthfront (and similar robo-advisors) manage ~$50B in assets. One key service: tax-loss harvesting — selling losing investments to realize capital losses that offset gains, reducing the client’s tax bill. The IRS wash-sale rule forbids repurchasing a “substantially identical” security within 30 days, so the algorithm must find substitute investments that maintain the portfolio’s risk profile while capturing the tax benefit.</p>
+<p><strong>Data.</strong> Daily returns for thousands of securities, client portfolio holdings, tax lots with cost basis and purchase dates, and a correlation/covariance matrix of asset returns.</p>
+<p><strong>Decision.</strong> For each client on each day: which lots should be sold? What substitute should be bought? How much tax savings does the harvest generate, net of transaction costs and tracking error?</p>
+<p><strong>Statistics challenge.</strong> <em>Optimization under estimated covariance.</em> The portfolio’s risk is characterized by its covariance matrix — but covariance matrices estimated from historical returns are noisy, especially when the number of assets exceeds the number of time periods. Eigenvalues are systematically biased (the largest are too large, the smallest too small). Regularization, shrinkage estimators, and factor models all address this. The decision is also sequential: harvesting today affects what you can harvest tomorrow.</p>
+<hr>
+</section>
+<section id="slide-4-wfp-food-allocation" class="level3">
+<h3 class="anchored" data-anchor-id="slide-4-wfp-food-allocation">Slide 4: WFP Food Allocation</h3>
+<p><strong>Background.</strong> The World Food Programme feeds ~160 million people annually. In Yemen during the 2018–19 famine, WFP faced a resource allocation problem: fixed budget, varying need across regions, and supply chain constraints (ports, roads, warehouses). The Zero Hunger Lab at Tilburg partnered with WFP to optimize allocations.</p>
+<p><strong>Data.</strong> WFP’s HungerMap LIVE aggregates food security indicators — food consumption scores, dietary diversity, coping strategies — from phone surveys, satellite imagery, and market price data across ~90 countries in near real-time.</p>
+<p><strong>Decision.</strong> How to reallocate food baskets across regions in Yemen to feed 2 million more people at the same cost. Which regions get more? Which get less? How do you handle the political and ethical dimension of taking food from one region to give to another?</p>
+<p><strong>Statistics challenge.</strong> <em>Prediction under distribution shift and optimization with uncertainty.</em> The hunger indicators are estimated from surveys with limited sample sizes — the uncertainty varies by region. The optimization must be robust: a misallocation doesn’t just waste money, it means people go hungry. This combines linear programming (resource allocation) with statistical estimation (how hungry is each region, really?).</p>
+<hr>
+</section>
+<section id="slide-5-solar-farm-siting" class="level3">
+<h3 class="anchored" data-anchor-id="slide-5-solar-farm-siting">Slide 5: Solar Farm Siting</h3>
+<p><strong>Background.</strong> NextEra Energy (the world’s largest generator of wind and solar energy) was siting 4.5 GW of new solar capacity across four states. Each potential parcel has different solar irradiance, land cost, grid interconnection cost, and permitting complexity.</p>
+<p><strong>Data.</strong> NREL’s National Solar Radiation Database provides 30+ years of hourly solar irradiance data at 4 km × 4 km resolution across the U.S. — a public dataset built from satellite imagery and ground stations. Supplemented by land price data, grid capacity maps, and environmental impact assessments.</p>
+<p><strong>Decision.</strong> Which parcels maximize energy production per dollar invested, subject to grid interconnection constraints and environmental review timelines? How much capacity to build in each state given regulatory uncertainty?</p>
+<p><strong>Statistics challenge.</strong> <em>Spatial prediction and feature engineering.</em> Solar irradiance varies by location, time of day, season, and weather patterns. Predicting annual energy yield from historical data requires modeling temporal correlation (cloudy days cluster) and spatial correlation (nearby parcels have similar irradiance). Feature engineering — transforming raw irradiance into useful predictors — determines whether the regression model is accurate.</p>
+<hr>
+</section>
+<section id="slide-6-vaccine-efficacy" class="level3">
+<h3 class="anchored" data-anchor-id="slide-6-vaccine-efficacy">Slide 6: Vaccine Efficacy</h3>
+<p><strong>Background.</strong> Pfizer’s Phase III COVID-19 vaccine trial enrolled 43,548 participants in summer 2020. Half received the vaccine, half a placebo. By November, an interim analysis found 8 cases in the vaccine group vs.&nbsp;162 in the placebo group — 95% efficacy. The FDA’s Emergency Use Authorization (EUA) hinged on this analysis.</p>
+<p><strong>Data.</strong> A randomized controlled trial: binary treatment assignment, binary outcome (COVID infection within a monitoring window), with demographic covariates (age, sex, race, comorbidities). The Kaplan-Meier curve shows event-free survival over time.</p>
+<p><strong>Decision.</strong> Is 8 vs.&nbsp;162 enough evidence to authorize a vaccine for hundreds of millions of people? The interim analysis was pre-planned — the trial could have continued to collect more data, but every week of delay meant thousands more infections. How do you balance statistical certainty against the cost of waiting?</p>
+<p><strong>Statistics challenge.</strong> <em>Hypothesis testing with early stopping.</em> The null hypothesis: the vaccine has no effect (efficacy = 0). Under the null, the 170 total cases should split roughly 85–85. Observing an 8–162 split is astronomically unlikely under the null (p &lt; 10⁻³⁰). But the trial used a group sequential design with pre-specified interim analyses — if you peek at the data multiple times, your false positive rate inflates (the multiple testing problem). The O’Brien-Fleming spending function controls this by requiring more extreme results at early looks.</p>
+<hr>
+</section>
+<section id="slide-7-gerrymandering" class="level3">
+<h3 class="anchored" data-anchor-id="slide-7-gerrymandering">Slide 7: Gerrymandering</h3>
+<p><strong>Background.</strong> In North Carolina’s 2016 congressional elections, Republican candidates won 53% of the statewide vote but captured 10 of 13 seats (77%). Plaintiffs in <em>Common Cause v. Rucho</em> argued this was evidence of partisan gerrymandering. Mathematicians at Duke (Jonathan Mattingly’s group) contributed expert testimony.</p>
+<p><strong>Data.</strong> Precinct-level vote totals for the 2016 election, plus the geometric shapes of the 13 congressional districts. Mattingly’s team generated 24,000+ alternative redistricting plans that satisfied all legal requirements (contiguity, equal population, Voting Rights Act compliance) but were otherwise random.</p>
+<p><strong>Decision.</strong> Was the 10–3 outcome evidence of intentional gerrymandering, or could it have arisen from legitimate geographic constraints (e.g., Democrats clustering in cities)? The Supreme Court ultimately ruled that partisan gerrymandering claims are non-justiciable — but the statistical methodology remains influential.</p>
+<p><strong>Statistics challenge.</strong> <em>Permutation testing and simulation-based inference.</em> Of 24,000+ legally valid random plans, essentially none produced a 10–3 outcome. The observed plan was a clear outlier. This is a permutation test: define the null distribution (random valid plans), compute a test statistic (seat share), and ask where the observed statistic falls. The challenge is that “random redistricting plan” is a complex combinatorial object — sampling from this space requires MCMC methods.</p>
+<hr>
+</section>
+<section id="slide-8-zillows-ibuying-loss" class="level3">
+<h3 class="anchored" data-anchor-id="slide-8-zillows-ibuying-loss">Slide 8: Zillow’s iBuying Loss</h3>
+<p><strong>Background.</strong> In 2021, Zillow expanded its iBuying program (Zillow Offers), purchasing homes directly from sellers using its Zestimate algorithm to set prices. In Q3 2021 alone, Zillow bought 9,790 homes. By November, the company announced an $881M write-down and shut down the program entirely — it had systematically overpaid.</p>
+<p><strong>Data.</strong> Zillow’s Zestimate model used public records (tax assessments, sale prices, square footage), listing features (photos, descriptions), and local market data. The training data was historical sales — but in a rapidly shifting market, historical patterns broke down.</p>
+<p><strong>Decision.</strong> For each home: should we buy it at this price? The model’s point estimate said yes. But the model didn’t adequately account for its own uncertainty — or for the fact that Zillow’s own purchases were moving the market (reflexivity).</p>
+<p><strong>Statistics challenge.</strong> <em>Prediction intervals, distribution shift, and feedback loops.</em> A point estimate (“this home is worth $400K”) is useless without a prediction interval (“… plus or minus $30K”). If you systematically buy at the upper end of your confidence interval, you’ll overpay on average. Worse, the training data (pre-2020 sales) didn’t represent the post-COVID market (distribution shift). And the model’s own behavior changed the data distribution — buying aggressively in a market inflates prices, making the model’s training data less representative. This is a feedback loop: the model’s predictions alter the data it learns from.</p>
+<hr>
+</section>
+<section id="slide-9-compas-bail-scores" class="level3">
+<h3 class="anchored" data-anchor-id="slide-9-compas-bail-scores">Slide 9: COMPAS Bail Scores</h3>
+<p><strong>Background.</strong> Broward County, Florida uses COMPAS (Correctional Offender Management Profiling for Alternative Sanctions) risk scores to inform bail and sentencing decisions. In 2016, ProPublica’s “Machine Bias” investigation found that Black defendants who did <em>not</em> reoffend were nearly twice as likely to be flagged as high-risk (false positive rate: 45% vs.&nbsp;23% for white defendants).</p>
+<p><strong>Data.</strong> ProPublica obtained COMPAS scores and two-year recidivism outcomes for ~7,000 defendants in Broward County. Features included age, sex, race, prior convictions, charge degree, and the COMPAS risk score (1–10).</p>
+<p><strong>Decision.</strong> Should a judge set bail at $500 or $50,000? The COMPAS score is one input, but it carries the weight of algorithmic authority. If the algorithm is racially biased, it systematically affects who sits in jail pretrial — with cascading effects on employment, housing, and family stability.</p>
+<p><strong>Statistics challenge.</strong> <em>Fairness in classification under base rate differences.</em> Northpointe (COMPAS’s maker) responded that their algorithm was calibrated: among defendants scored as high-risk, the recidivism rate was similar across races (~60%). Both ProPublica and Northpointe were correct — but they measured fairness differently. It is mathematically impossible to simultaneously satisfy calibration (equal predictive value across groups) and equal false positive/negative rates when the base rates differ (Chouldechova 2017, Kleinberg-Mullainathan-Raghavan 2016). This is a fundamental impossibility theorem, not a fixable bug. The decision of <em>which</em> fairness criterion to use is a values question, not a statistical one.</p>
+<hr>
+</section>
+<section id="slide-10-netflix-prize" class="level3">
+<h3 class="anchored" data-anchor-id="slide-10-netflix-prize">Slide 10: Netflix Prize</h3>
+<p><strong>Background.</strong> In 2006, Netflix offered a $1M prize to anyone who could improve its recommendation algorithm (Cinematch) by 10% on RMSE. The contest ran for three years and attracted 40,000+ teams. The winning solution used an ensemble of matrix factorization methods. Netflix estimated that better recommendations could save $1B/year in reduced churn — 80% of viewing comes from recommendations.</p>
+<p><strong>Data.</strong> 100 million ratings (1–5 stars) from 480,000 users on 17,000 movies. The matrix is ~99% empty — most users haven’t rated most movies. The task: predict the missing entries.</p>
+<p><strong>Decision.</strong> Which movies should Netflix recommend to which users? A bad recommendation wastes the user’s time and erodes trust. At scale (200M subscribers), even small improvements in prediction accuracy translate to millions of retained subscriptions.</p>
+<p><strong>Statistics challenge.</strong> <em>Matrix completion via low-rank approximation.</em> The key insight: the user-movie matrix is approximately low-rank. A few latent factors (action preference, indie taste, recency bias) explain most of the variation. SVD and its variants decompose the observed ratings into user factors and movie factors. The challenge: the matrix is mostly missing, so you can’t just run SVD — you need optimization methods that work with incomplete data. Regularization prevents overfitting to the sparse observations. This is PCA/dimensionality reduction applied to the largest-scale collaborative filtering problem of its era.</p>
+<hr>
+</section>
+</section>
+<section id="transition-data-model-decision-slide-11-30-sec" class="level2">
+<h2 class="anchored" data-anchor-id="transition-data-model-decision-slide-11-30-sec">Transition: “data, model, decision” (slide 11, ~30 sec)</h2>
+<p>Pause. Let this land. “Every one of those examples had three things in common: data that was messy, a model that could be wrong, and a decision that someone had to live with.”</p>
+<hr>
+</section>
+<section id="who-am-i-slide-12-2-min" class="level2">
+<h2 class="anchored" data-anchor-id="who-am-i-slide-12-2-min">Who am I? (slide 12, ~2 min)</h2>
+<p>Keep it personal and fast. The point isn’t your CV — it’s that <em>you’ve worked on problems like the ones in the montage</em>. Touch 3–4 of the applied roles and connect each to a vignette: “I worked at the World Food Programme on exactly the kind of allocation problem you just saw.” “The Obama campaign was a massive exercise in prediction — who’s persuadable, where do we send volunteers.”</p>
+<hr>
+</section>
+<section id="every-one-required-data-model-decision-slide-13-30-sec" class="level2">
+<h2 class="anchored" data-anchor-id="every-one-required-data-model-decision-slide-13-30-sec">“Every one required: data, model, decision” (slide 13, ~30 sec)</h2>
+<p>Reinforce the throughline. “Finance, tech, energy, health, politics, logistics — the methods are the same. The data changes. The decisions change. But the structure is always: data, model, decision.”</p>
+<hr>
+</section>
+<section id="who-are-you-slide-14-3-min" class="level2">
+<h2 class="anchored" data-anchor-id="who-are-you-slide-14-3-min">Who are you? (slide 14, ~3 min)</h2>
+<p>Live poll. Show PollEv results. React to them: “Look at this room — finance, tech, healthcare, policy. The same tools work in every backyard.”</p>
+<hr>
+</section>
+<section id="discussion-1-consequential-decisions-slide-15-7-min" class="level2">
+<h2 class="anchored" data-anchor-id="discussion-1-consequential-decisions-slide-15-7-min">Discussion 1: Consequential Decisions (slide 15, ~7 min)</h2>
+<p><strong>Prompt:</strong> “What kinds of consequential decisions do you expect to make in your career? What data will you have? What uncertainties will you face?”</p>
+<p>Think-pair-share: 2 min think, 3 min share with neighbor, 2 min class discussion.</p>
+<p><strong>Facilitation notes.</strong> This is a warm-up. Students should connect the montage to their own futures. If energy is low, cold-call: “You said finance — give me one decision a portfolio manager makes where the data is messy.” The key realization: whatever domain they care about, the structure is data → model → decision.</p>
+<hr>
+</section>
+<section id="ai-can-build-the-analysis-slides-1617-3-min" class="level2">
+<h2 class="anchored" data-anchor-id="ai-can-build-the-analysis-slides-1617-3-min">AI Can Build the Analysis (slides 16–17, ~3 min)</h2>
+<p>This is the philosophical core. Pause after “can you trust it?” — let it land.</p>
+<p>“Here’s the thing about 2026. Building an analysis is easy. You can hand a dataset to an AI and get a polished report in 30 seconds. The question is: should you believe it? Can you spot the errors? Can you tell when the conclusions don’t follow from the evidence?”</p>
+<p>“That’s what this course teaches. Not how to build analyses — you can already do that. How to <em>evaluate</em> them. How to know when the model is wrong, when the data is biased, when the conclusion is fragile.”</p>
+<p>“MS&amp;E graduates are in an extremely strong position here. You understand optimization, decision-making, systems. Add statistical rigor, and you can be the person in the room who catches the mistake before it costs $881 million.”</p>
+<hr>
+</section>
+<section id="the-deal-slide-18-2-min" class="level2">
+<h2 class="anchored" data-anchor-id="the-deal-slide-18-2-min">The Deal (slide 18, ~2 min)</h2>
+<p>“Here’s the social contract for this course. We use AI. Both sides. I use AI to build course materials. You use AI on your homework. That’s fine.”</p>
+<p>“But then you defend your conclusions. In person. In review sessions. In quizzes. In the project presentation. Your writing should represent your authentic opinion — not a generated essay you didn’t read.”</p>
+<hr>
+</section>
+<section id="discussion-2-critical-evaluation-slide-19-7-min" class="level2">
+<h2 class="anchored" data-anchor-id="discussion-2-critical-evaluation-slide-19-7-min">Discussion 2: Critical Evaluation (slide 19, ~7 min)</h2>
+<p><strong>Prompt:</strong> “An AI hands you an analysis that says Hospital X should be fined. What questions do you ask before signing off?”</p>
+<p>Think-pair-share: 2 min think, 3 min share, 2 min class.</p>
+<p><strong>Facilitation notes.</strong> If stuck, prompt: “How was the data collected? What assumptions did the model make? What’s the cost of being wrong — both of fining a good hospital and of letting a bad one off?” The key insight: critical evaluation is the central skill. The answer isn’t “don’t use AI” — it’s “know what to check.”</p>
+<hr>
+</section>
+<section id="deep-dive-hospital-readmissions-slides-2025-12-min" class="level2">
+<h2 class="anchored" data-anchor-id="deep-dive-hospital-readmissions-slides-2025-12-min">Deep Dive: Hospital Readmissions (slides 20–25, ~12 min)</h2>
+<section id="notebook-demo-5-min" class="level3">
+<h3 class="anchored" data-anchor-id="notebook-demo-5-min">Notebook Demo (~5 min)</h3>
+<p>Switch to pre-filled Jupyter notebook. Walk through: 1. <code>pd.read_csv(...)</code> — load CMS data 2. <code>.head()</code> — what does the raw data look like? 3. <code>.shape</code> — how big is it? 4. Histogram of ERR — notice it’s centered near 1.0, with real spread</p>
+<p>Show the ERR definition <em>after</em> students have seen the histogram — they’ve already formed intuitions about the distribution.</p>
+</section>
+<section id="discussion-3-your-hospitals-err-slide-23-7-min" class="level3">
+<h3 class="anchored" data-anchor-id="discussion-3-your-hospitals-err-slide-23-7-min">Discussion 3: Your Hospital’s ERR (slide 23, ~7 min)</h3>
+<p><strong>Prompt:</strong> “Your hospital’s ERR is 1.05. Why might your readmissions be so high? What questions would you ask, or what data would you gather, to understand why — and what you might do to lower them?”</p>
+<p>Think-pair-share: 2 min think, 3 min share, 2 min class.</p>
+<p><strong>Facilitation notes.</strong> Push toward: “What kinds of patients does your hospital serve? What happens after discharge? Is the expected rate adjusted for your patient population?” Key insight: Reducing ERR requires prediction (which patients are at risk?) <em>and</em> intervention (what can we change?). This is not just inference — it’s a decision problem.</p>
+</section>
+<section id="missing-data-demo-3-min" class="level3">
+<h3 class="anchored" data-anchor-id="missing-data-demo-3-min">Missing Data Demo (~3 min)</h3>
+<p>Back to notebook: <code>.isna().sum()</code>. Point out the “Too Few to Report” pattern. “This is missingness that’s not random — it’s systematically missing for small and rural hospitals. Any analysis that drops these rows is biased. We’ll formalize this concept later.”</p>
+</section>
+<section id="discussion-4-who-disappears-slide-25-7-min" class="level3">
+<h3 class="anchored" data-anchor-id="discussion-4-who-disappears-slide-25-7-min">Discussion 4: Who Disappears? (slide 25, ~7 min)</h3>
+<p><strong>Prompt:</strong> “Which patients are most likely to be in the ‘too few’ category? What does that mean for fairness?”</p>
+<p>Think-pair-share: 2 min think, 3 min share, 2 min class.</p>
+<p><strong>Facilitation notes.</strong> Think about which hospitals have small sample sizes: rural, specialty, serving underrepresented populations. Data that’s missing is not random — it’s systematically missing for the most vulnerable patients. Any analysis that ignores this is biased.</p>
+<hr>
+</section>
+</section>
+<section id="four-ways-to-reason-with-data-new-slide-3-min" class="level2">
+<h2 class="anchored" data-anchor-id="four-ways-to-reason-with-data-new-slide-3-min">Four Ways to Reason with Data (new slide, ~3 min)</h2>
+<p>Show the four-modes table. Walk through each row using the hospital data:</p>
+<ul>
+<li><strong>Summary:</strong> “We just did this — loaded the data, plotted the ERR distribution. Summary tells you what the data looks like.”</li>
+<li><strong>Prediction:</strong> “Can we predict which hospitals will be flagged? Given a hospital’s patient mix and staffing, what ERR should we expect? That’s Act 1.”</li>
+<li><strong>Inference:</strong> “Your hospital’s ERR is 1.05. Is that real or noise? Should you be fined based on that number? That’s Act 2.”</li>
+<li><strong>Causation:</strong> “Does the fine actually work? Do penalized hospitals improve — or do they just game the metrics? That’s Act 3.”</li>
+</ul>
+<p>Key line: “Same data. Four completely different questions. Each one requires different tools.”</p>
+<hr>
+</section>
+<section id="course-structure-slides-2627-3-min" class="level2">
+<h2 class="anchored" data-anchor-id="course-structure-slides-2627-3-min">Course Structure (slides 26–27, ~3 min)</h2>
+<section id="three-acts" class="level3">
+<h3 class="anchored" data-anchor-id="three-acts">Three Acts</h3>
+<p>Walk through quickly. The three acts are how the course unfolds — each one builds on the last: - <strong>Act I: Build Models</strong> — explore, clean, predict (regression, trees, features, Lectures 1–7) - <strong>Act II: Trust Models</strong> — sample, test, infer (bootstrap, hypothesis tests, Lectures 8–12) - <strong>Act III: See Further</strong> — classify, cluster (PCA, kmeans), cause (causal inference, Lectures 13–19)</p>
+</section>
+<section id="montage-course-table" class="level3">
+<h3 class="anchored" data-anchor-id="montage-course-table">Montage → Course Table</h3>
+<p>Point to the table connecting each montage vignette to specific topics and acts. “By the end of the quarter, you’ll have the tools to answer all 10 of these questions.”</p>
+<hr>
+</section>
+</section>
+<section id="logistics-slides-2831-5-min" class="level2">
+<h2 class="anchored" data-anchor-id="logistics-slides-2831-5-min">Logistics (slides 28–31, ~5 min)</h2>
+<p>Keep this brisk. Point to the website for details.</p>
+<ul>
+<li><strong>Grading:</strong> HW 10%, review sessions 15%, quizzes 25%, project 30%, final 20%</li>
+<li><strong>AI policy:</strong> “Use it. Then defend your conclusions in person.”</li>
+<li><strong>Quizzes vs.&nbsp;final:</strong> You can skip one. Take both? We use the higher score. No risk to trying.</li>
+<li><strong>Device policy:</strong> Laptops in back row only. “Research shows your screen distracts the person behind you. Boredom is productive”</li>
+</ul>
+<hr>
+</section>
+<section id="conceptual-wrap-up-slides-3436-4-min" class="level2">
+<h2 class="anchored" data-anchor-id="conceptual-wrap-up-slides-3436-4-min">Conceptual Wrap-up (slides 34–36, ~4 min)</h2>
+<section id="what-we-just-did" class="level3">
+<h3 class="anchored" data-anchor-id="what-we-just-did">What We Just Did</h3>
+<p>“Other names for this: applied statistics, data science, operations research, management science, AI/ML. I prefer: <em>making consequential decisions with data.</em>”</p>
+</section>
+<section id="what-makes-a-decision-consequential" class="level3">
+<h3 class="anchored" data-anchor-id="what-makes-a-decision-consequential">What Makes a Decision Consequential?</h3>
+<p>Financial ($881M), human (bail, vaccines, hospital penalties), irreversible (can’t un-sentence), scale (2M fed, 200M recommendations). “Every example in the montage is a consequential decision.”</p>
+<hr>
+</section>
+</section>
+<section id="key-vocabulary-slide-37-1-min" class="level2">
+<h2 class="anchored" data-anchor-id="key-vocabulary-slide-37-1-min">Key Vocabulary (slide 37, ~1 min)</h2>
+<p>Plant seeds — don’t define formally. “You’ll hear these words every week.” - <strong>Prediction:</strong> what will happen? - <strong>Inference:</strong> what is true about the population? - <strong>Causality:</strong> what would happen if we intervened? - <strong>Uncertainty:</strong> how confident should we be?</p>
+<hr>
+</section>
+<section id="closing-slides-3840-2-min" class="level2">
+<h2 class="anchored" data-anchor-id="closing-slides-3840-2-min">Closing (slides 38–40, ~2 min)</h2>
+<p>Show the montage grid. “We started with 10 questions. By June, you’ll be able to answer every one.”</p>
+<p>Before-next-class checklist: read Chapter 1, install Python, sign up for Ed Discussion.</p>
+<p>One-minute feedback form: “What was the most useful thing? What was the most confusing?”</p>
+<hr>
+</section>
+<section id="timing-summary" class="level2">
+<h2 class="anchored" data-anchor-id="timing-summary">Timing Summary</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Segment</th>
+<th>Minutes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Opening montage</td>
+<td>5</td>
+</tr>
+<tr class="even">
+<td>Who am I / who are you / poll</td>
+<td>6</td>
+</tr>
+<tr class="odd">
+<td>Discussion 1: consequential decisions</td>
+<td>7</td>
+</tr>
+<tr class="even">
+<td>AI + the deal</td>
+<td>5</td>
+</tr>
+<tr class="odd">
+<td>Discussion 2: critical evaluation</td>
+<td>7</td>
+</tr>
+<tr class="even">
+<td>Hospital deep dive (notebook + ERR)</td>
+<td>5</td>
+</tr>
+<tr class="odd">
+<td>Discussion 3: your hospital’s ERR</td>
+<td>7</td>
+</tr>
+<tr class="even">
+<td>Missing data demo</td>
+<td>3</td>
+</tr>
+<tr class="odd">
+<td>Discussion 4: who disappears</td>
+<td>7</td>
+</tr>
+<tr class="even">
+<td>Four modes of reasoning</td>
+<td>3</td>
+</tr>
+<tr class="odd">
+<td>Course structure + logistics</td>
+<td>8</td>
+</tr>
+<tr class="even">
+<td>Conceptual wrap-up</td>
+<td>3</td>
+</tr>
+<tr class="odd">
+<td>Closing</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td><strong>Total</strong></td>
+<td><strong>~68 min</strong></td>
+</tr>
+</tbody>
+</table>
+<p>If running long, compress logistics (point to website) and shorten Discussions 3 and 4 to 3 minutes each.</p>
+<hr>
+</section>
+<section id="note" class="level2">
+<h2 class="anchored" data-anchor-id="note">Note</h2>
+<p>The Chapter 1 restructure recommended by this script was implemented on 2026-03-30. The chapter now uses the four-modes framing (summary, prediction, inference, causation) and the Airbnb section has been moved to Chapter 2.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/tabby.min.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.37">
+
+  <meta name="author" content="Madeleine Udell">
+  <title>MSE 125 — Slides – Lecture 7: Classification — Logistic Regression and Metrics</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-2e5388101fed6d4c9c7d88d59a019a3c.css">
+  <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Lecture 7: Classification — Logistic Regression and Metrics</h1>
+  <p class="subtitle">MSE 125 — Applied Statistics</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Madeleine Udell 
+</div>
+</div>
+</div>
+
+  <p class="date">Monday, April 20, 2026</p>
+</section>
+<section id="section" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>the model was <strong>85% accurate</strong></p>
+<p>it caught <strong>zero</strong> of the patients who needed it</p>
+</div>
+<aside class="notes">
+<p>Open with the hook. A hospital wants to flag patients likely to be readmitted within 30 days so it can intervene. It trains a fancy classifier. It reports 85% accuracy. Deploy it, right? Pause. Then the kicker: the model predicts “no readmission” for every patient. That 85% accuracy is just the base rate. Today’s lecture is why accuracy lies when one class dominates — and what to use instead.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-readmissions-setup" class="slide level2">
+<h2>the readmissions setup</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>the problem</strong></p>
+<ul>
+<li>hospital wants to flag 30-day readmissions</li>
+<li>missed cases cost up to $25,000 each to treat</li>
+<li>CMS penalizes high readmission rates up to <strong>3%</strong> of reimbursements</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><strong>the data</strong></p>
+<ul>
+<li>15% of patients get readmitted</li>
+<li>85% don’t</li>
+<li>predict “no readmission” for everyone →</li>
+<li><strong>85% accuracy</strong></li>
+</ul>
+</div></div>
+<div class="fragment">
+<p>the dumbest possible model beats random, passes QA, and saves <strong>zero</strong> lives</p>
+<aside class="notes">
+<p>Why we care: readmissions are expensive both clinically and in penalty dollars. But the base rate is 15% positive, which makes the null-model baseline look like a good model on any accuracy-based evaluation. This is our motivating setup. We’ll fit a real classifier on the same kind of data (Framingham CHD — same 15% base rate), discover the same trap, and build a toolkit of metrics that actually tell us whether the model is doing anything useful.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="today" class="slide level2">
+<h2>today</h2>
+<ul>
+<li class="fragment"><strong>the mechanics</strong>: logistic regression, gradient descent</li>
+<li class="fragment"><strong>the evaluation trap</strong>: why accuracy lies</li>
+<li class="fragment"><strong>threshold choice</strong>: no free lunch</li>
+<li class="fragment"><strong>what accuracy hides</strong>: base rates, subgroups, calibration</li>
+</ul>
+<aside class="notes">
+<p>Four blocks. First: the mechanics — how do we actually fit a classifier? Second: the evaluation trap we opened with. Third: threshold choice as a cost-benefit decision, not a statistical one. Fourth: three ways a model can “work on paper” while being useless in practice — base rate neglect, subgroup failure, miscalibration.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-1" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>first we need a classifier</p>
+</div>
+</section>
+<section id="the-outcome-is-binary" class="slide level2">
+<h2>the outcome is binary</h2>
+<p>Framingham Heart Study: 4,240 patients, 10-year followup</p>
+<p>outcome: <code>TenYearCHD</code> <span class="math inline">\(\in \{0, 1\}\)</span></p>
+<div class="fragment">
+<p><strong>CHD = 1</strong> (positive class) · <strong>no CHD = 0</strong> (negative class)</p>
+</div>
+<div class="fragment">
+<p>“positive” = the outcome we’re trying to <em>detect</em>, not the desirable one</p>
+<aside class="notes">
+<p>Our running example for the lecture. Framingham is the landmark cardiovascular study from 1948 that identified cholesterol and blood pressure as risk factors. The outcome we’ll try to predict is whether a patient develops coronary heart disease within ten years. That outcome is binary — 1 if CHD, 0 if not. And about 15% of patients are CHD-positive, same as our readmissions hook. Quick vocabulary stake: the class we try to detect is the “positive” class. The terminology is from signal detection and medical testing, where a <em>positive</em> result is one that <em>detects</em> the condition — it’s bad news for the patient, not good news. That distinction will matter when we talk about sensitivity and specificity.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="can-we-just-run-linear-regression" class="slide level2">
+<h2>can we just run linear regression?</h2>
+
+<img data-src="images/lec07/linreg-binary-fail.png" class="quarto-figure quarto-figure-center r-stretch" style="width:78.0%"><div class="fragment">
+<p>predictions below 0 and above 1 — not valid probabilities</p>
+<aside class="notes">
+<p>The obvious first attempt: fit OLS to the 0/1 labels. It runs. But the predictions are nonsense — many are negative, some exceed 1. Nothing constrains OLS to produce numbers in [0, 1]. We need a model that lives on the probability scale.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="the-trick-squeeze-the-line-through-a-sigmoid" class="slide level2">
+<h2>the trick: squeeze the line through a sigmoid</h2>
+
+<img data-src="images/lec07/sigmoid.png" class="quarto-figure quarto-figure-center r-stretch" style="width:78.0%"><div class="fragment">
+<p><span class="math display">\[p = \sigma(z) = \frac{1}{1 + e^{-z}}, \quad z = \beta_0 + \beta_1 x_1 + \cdots + \beta_d x_d\]</span></p>
+<aside class="notes">
+<p>Rather than constrain OLS, transform what we want to model. The linear predictor z = β₀ + β₁x₁ + ⋯ can be any real number. Push it through the sigmoid σ(z) = 1/(1+e⁻ᶻ) and the output is forced into (0, 1). The sigmoid is symmetric around zero: z = 0 maps to p = 0.5, big positive z maps toward 1, big negative z maps toward 0. Logistic regression is just linear regression on the <em>log-odds</em> of the outcome, then squashed through σ.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="from-probabilities-to-log-odds" class="slide level2">
+<h2>from probabilities to log-odds</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: center;">probability <span class="math inline">\(p\)</span></th>
+<th style="text-align: center;">odds <span class="math inline">\(p/(1-p)\)</span></th>
+<th style="text-align: center;">log-odds</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0.01</td>
+<td style="text-align: center;">0.01</td>
+<td style="text-align: center;"><span class="math inline">\(-4.6\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0.20</td>
+<td style="text-align: center;">0.25</td>
+<td style="text-align: center;"><span class="math inline">\(-1.4\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0.50</td>
+<td style="text-align: center;">1.00</td>
+<td style="text-align: center;"><span class="math inline">\(\phantom{-}0.0\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0.80</td>
+<td style="text-align: center;">4.00</td>
+<td style="text-align: center;"><span class="math inline">\(+1.4\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0.99</td>
+<td style="text-align: center;">99.0</td>
+<td style="text-align: center;"><span class="math inline">\(+4.6\)</span></td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p>log-odds range from <span class="math inline">\(-\infty\)</span> to <span class="math inline">\(+\infty\)</span> — perfect for a linear model</p>
+<p><span class="math display">\[\log\frac{p}{1-p} = \beta_0 + \beta_1 x_1 + \cdots\]</span></p>
+<aside class="notes">
+<p>Same math, different way to see it. Odds = p / (1-p), familiar from sports betting. Odds range from 0 to infinity. Take the log and the range opens up to the full real line. That’s what we model with a linear function of x. The log-odds are called the <em>logit</em>, and logistic regression is the claim that the logit is linear in the features.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="logistic-regression-on-age-alone" class="slide level2">
+<h2>logistic regression on age alone</h2>
+
+<img data-src="images/lec07/logistic-age-fit.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"><div class="fragment">
+<p>predicted risk climbs with age — we see the <em>lower</em> portion of the S-curve because the base rate is low</p>
+<aside class="notes">
+<p>Fit logistic regression with just age as the feature so we can plot the whole decision curve. The curve rises from under 5% for the youngest patients to over 30% for the oldest. We’re looking at the lower tail of the S — the full sigmoid would sweep through 0.5 and level off at 1, but the base rate of CHD is low enough that age alone doesn’t get anyone to 50% predicted risk. When we add more features, each patient’s predicted probability depends on nine risk factors, not just age — and no one feature tells the whole story.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="the-logistic-loss" class="slide level2">
+<h2>the logistic loss</h2>
+<p>no closed-form solution — what loss do we minimize?</p>
+<div class="fragment">
+<p><span class="math display">\[\ell(\beta) = -\big[ y \log(p) + (1-y) \log(1-p) \big]\]</span></p>
+</div>
+<div class="fragment">
+<p>penalizes <strong>confident wrong</strong> predictions especially hard</p>
+<aside class="notes">
+<p>Linear regression has the normal equations — a closed-form least-squares solution. Logistic regression doesn’t — the sigmoid makes the loss nonlinear. So what should we optimize? The logistic loss, also called cross-entropy or negative log-likelihood, is the standard choice. If the label is 1 and we predicted p, the loss is -log(p); if the label is 0, it’s -log(1-p). Either way, the loss is small when we’re right with high confidence and large when we’re wrong with high confidence. “Confident wrong” is punished severely — that’s why logistic regression picks coefficients that aren’t overconfident on hard cases.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="squared-error-vs.-logistic-loss" class="slide level2">
+<h2>squared error vs.&nbsp;logistic loss</h2>
+
+<img data-src="images/lec07/loss-comparison.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"><div class="fragment">
+<p>a 10% prediction for a true 1? squared error <strong>0.81</strong>, logistic loss <strong>2.3</strong></p>
+<aside class="notes">
+<p>The comparison visually. When the prediction is near 1 (correct, confident), both losses are small. As the prediction drops toward 0 for a true 1 — a confident wrong answer — squared error stays below 1, but logistic loss explodes. That asymmetry is what forces logistic regression to avoid overconfidence on hard cases.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="gradient-descent-hiking-downhill" class="slide level2">
+<h2>gradient descent: hiking downhill</h2>
+<p><span class="math display">\[\beta \leftarrow \beta - \eta \cdot \nabla L(\beta)\]</span></p>
+<div class="fragment">
+<ul>
+<li><span class="math inline">\(\nabla L(\beta)\)</span> = gradient (uphill direction); step the opposite way</li>
+<li><span class="math inline">\(\eta\)</span> = learning rate (step size)</li>
+</ul>
+</div>
+<div class="fragment">
+<p>logistic loss is <strong>convex</strong> — one valley, one global minimum</p>
+</div>
+<div class="fragment">
+<p>(as long as the data isn’t perfectly separable — then the minimum runs off to infinity)</p>
+<aside class="notes">
+<p>Picture the loss as a landscape over the β coefficients. Gradient descent is literal hiking. At each step, compute the gradient — the vector of partial derivatives, which points uphill — and step the opposite direction. η is the step size. Too small and it’s slow; too big and you overshoot. The magic property of logistic regression is that the landscape is <em>convex</em>: a single bowl with no false valleys. So long as the data isn’t pathological (like perfectly separable, which sends the minimum to infinity), gradient descent finds the global minimum regardless of starting point.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="watch-it-converge" class="slide level2">
+<h2>watch it converge</h2>
+<p><strong>Q:</strong> will the loss curve drop smoothly, oscillate, or bounce around?</p>
+<div class="fragment">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/lec07/gd-convergence.png" class="quarto-figure quarto-figure-center" style="width:80.0%"></p>
+</figure>
+</div>
+</div>
+<div class="fragment">
+<p>50 iterations on <code>age</code> + <code>BMI</code> logistic regression — loss drops fast, then settles</p>
+<aside class="notes">
+<p>We hand-rolled gradient descent on a 2-feature logistic regression so we can watch it work. The loss drops sharply in the first handful of iterations, then settles. Because the problem is convex, “settles” means we’ve found the minimum. sklearn’s LogisticRegression uses a fancier variant (L-BFGS or similar), but the intuition is the same: start somewhere, step downhill, stop when the gradient is small.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-2" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>accuracy lies under class imbalance</p>
+</div>
+</section>
+<section id="fit-it-test-it" class="slide level2">
+<h2>fit it, test it</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a></a>model <span class="op">=</span> LogisticRegression().fit(X_train_scaled, y_train)</span>
+<span id="cb1-2"><a></a>test_acc <span class="op">=</span> model.score(X_test_scaled, y_test)</span>
+<span id="cb1-3"><a></a><span class="bu">print</span>(<span class="ss">f"Test accuracy: </span><span class="sc">{</span>test_acc<span class="sc">:.3f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="fragment">
+<pre><code>Test accuracy: 0.855</code></pre>
+</div>
+<div class="fragment">
+<p><strong>85.5% accurate</strong> — sounds great, right?</p>
+<aside class="notes">
+<p>Fit our 9-feature logistic regression on the Framingham training set — the full feature set, with standardized features. Compute accuracy on the held-out test set. 85.5%. A B+ on a typical grading curve. Hold this number in mind. Now: what’s the accuracy of the dumbest possible model?</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="but-wait" class="slide level2">
+<h2>but wait</h2>
+<p>the “always predict no CHD” baseline:</p>
+<p><strong>Q:</strong> what accuracy does it get?</p>
+<div class="fragment">
+<pre><code>baseline accuracy  = 0.848
+our model accuracy = 0.855
+improvement        = 0.007</code></pre>
+</div>
+<div class="fragment">
+<p>our fancy classifier <strong>barely beats the null</strong></p>
+<aside class="notes">
+<p>Predict “no CHD” for every single patient — no features, no fitting, nothing. Its accuracy is 1 - base rate = 85% because 85% of patients actually don’t develop CHD. Our model’s 85.5% is only slightly better. The 85.5% accuracy number was almost entirely driven by class imbalance, not by the model learning anything useful. This is the <strong>accuracy trap</strong> — and it shows up whenever one class dominates. We need different metrics.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="the-accuracy-trap" class="slide level2">
+<h2>the accuracy trap</h2>
+<div class="callout callout-warning no-icon callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Warning</strong></p>
+</div>
+<div class="callout-content">
+<p>accuracy measures how often you’re right <em>overall</em></p>
+<p>when one class dominates, being right about that class is <strong>easy</strong> and <strong>uninformative</strong></p>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Before moving on, make the general claim. Accuracy is a population-averaged metric, weighted by how often each class appears. In an imbalanced problem (medical screening, fraud, equipment failure, spam), the common class dominates the average. Metrics that weight the two classes differently — or that look at each class separately — tell a more honest story.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="predict-then-verify-the-confusion-matrix" class="slide level2">
+<h2>predict-then-verify: the confusion matrix</h2>
+<p>1,096 test patients · 15% CHD base rate · threshold 0.5</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: center;"></th>
+<th style="text-align: center;">predicted no CHD</th>
+<th style="text-align: center;">predicted CHD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>actually no CHD</strong></td>
+<td style="text-align: center;">?</td>
+<td style="text-align: center;">?</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><strong>actually CHD</strong></td>
+<td style="text-align: center;">?</td>
+<td style="text-align: center;">?</td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p>the model is very conservative — which cell dominates?</p>
+<aside class="notes">
+<p>Before showing the filled matrix, have students predict. 1,096 test patients, ~85% are true negatives by base rate, so the TN cell (top-left) will dominate. But that says nothing about whether the model is useful. The more revealing question is the <em>bottom row</em> — of the ~167 CHD patients, how many does the model catch? Force them to guess before revealing.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="the-confusion-matrix" class="slide level2">
+<h2>the confusion matrix</h2>
+
+<img data-src="images/lec07/confusion-matrix.png" class="quarto-figure quarto-figure-center r-stretch" style="width:56.0%"><div class="fragment">
+<p>of <strong>167</strong> actual CHD cases, we caught <strong>17</strong></p>
+<aside class="notes">
+<p>Reveal. True negatives dominate (922) — exactly as predicted. But the bottom row is the story: 17 caught, 150 missed. The model is correctly saying “not CHD” to most people and missing the ones that matter. Accuracy hid this because the 922 true negatives drown out everything else.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="precision-vs.-recall" class="slide level2">
+<h2>precision vs.&nbsp;recall</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>precision</strong> <span class="math display">\[\frac{\text{TP}}{\text{TP} + \text{FP}}\]</span></p>
+<p>“I flagged this patient — should I trust the flag?”</p>
+</div><div class="column" style="width:50%;">
+<p><strong>recall</strong> (sensitivity) <span class="math display">\[\frac{\text{TP}}{\text{TP} + \text{FN}}\]</span></p>
+<p>“of all the sick people, how many did we find?”</p>
+</div></div>
+<div class="fragment">
+<p>two metrics → two different stories</p>
+<aside class="notes">
+<p>Precision is the precision of your <em>positive</em> predictions — when you say yes, how often are you right? Recall is the completeness of your positive detection — of all the true positives out there, how many did you catch? They move in opposite directions when you change the threshold. Require higher confidence before flagging → precision up, recall down. Lower the bar → more flags, precision drops, recall climbs.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="our-models-precision-and-recall" class="slide level2">
+<h2>our model’s precision and recall</h2>
+<pre><code>Precision: 0.65
+  → Of patients flagged as CHD, 65% actually had it
+
+Recall:    0.10
+  → Of actual CHD patients (167 in test set), we caught 17</code></pre>
+<div class="fragment">
+<p><strong>accuracy hid a disaster</strong> — the model catches almost nobody</p>
+<aside class="notes">
+<p>Precision is decent — when the model does flag someone, about two-thirds of the time it’s right. But recall is abysmal. Of all 167 actual CHD patients in the test set, we caught 17. For a screening tool this is a complete failure. The 85% accuracy masked that the model is barely functioning on the task we actually care about.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-3" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2></h2>
+<div class="prompt">
+<p><strong>which type of error would you rather the model make?</strong></p>
+<ul>
+<li><strong>CHD screening:</strong> FP → $500 follow-up · FN → $50K emergency care</li>
+<li><strong>spam filter:</strong> FP → real email lost → missed meeting · FN → spam in inbox → mild annoyance</li>
+</ul>
+<p>for each: flag more, or flag fewer?</p>
+</div>
+<div class="instructions">
+<ul>
+<li>30 seconds: think</li>
+<li>1 minute: neighbor</li>
+</ul>
+</div>
+<aside class="notes">
+<p>Two separate scenarios, same question. In medicine, missing a disease case costs far more than flagging an extra patient for follow-up — so we’d want a low threshold, flag liberally, keep recall high. In spam filtering, the costs flip: a false positive (a real email sent to spam) is worse than letting a piece of spam through — so we’d use a high threshold, flag conservatively, keep precision high. The point: the right threshold depends on the business problem, not the statistics.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-4" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>threshold choice is a cost-benefit call</p>
+</div>
+</section>
+<section id="precision-recall-across-thresholds" class="slide level2">
+<h2>precision-recall across thresholds</h2>
+
+<img data-src="images/lec07/pr-curve.png" class="quarto-figure quarto-figure-center r-stretch" style="width:62.0%"><div class="fragment">
+<p>each annotated point is one threshold — as recall climbs, precision falls</p>
+</div>
+<div class="fragment">
+<p>no point dominates — you must <strong>choose</strong></p>
+<aside class="notes">
+<p>Rather than pick a single threshold, sweep all of them. For each threshold, compute precision and recall and plot the point. Perfect model: a point at (1, 1). Our curve shows the operational tradeoff directly. At t = 0.5 (top-left), precision is decent but recall is terrible. Slide down-and-right and you catch more real cases but each flag is less trustworthy. There is no dominant point — you pick one based on costs, which we just discussed.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="another-view-roc" class="slide level2">
+<h2>another view: ROC</h2>
+
+<img data-src="images/lec07/roc-curve.png" class="quarto-figure quarto-figure-center r-stretch" style="width:58.0%"><div class="fragment">
+<p><strong>AUC ≈ 0.75</strong> — concordance: pick one CHD and one non-CHD patient; the model ranks the CHD patient higher 75% of the time (ties count as half)</p>
+</div>
+<div class="fragment">
+<p>sounds great, right?</p>
+<aside class="notes">
+<p>Same threshold sweep, different axes: plot true positive rate (= recall) against false positive rate (= FP / all negatives). Perfect model: hugs the top-left corner. Random guessing: the diagonal. AUC = area under. Our 0.75 has a clean interpretation — concordance probability. Pick one CHD patient and one non-CHD patient; the model ranks the CHD patient higher 75% of the time. That’s threshold-free ranking quality. Deliver “sounds great, right?” with the same setup as the accuracy gotcha — the subgroup and calibration sections will break that confidence.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="pr-vs-roc-when-to-use-which" class="slide level2">
+<h2>PR vs ROC — when to use which</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>PR curve</strong></p>
+<p>axes: precision · recall</p>
+<p>depends on base rate</p>
+<p><strong>operational</strong> view — most honest when the positive class is rare</p>
+</div><div class="column" style="width:50%;">
+<p><strong>ROC curve</strong></p>
+<p>axes: TPR · FPR</p>
+<p><em>invariant</em> to base rate</p>
+<p><strong>threshold-free summary</strong> (AUC) · compare models across datasets</p>
+</div></div>
+<div class="fragment">
+<p>same tradeoff, different invariances</p>
+<aside class="notes">
+<p>Two cuts of the same threshold sweep. The PR curve speaks to the operational question — “when I flag a patient, am I right?” — which is exactly what matters in imbalanced screening. It depends on the base rate, so it’s not directly comparable across populations. The ROC curve and its AUC are invariant to how many negatives you have: shuffle in ten times more healthy patients and the ROC doesn’t change, while PR gets worse. So for a fixed problem with a rare positive class — CHD, fraud, readmissions — the PR curve is usually the more honest view. For cross-dataset comparison or a ranking-quality summary, use ROC + AUC. In this class we’ll typically report both.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="threshold-effect-on-metrics" class="slide level2">
+<h2>threshold effect on metrics</h2>
+
+<img data-src="images/lec07/threshold-tradeoff.png" class="quarto-figure quarto-figure-center r-stretch" style="width:78.0%"><div class="fragment">
+<p>low threshold → catches more, but each flag is less reliable</p>
+<aside class="notes">
+<p>Concrete numbers. At the default 0.5 threshold, accuracy is 86%, precision 65%, recall 10% — we flag only 26 of 1,096 test patients. Drop the threshold to 0.1 and we flag 624 patients (57% of the test set). Recall jumps to 85% — we catch almost all CHD cases — but precision drops to 23% (most flags are wrong) and accuracy falls to 54%, below baseline. What to pick? Depends on follow-up test cost, ICU bed availability, patient outcomes. No purely statistical answer.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-5" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>aggregate metrics hide local failures</p>
+</div>
+</section>
+<section id="base-rate-neglect-commit-to-an-answer" class="slide level2">
+<h2>base rate neglect: commit to an answer</h2>
+<p>a vendor pitches a cancer screening test as <strong>99% accurate</strong>:</p>
+<ul>
+<li><strong>99% sensitivity</strong> — catches 99% of cancer cases (TP rate)</li>
+<li><strong>99% specificity</strong> — correctly clears 99% of healthy patients (TN rate)</li>
+</ul>
+<p>cancer prevalence: <strong>0.5%</strong></p>
+<p>a patient tests positive — P(cancer | positive)?</p>
+<div class="fragment">
+<div class="big-text-teal">
+<p><strong>A.</strong> 99% · <strong>B.</strong> 67% · <strong>C.</strong> 33% · <strong>D.</strong> 1%</p>
+</div>
+<aside class="notes">
+<p>Force the commit before the walkthrough. Most people — <em>including most doctors in published studies</em> — pick A. The room should poll. Hands up for A / B / C / D. Let them stay committed for a beat. Then pivot to the 10,000-patient walkthrough on the next slide: the answer is C.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="work-it-out-on-10000-patients" class="slide level2">
+<h2>work it out on 10,000 patients</h2>
+
+<img data-src="images/lec07/base-rate-neglect.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"><div class="fragment">
+<p>false positives <strong>swamp</strong> true positives when the condition is rare</p>
+<aside class="notes">
+<p>Out of 10,000 patients: 50 actually have cancer (0.5% prevalence). Of those, the test catches 99%, so ~50 true positives. The other 9,950 are healthy. The test misclassifies 1% of them, so ~100 false positives. Total positive results: ~150. Of those 150, only ~50 are real — about 33%. The vendor’s “99% accuracy” number was true; the patient’s posterior probability was just 33%. That’s base rate neglect, and it’s why headline accuracy numbers on rare conditions are mostly meaningless.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-6" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2></h2>
+<div class="prompt">
+<p>aggregate AUC on our Framingham model is <strong>0.75</strong></p>
+<p>is that good?</p>
+<p>for <strong>which</strong> patients?</p>
+</div>
+<div class="instructions">
+<ul>
+<li>30 seconds: think</li>
+<li>pair: which patient group do you expect the model to fail on, and why?</li>
+</ul>
+</div>
+<aside class="notes">
+<p>Setup for the subgroup reveal. Overall AUC of 0.75 sounds OK. But AUC is a population-averaged metric. A model can ace the majority and fail the minority. The question is: for which patients do we expect this model to struggle? Age is obvious given what we’ve seen — but let students think before revealing.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="subgroup-auc-by-age" class="slide level2">
+<h2>subgroup AUC by age</h2>
+
+<img data-src="images/lec07/subgroup-auc.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"><div class="fragment">
+<p>for patients under 40, <strong>AUC = 0.36</strong> — <em>below</em> 0.5; inverting the ranking would do better</p>
+<aside class="notes">
+<p>Compute AUC separately in each age group. For patients over 40, the model is decent — AUC above 0.6 across groups. For under-40 patients, AUC drops to 0.36 — below 0.5, worse than random guessing. <em>Inverting</em> the model’s ranking would actually do better in this subgroup. The positive class there is tiny — only ~6 CHD cases in 191 patients — so the estimate is noisy, but the message is unambiguous: the model has no useful signal for young patients. It learned “older people get heart disease” and nothing else.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="predicted-probabilities-by-age-group" class="slide level2">
+<h2>predicted probabilities by age group</h2>
+
+<img data-src="images/lec07/subgroup-boxplot.png" class="quarto-figure quarto-figure-center r-stretch" style="width:78.0%"><div class="fragment">
+<p>for older patients, red (CHD) sits above blue — for young patients, the two distributions <strong>overlap</strong></p>
+<aside class="notes">
+<p>Same failure in a different view. For patients 50+, the red (CHD) distribution sits noticeably above the blue (no CHD) — the model assigns higher probabilities to the sick patients on average. For patients under 40, both distributions are bunched low and overlap heavily — the model barely separates them. In practice this is dangerous: young patients who <em>do</em> develop CHD are exactly the ones where early intervention pays off, and the signal our model uses doesn’t help here.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="calibration-do-probabilities-mean-what-they-say" class="slide level2">
+<h2>calibration — do probabilities mean what they say?</h2>
+
+<img data-src="images/lec07/calibration-plot.png" class="quarto-figure quarto-figure-center r-stretch" style="width:55.0%"><div class="fragment">
+<p>bin predictions into deciles → does “10% risk” mean 10% observed rate?</p>
+<aside class="notes">
+<p>The last aggregate lie to unmask. Logistic regression outputs probabilities, not just classifications. But do those probabilities mean what they claim? If the model says “20% risk” for a group, do 20% of that group actually develop CHD? To check: bin predictions into deciles (10 equal-count buckets), compute the observed CHD rate in each bin, plot observed vs predicted. A perfectly calibrated model sits on the diagonal. Our model tracks the diagonal reasonably well across the range where most patients live. It’s well-calibrated — even though we just saw it fails badly on other dimensions. Calibration is orthogonal to ranking ability.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="calibration-auc" class="slide level2">
+<h2>calibration ≠ AUC</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>AUC measures ranking</strong></p>
+<p>does the model rank CHD patients above non-CHD?</p>
+</div><div class="column" style="width:50%;">
+<p><strong>calibration measures absolute probabilities</strong></p>
+<p>is “10% risk” really a 10% rate?</p>
+</div></div>
+<div class="fragment">
+<p>a model can have good AUC and bad calibration (or vice versa)</p>
+</div>
+<div class="fragment">
+<p><strong>which matters</strong> depends on how you use the output</p>
+<aside class="notes">
+<p>These two metrics measure different properties. AUC is threshold-free ranking — only the <em>order</em> of predictions matters; rescale them any way and AUC is unchanged. Calibration depends on the actual values — a model that outputs “0.20” for patients who are truly 0.40 risk has perfect ranking but awful calibration. If you use the probabilities directly for cost-benefit tradeoffs (Bayesian decision theory), calibration matters. If you just pick the top-k patients to screen, only ranking matters.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-7" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>closing the loop</p>
+</div>
+</section>
+<section id="back-to-the-readmissions-hook" class="slide level2">
+<h2>back to the readmissions hook</h2>
+<p><strong>the question that opened the lecture</strong></p>
+<p>a hospital’s model is “85% accurate” — deploy it?</p>
+<div class="fragment">
+<p><strong>now you know what to ask:</strong></p>
+<ul>
+<li class="fragment">what’s the baseline? (accuracy trap)</li>
+<li class="fragment">what’s precision and recall at the chosen threshold?</li>
+<li class="fragment">ROC curve — is the chosen threshold a good point on the tradeoff?</li>
+<li class="fragment">does the model work across all patient groups?</li>
+<li class="fragment">are the probabilities calibrated?</li>
+</ul>
+<aside class="notes">
+<p>Close the loop. We opened with a hospital’s 85% accurate readmissions model. Now you have the toolkit to diagnose it. First, check the baseline — is “predict none” 85%? If so, accuracy alone tells you nothing. Next, look at precision and recall at whatever threshold is being used. Then the full ROC curve and AUC to see performance across thresholds. Then subgroup breakdowns — is the model equally good across age, race, insurance type? Finally, calibration — if the model says “40% readmission risk,” is it really 40%? The hospital’s decision on where to operate on the precision-recall curve is a cost-benefit call about intervention dollars, staff availability, and patient outcomes — not a statistics question.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="key-takeaways" class="slide level2">
+<h2>key takeaways</h2>
+<ul>
+<li class="fragment"><strong>accuracy is misleading</strong> with imbalanced classes — check the baseline first</li>
+<li class="fragment">the <strong>loss function determines what the model finds</strong>: logistic loss penalizes confident wrong answers</li>
+<li class="fragment"><strong>gradient descent</strong> on a convex loss finds the global minimum (unique when the data isn’t separable)</li>
+<li class="fragment"><strong>precision / recall</strong> reveal what accuracy hides — the right threshold is a cost-benefit call</li>
+<li class="fragment"><strong>AUC</strong> summarizes ranking across thresholds; <strong>calibration</strong> checks absolute probabilities</li>
+<li class="fragment">always check <strong>subgroup performance</strong> — aggregate metrics hide local failures</li>
+</ul>
+<aside class="notes">
+<p>Six takeaways. The first three are about <em>building</em> a classifier: loss design, optimization, fitting. The last three are about <em>evaluating</em> one. The thread through all six: don’t trust a single number. Every aggregate can lie, and the way you dig into the lie depends on how your downstream decision uses the model.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="next-time" class="slide level2">
+<h2>next time</h2>
+<ul>
+<li><strong>Chapter 8</strong>: bootstrap — quantify uncertainty in <strong>any</strong> estimate (accuracy, AUC, odds ratio, …)</li>
+<li><strong>Chapter 12</strong>: formal inference on logistic coefficients (confidence intervals, p-values)</li>
+<li><strong>Chapter 13</strong>: decision trees — same classification problem, very different model</li>
+</ul>
+<aside class="notes">
+<p>Today closed Act 1. Act 2 opens with the bootstrap — a resampling tool that lets us put confidence intervals on any statistic, including today’s classification metrics. Then Chapter 12 returns to logistic regression to do formal inference on coefficients. And in Act 3, trees and forests extend classification to nonlinear decision boundaries.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+
+
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+
+        height: 1080,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>
