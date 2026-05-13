@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>lec15-clustering – MSE 125 — Slides</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-244ce1b9ec229af56bb6f90d24b3371d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">MSE 125 — Slides</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+
+
+
+
+<section id="lecture-15-clustering-k-means-facilitation-script" class="level1">
+<h1>Lecture 15: Clustering — K-Means — Facilitation Script</h1>
+<p><strong>Duration:</strong> 80 minutes <strong>Total slides:</strong> 39 (slide 1 = auto title from YAML) <strong>Primary dataset:</strong> Airbnb NYC listings (~29,000 listings after dropna) <strong>Hook:</strong> Airbnb host wants a competitive set so they can price against comparable listings. Today: when you ask k-means for one, do you get the answer or your own assumptions back? <strong>Headline:</strong> <em>Your features pick your clusters.</em> <strong>Two surprises:</strong> (1) drop lat/lon and the clusters flip from geography to market segments; (2) different random seeds produce different clusters (two of 10 runs disagree at ARI ≈ 0.72-0.76). <strong>Aphorism:</strong> <em>all models are wrong, but some are useful</em> — George Box. <strong>Structure:</strong> Opening (~3 min, slides 1–5) → Block 1: algorithm + first run (~22 min, slides 6–14) → Block 2: validation tools + their limits (~22 min, slides 15–23) → Block 3: features pick your clusters (~26 min, slides 24–35) → Closing (~3 min, slides 36–39) → Buffer (~4 min)</p>
+<hr>
+<section id="opening-3-min-slides-15" class="level2">
+<h2 class="anchored" data-anchor-id="opening-3-min-slides-15">Opening (~3 min) — slides 1–5</h2>
+<p><strong>Slide 1 (title):</strong> 30 sec.</p>
+<p><strong>Slide 2 (logistics):</strong> <strong>START RECORDING.</strong> 30 sec.&nbsp;HW 4 is out (PCA + clustering + Kaggle challenge). Quiz 7 Wednesday covers PCA + clustering. Midterm project reports returned this week.</p>
+<p><strong>Slide 3 (the brief):</strong> 1 min. The decision frame: a host wants a competitive set — comparable listings to price against. A Brooklyn studio doesn’t compete with a Manhattan penthouse. The image is the NYC cluster map (visual furniture for now — they’ll see it in block 1 as the disappointing first run).</p>
+<p><strong>Slide 4 (today):</strong> 30 sec.&nbsp;Three beats — algorithm, validation tools, feature choice.</p>
+<p><strong>Slide 5 (bridge from PCA):</strong> 1 min. Table contrasts PCA and k-means. Both unsupervised, both need standardization. PCA gave us continuous <em>directions</em>; k-means today gives discrete <em>groups</em>. Don’t dwell — students just had PCA Wednesday.</p>
+<hr>
+</section>
+<section id="block-1-algorithm-first-run-22-min-slides-614" class="level2">
+<h2 class="anchored" data-anchor-id="block-1-algorithm-first-run-22-min-slides-614">Block 1: Algorithm + first run (~22 min) — slides 6–14</h2>
+<section id="key-narrative" class="level3">
+<h3 class="anchored" data-anchor-id="key-narrative">Key narrative</h3>
+<p>Ground students in the k-means mechanics, then run it once on the full Airbnb feature set. The result — clusters that mostly trace NYC geography — is the deliberate anti-climax that sets up the whole rest of the lecture.</p>
+<p><strong>Slide 6 (dark transition):</strong> “assign, recompute, repeat.”</p>
+<p><strong>Slide 7 (the data):</strong> ~1 min. Toy table of five Airbnb listings. The pedagogical move: an unsupervised problem looks identical to a supervised one <strong>except</strong> there’s no <span class="math inline">\(y\)</span> column. Quick note that <code>room_type</code> needs one-hot encoding for distance-based methods.</p>
+<p><strong>Slide 8 (k-means in four steps):</strong> ~1 min. Definition box: assign → recompute → repeat until stable. Plus three glosses: centroid = cluster mean, starts from <span class="math inline">\(k\)</span> random centroids, converges in finite steps (finitely many assignments, monotone objective).</p>
+<p><strong>Slide 9 (watch it iterate):</strong> ~1 min. The 4-panel chapter figure — k-means on (price, reviews) standardized, <span class="math inline">\(k=3\)</span>. Panel 1 random init, panel 4 converged. Walk the eye through one cycle: every point picks its nearest X, then each X moves to the mean of its neighborhood. Two features only so we can plot it.</p>
+<p><strong>Slide 10 (the objective):</strong> ~90 sec.&nbsp;Definition box with inertia: <span class="math inline">\(\sum_k \sum_{i \in C_k} \|x_i - \mu_k\|^2\)</span>. Gloss below the formula. Two key properties: 1. Each step monotonically decreases (assign picks nearest; recompute uses the mean, which minimizes squared distance). 2. <strong>Non-convex</strong> — different starts can land at different local minima. Foreshadows block 2.</p>
+<p><strong>Slide 11 (one more thing first — standardize):</strong> ~1 min. K-means uses Euclidean distance, so units matter. Tiny table — price (range 10–10,000) vs.&nbsp;latitude (range 40.5–40.9). Without standardization, price drowns out everything. Same lesson as PCA on Wednesday. <code>StandardScaler</code> does the symmetric thing.</p>
+<p><strong>Slide 12 (run it — all the features):</strong> ~75 sec.&nbsp;Eight numerical features + four one-hot room_type columns. Standardize, fit, predict. Cluster sizes: 13,442 / 651 / 15,049 — two big clusters and one tiny ~650-row cluster (could be niche or could be noise). <code>random_state=42</code>, <code>n_init=10</code> (more on <code>n_init</code> in block 2).</p>
+<p><strong>Slide 13 (look at the clusters):</strong> ~1 min. NYC map colored by cluster. Cluster 2 (green) blankets Manhattan/Brooklyn/much of Queens, the other two scattered. Tagline: <strong>“they trace geography. is that useful?”</strong> Answer (don’t say it yet): not really — we already have a <code>neighbourhood_group_cleansed</code> column. The algorithm spent its effort rediscovering boroughs (badly).</p>
+<p><strong>Slide 14 (DISCUSSION: poll — first question to ask):</strong> 2 min. <strong>POLL.</strong> Four options: - is <span class="math inline">\(k=3\)</span> right? - are clusters stable? - what do they represent? - would different features give different clusters?</p>
+<p><strong>All four are correct.</strong> The lecture answers them in order — k+stability in block 2, representation+features in block 3. Whatever students pick is fine. One-line debrief: “all four are necessary. clustering looks easy because it runs. validating it is the hard part.”</p>
+<hr>
+</section>
+</section>
+<section id="block-2-validation-tools-their-limits-22-min-slides-1523" class="level2">
+<h2 class="anchored" data-anchor-id="block-2-validation-tools-their-limits-22-min-slides-1523">Block 2: Validation tools + their limits (~22 min) — slides 15–23</h2>
+<section id="key-narrative-1" class="level3">
+<h3 class="anchored" data-anchor-id="key-narrative-1">Key narrative</h3>
+<p>The two standard heuristics (elbow + silhouette) plus seed stability — none oracle the right answer. Students leave the block knowing that the validation toolbox is for ruling out bad choices, not for picking the right one.</p>
+<p><strong>Slide 15 (dark transition):</strong> “choose k. check stability. neither will save you.”</p>
+<p><strong>Slide 16 (elbow + silhouette: the standard tools):</strong> ~90 sec.&nbsp;Two stacked definition boxes. Elbow = plot inertia vs.&nbsp;<span class="math inline">\(k\)</span>, look for a bend. Silhouette = per-point fit-to-own-cluster vs.&nbsp;nearest-other-cluster, range <span class="math inline">\([-1, 1]\)</span>, averaged. These are the heuristics every clustering tutorial reaches for.</p>
+<p><strong>Slide 17 (elbow plot — no bend):</strong> ~2 min. The chapter’s elbow + silhouette plots (side-by-side). Inertia drops smoothly from ~245k at <span class="math inline">\(k=2\)</span> to ~120k at <span class="math inline">\(k=10\)</span> — no bend. Silhouette peaks at <span class="math inline">\(k=2\)</span> (~0.30) — the most trivial split, just half. <strong>The two heuristics disagree, and neither is decisive.</strong> Choosing <span class="math inline">\(k\)</span> is a judgment call, not a formula. (Heuristics CAN rule out clearly bad choices — silhouette crashing toward 0 at <span class="math inline">\(k=15\)</span> tells you not to use 15.)</p>
+<blockquote class="blockquote">
+<p>Style-guide note: this plot should ideally be stacked vertically (shared x-axis). The chapter renders it side-by-side. If revising the chapter later, stack to a single column.</p>
+</blockquote>
+<p><strong>Slide 18 (DISCUSSION: poll — same data, same k, different runs?):</strong> 2 min. <strong>POLL.</strong> Four options, set up the seed-instability reveal. - (a) always — deterministic - (b) usually - (c) sometimes — depends on data - (d) rarely</p>
+<p>Target: <strong>(c)</strong>. Most pairs agree, but a meaningful fraction disagree by a lot. Reveal on slide 20. If anyone picks (a): “let’s check.”</p>
+<p><strong>Slide 19 (different seeds, different clusters):</strong> ~1 min. ARI definition box. Bullet list: ARI=1 → identical, ARI=0 → random agreement. For any pair of points, do both runs co-cluster them the same way? Adjusted for chance.</p>
+<p><strong>Slide 20 (10 runs, pairwise ARI):</strong> ~90 sec.&nbsp;The ARI heatmap. Most cells dark red (ARI = 1.00), runs 3 and 7 sit at 0.72-0.76 against everyone else — they found different local minima. <strong>Same data, same algorithm, same <span class="math inline">\(k\)</span> → not the same clusters.</strong> This is real-life k-means: most starts converge to the same answer, a few find others, and you can’t tell from the output which is “right.”</p>
+<p><strong>Slide 21 (sklearn’s defenses):</strong> ~1 min. <code>n_init=10</code> keeps the lowest-inertia of 10 random starts. <code>k-means++</code> initialization spreads initial centroids apart (algorithmic: probability of picking each centroid proportional to squared distance from the nearest existing one). The earlier heatmap used <code>n_init=1</code> to expose the raw instability. With <code>n_init=10</code>, fewer disagreements — but the underlying multi-modal landscape remains.</p>
+<p><strong>Slide 22 (what does “Cluster 1” mean?):</strong> ~1 min. Warning callout — if clusters shift with the seed, the integer labels carry no portable meaning. “Cluster 1” in one run is not “Cluster 1” in the next. <strong>Never report integer cluster labels</strong> — report <strong>profiles</strong> (budget, moderate, premium). This rule lands in block 3.</p>
+<p><strong>Slide 23 (DISCUSSION: you have to ship something. it’s monday.):</strong> 5 min think-pair-share (1 min think + 2 min pair + 2 min debrief). Tight constraint: elbow gradual, silhouette peaks at <span class="math inline">\(k=2\)</span>, two of 10 runs disagree, host wants three segments by Friday. Name two concrete things to do before reporting.</p>
+<p>Collect any 2 of: 1. <strong><code>n_init=50</code>+</strong> with fixed seed — buys stability for compute. 2. <strong>Profile every cluster</strong> — mean feature values, name them. 3. <strong>Try a different feature set</strong> — sets up block 3. 4. <strong>Visualize on 2D slices</strong> — price-reviews, lat-lon, accommodates-price. 5. <strong>Three tiers might be what the host needs</strong> regardless of the math. 6. <strong>Drop features you don’t trust</strong> — foreshadows block 3.</p>
+<p>Key insight: <strong>clustering is a judgment call you defend with profiles, not a formula you compute.</strong> If a pair says “give up and use random forest” — reframe: clustering is descriptive, not predictive. We’re summarizing structure, not predicting anything.</p>
+<hr>
+</section>
+</section>
+<section id="block-3-features-pick-your-clusters-26-min-slides-2435" class="level2">
+<h2 class="anchored" data-anchor-id="block-3-features-pick-your-clusters-26-min-slides-2435">Block 3: Features pick your clusters (~26 min) — slides 24–35</h2>
+<section id="key-narrative-2" class="level3">
+<h3 class="anchored" data-anchor-id="key-narrative-2">Key narrative</h3>
+<p>The chapter’s headline result, plus three real-world cases that show the same lesson in genetics, policing, and personality testing. Closing: the clustering gotcha checklist — six questions to ask before reporting any cluster.</p>
+<p><strong>Slide 24 (dark transition):</strong> “your features pick your clusters.”</p>
+<p><strong>Slide 25 (the same data, two feature sets):</strong> 30 sec.&nbsp;Frame the experiment: drop just lat/lon, everything else identical. Same <span class="math inline">\(k\)</span>, same standardization, same algorithm. Two columns out of ten — how much can it change? Predict-then-reveal setup.</p>
+<p><strong>Slide 26 (the reveal):</strong> ~2 min. <strong>THE CENTRAL FIGURE.</strong> Two NYC maps, both colored by cluster, both <span class="math inline">\(k=3\)</span>, both standardized. <strong>Left</strong> (with lat/lon): clusters trace geography — Manhattan/Brooklyn dominance. <strong>Right</strong> (without lat/lon): same colors mix across the same map. Geography is no longer the axis — the clusters now organize around price, room type, and size. Block 2’s elbow plot and silhouette wouldn’t have told you which to prefer. Let the slide sit; this is the answer to Monday’s question.</p>
+<p><strong>Slide 27 (what the right-side clusters actually capture):</strong> ~90 sec.&nbsp;Profile table for the no-lat/lon run. - Cluster 0 (13,438): private room, ~$77/night, 1.1 bedrooms → <strong>moderate</strong> - Cluster 1 (15,053): entire home/apt, ~$186/night, 1.9 bedrooms → <strong>premium</strong> - Cluster 2 (651): shared room, ~$57/night, 0.4 bedrooms → <strong>budget</strong></p>
+<p>Three competitive sets a host can actually price against. Reviews per listing are roughly similar; the split is room type and price. These are the <em>useful</em> clusters.</p>
+<p><strong>Slide 28 (why did lat/lon dominate?):</strong> ~1 min. Two-column lat/lon → spatial separation is strong and clean. A Manhattan listing and a Bronx listing are several standard deviations apart in (lat, lon) after standardization — that swamps the more subtle separations in price, room type, etc. <strong>Moral</strong>: any feature with clean geometric separation will dominate the cluster boundaries.</p>
+<p><strong>Slide 29 (DISCUSSION: which features would you drop?):</strong> 5 min (2 think + 2 pair + 1 debrief). For each feature, decide keep / drop / it depends, in one sentence: - <code>latitude</code>, <code>longitude</code> → <strong>drop</strong> (we just saw why). - <code>neighbourhood_group_cleansed</code> → <strong>drop</strong> (discrete geography, same problem). - <code>host_id</code> → <strong>drop</strong> (identifier, not a feature; creates one-cluster-per-host). - <code>last_review_date</code> → <strong>it depends</strong> (could mean activity, could mean listing age; convert to days-since). - <code>description</code> text length → <strong>it depends</strong> (could proxy effort/quality, could be noise; worth a robustness pass).</p>
+<p>Key insight: <strong>feature selection IS the cluster-design step.</strong> The algorithm doesn’t decide; you do. Defend each feature by what segment-relevant information it carries.</p>
+<p><strong>Slide 30 (genes mirror geography):</strong> ~2 min. <strong>Novembre et al., <em>Nature</em> 2008.</strong> PCA on ~197K SNPs from 1,387 Europeans — no geographic info handed in. Result: PC1 vs PC2 plot reproduces the map of Europe. PC1-vs-latitude <span class="math inline">\(r^2 = 0.71\)</span>. 50% of people placeable within 310 km of birthplace. <strong>Same research community</strong> (Novembre &amp; Stephens 2008, <em>Nature Genetics</em>) published the math showing these patterns are <em>generic</em> to PCA on spatial data with distance-decaying similarity — no demographic event required. The Cavalli-Sforza interpretation of European PC1 as “Neolithic farmers walking west” is at minimum unidentified by this method.</p>
+<p>Consequence: these maps are misappropriated to support biological-race claims that the authors themselves reject. Class line: “We gave the algorithm DNA, with zero geographic info. It drew us a map. Did it discover hidden populations? Or did it rediscover the obvious — your neighbors share more ancestry with you than strangers do? The math says the second.”</p>
+<p><strong>Slide 31 (predictive policing finds the police):</strong> ~2 min. <strong>Lum &amp; Isaac, <em>Significance</em> 2016.</strong> Reimplemented PredPol on Oakland 2010 drug arrest data. The algorithm’s only feature was where past arrests happened. Hotspots: West Oakland + International Blvd, ~200× more arrests than non-hotspot areas. Compared to estimated true drug use (NSDUH + Census): roughly uniform across Oakland. The clusters traced <strong>arrest patterns, not crime patterns</strong>. Quantitative consequence: Black residents face ~2× the policing exposure of white residents under PredPol, despite roughly even drug use.</p>
+<p>Policy consequence: Santa Cruz banned predictive policing in 2020 (first US city), LAPD ended its contract. Central citation in AI-fairness debates.</p>
+<p>Class line: “Same algorithm, two feature sets. Train on arrests, you get a map of where we already police. Train on a public-health survey, you get a map of where drugs are. Different maps. The choice between them is a policy decision in statistics clothing.”</p>
+<p><strong>Slide 32 (sixteen personality types — or four coin-flips at the median):</strong> ~2 min. <strong>McCrae &amp; Costa 1989; Bess &amp; Harvey 2002.</strong> MBTI assigns 16 types via four binary axes (E/I, S/N, T/F, J/P), cutting each continuous trait at zero. The underlying scores are roughly normal with the mode AT the cutpoint. Earlier “bimodality” reports (Bess &amp; Harvey) were BILOG quadrature artifacts. About 50% of takers get a different type on retest within weeks. The clusters exist because the test designer wrote them in.</p>
+<p>Industry consequence: ~$20M/year, 89 of the Fortune 100 use MBTI in hiring/team-building/career counseling. Hiring decisions made on a clustering structure the data doesn’t have.</p>
+<p>Class line: “Sixteen personality types sounds like a discovery. It’s not. It’s four coin-flips at the median of a bell curve. The ‘clusters’ are a printing decision, not a biological fact.”</p>
+<p><strong>Slide 33 (same lesson, three fields):</strong> ~1 min. Synthesis. Genetics → geography. Policing → policing. Psychology → 16 boxes. Airbnb → boroughs. <strong>Clustering’s first job is to mirror its inputs, not to discover something independent of them.</strong> This is the deepest version of the lesson. Students should leave with the instinct: before trusting any cluster summary, ask what features were fed in and what they encode.</p>
+<p><strong>Slide 34 (the clustering gotcha checklist):</strong> ~90 sec.&nbsp;Six-item checklist — incremental reveal one at a time: - <strong>what features did I include?</strong> — geography, IDs, dates often dominate - <strong>what features did I drop, and why?</strong> — feature choice is the model - <strong>is <span class="math inline">\(k\)</span> defensible?</strong> — elbow + silhouette + business reason - <strong>are the clusters stable?</strong> — <code>n_init=50</code>, multiple seeds, ARI &gt; 0.9 - <strong>can I name each cluster from its profile?</strong> — if not, you have an artifact - <strong>does the clustering answer a question someone has?</strong> — if no, don’t ship</p>
+<p>Order matters: features first (biggest lever), then <span class="math inline">\(k\)</span>, then stability, then interpretation, then decision-relevance.</p>
+<p><strong>Slide 35 (demo: clustering in the notebook):</strong> 30 sec.&nbsp;Colab link + three experiments: toggle lat/lon, sweep <code>n_init</code>, try <span class="math inline">\(k = 2, 3, 5, 8\)</span>. If running short, defer to HW 4.</p>
+<hr>
+</section>
+</section>
+<section id="closing-3-min-slides-3639" class="level2">
+<h2 class="anchored" data-anchor-id="closing-3-min-slides-3639">Closing (~3 min) — slides 36–39</h2>
+<p><strong>Slide 36 (summary):</strong> ~1 min. Five takeaways (incremental). The fifth — <em>your features pick your clusters</em> — is the headline. If a student takes one thing, this is it.</p>
+<p><strong>Slide 37 (Box aphorism dark slide):</strong> ~15 sec.&nbsp;“All models are wrong, but some are useful.” The clusters aren’t true categories — they’re a simplification. The question is whether the simplification helps someone make a better decision. Yes (no lat/lon, real segments); no (with lat/lon, just boroughs).</p>
+<p><strong>Slide 38 (next: when validation isn’t enough):</strong> ~45 sec.&nbsp;Forward pointer to Ch 16 (Wednesday). We’ve trained models, tested, validated. What breaks when the data changes after deployment? Three failure modes: temporal leakage, feedback loops, Goodhart. The validation tools we’ve used assume past data looks like future data. What if it doesn’t?</p>
+<p><strong>Slide 39 (feedback):</strong> standard.</p>
+<hr>
+</section>
+<section id="timing-summary" class="level2">
+<h2 class="anchored" data-anchor-id="timing-summary">Timing summary</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Section</th>
+<th>Slides</th>
+<th>Duration</th>
+<th>Cumulative</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Opening</td>
+<td>1–5</td>
+<td>3 min</td>
+<td>3 min</td>
+</tr>
+<tr class="even">
+<td>Block 1 (algorithm + first run)</td>
+<td>6–14</td>
+<td>22 min</td>
+<td>25 min</td>
+</tr>
+<tr class="odd">
+<td>Block 2 (validation limits)</td>
+<td>15–23</td>
+<td>22 min</td>
+<td>47 min</td>
+</tr>
+<tr class="even">
+<td>Block 3 (features pick)</td>
+<td>24–35</td>
+<td>26 min</td>
+<td>73 min</td>
+</tr>
+<tr class="odd">
+<td>Closing</td>
+<td>36–39</td>
+<td>3 min</td>
+<td>76 min</td>
+</tr>
+<tr class="even">
+<td><strong>Buffer</strong></td>
+<td></td>
+<td><strong>4 min</strong></td>
+<td><strong>80 min</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Discussions:</strong> five total — slide 14 (poll, 2 min), slide 18 (poll, 2 min), slide 23 (think-pair-share, 5 min), slide 29 (think-pair-share, 5 min). That’s 14 minutes of activity, with inline reasoning prompts in speaker notes for the predict-then-reveals.</p>
+<hr>
+</section>
+<section id="cuts-if-running-short" class="level2">
+<h2 class="anchored" data-anchor-id="cuts-if-running-short">Cuts if running short</h2>
+<ul>
+<li><strong>Slide 32 (MBTI):</strong> the second supplementary case. Cut and stay in genetics + policing.</li>
+<li><strong>Slide 35 (demo):</strong> point at the notebook for HW 4 instead of walking it.</li>
+<li><strong>Slide 25 (two feature sets):</strong> can verbally bridge from slide 24 to 26.</li>
+</ul>
+</section>
+<section id="dont-cut" class="level2">
+<h2 class="anchored" data-anchor-id="dont-cut">Don’t cut</h2>
+<ul>
+<li>The reveal (slide 26).</li>
+<li>The discussion on slide 29 (“which features would you drop”) — this is where the lesson lands.</li>
+<li>The genes-mirror-geography case (slide 30) — strongest cross-domain example.</li>
+</ul>
+<hr>
+</section>
+<section id="vignette-quick-reference" class="level2">
+<h2 class="anchored" data-anchor-id="vignette-quick-reference">Vignette quick-reference</h2>
+<section id="novembre-et-al.-2008-genes-mirror-geography-within-europe-nature-45698101." class="level3">
+<h3 class="anchored" data-anchor-id="novembre-et-al.-2008-genes-mirror-geography-within-europe-nature-45698101.">Novembre et al.&nbsp;(2008), “Genes mirror geography within Europe,” <em>Nature</em> 456:98–101.</h3>
+<p>~197K SNPs, 1,387 Europeans. PCA. PC1 ~ latitude (<span class="math inline">\(r^2 = 0.71\)</span>), PC2 ~ longitude (<span class="math inline">\(r^2 = 0.72\)</span>). 50% of subjects placed within 310 km of reported origin. The companion paper (Novembre &amp; Stephens 2008, <em>Nature Genetics</em> 40:646–649) proves these patterns are generic to PCA on spatial data with distance-decaying similarity — they arise even from pure isolation-by-distance with no demographic event. François et al.&nbsp;2010 went further: under range expansions, PC1 can orient <em>perpendicular</em> to the true expansion axis. Authors are mainstream pop-gen scientists, not retrofitting critics.</p>
+</section>
+<section id="lum-isaac-2016-to-predict-and-serve-significance-1351419." class="level3">
+<h3 class="anchored" data-anchor-id="lum-isaac-2016-to-predict-and-serve-significance-1351419.">Lum &amp; Isaac (2016), “To predict and serve?” <em>Significance</em> 13(5):14–19.</h3>
+<p>Replicated PredPol on Oakland 2010 drug arrest data. Only feature: where past arrests happened. Predicted hotspots: West Oakland, International Blvd, ~200× arrest density of non-hotspots. NSDUH-estimated drug use: roughly uniform. Under PredPol, Black residents face ~2× white residents’ policing exposure, other non-white races ~1.5×, despite even drug use. Santa Cruz banned PredPol 2020 (first US city); LAPD ended contract same year.</p>
+</section>
+<section id="mccrae-costa-1989-j.-personality-5711740-bess-harvey-2002-j.-personality-assessment-781176186." class="level3">
+<h3 class="anchored" data-anchor-id="mccrae-costa-1989-j.-personality-5711740-bess-harvey-2002-j.-personality-assessment-781176186.">McCrae &amp; Costa (1989), <em>J. Personality</em> 57(1):17–40; Bess &amp; Harvey (2002), <em>J. Personality Assessment</em> 78(1):176–186.</h3>
+<p>MBTI: 16 types from four binary axes, dichotomized at zero. McCrae &amp; Costa: scores roughly normal with mode at cutpoint. Bess &amp; Harvey: earlier “bimodality” reports were BILOG quadrature artifacts. ~50% retest reclassification within weeks. ~$20M/year industry; 89 of Fortune 100 use it in hiring.</p>
+<hr>
+</section>
+</section>
+<section id="logistics-reminders" class="level2">
+<h2 class="anchored" data-anchor-id="logistics-reminders">Logistics reminders</h2>
+<ul>
+<li><strong>HW 4</strong> is out (covers Ch 12–15: regression inference + diagnostics + trees + PCA + clustering + Kaggle).</li>
+<li><strong>Quiz 7</strong> Wednesday May 20 covers PCA + clustering.</li>
+<li>Project midterm returned this week.</li>
+</ul>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

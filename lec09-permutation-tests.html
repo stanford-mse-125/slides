@@ -1,0 +1,1688 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/tabby.min.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.37">
+
+  <meta name="author" content="Madeleine Udell">
+  <title>MSE 125 — Slides – Lecture 9: Permutation Tests</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-7e9863cd0ef9c70c3784d80bfe5ce18d.css">
+  <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Lecture 9: Permutation Tests</h1>
+  <p class="subtitle">MSE 125 — Applied Statistics</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Madeleine Udell 
+</div>
+</div>
+</div>
+
+  <p class="date">Monday, April 27, 2026</p>
+</section>
+<section id="section" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>the bootstrap says the drug works</p>
+<p>but a skeptic asks: <strong>how surprised should we be</strong> if the drug did nothing at all?</p>
+</div>
+<aside class="notes">
+<p>Open with the hook. Last lecture, the bootstrap CI for the ACTG 175 treatment effect was [39.6, 61.3] — entirely above zero. That looks convincing. But the bootstrap measures <em>precision</em> — how much our estimate jiggles from sample to sample. A skeptic wants a different answer: if the drug had NO effect whatsoever, what’s the probability of seeing a gap this large purely by chance? That’s the question the permutation test answers. Same dataset, same trial, different question.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="logistics" class="slide level2">
+<h2>logistics</h2>
+<ul>
+<li><strong>HW 2 review sessions</strong>: this week</li>
+<li><strong>project meeting with CA:</strong> before May 1; sign up! https://stanford-mse-125.github.io/web/project</li>
+<li><strong>quiz 4</strong>: Wed Apr 29 — bootstrap + permutation tests (Lec 8-9)</li>
+<li><strong>project proposal</strong>: due Fri May 1</li>
+<li><strong>HW 3</strong>: due Fri May 8</li>
+</ul>
+<aside class="notes">
+<p><strong>START RECORDING.</strong></p>
+<p>Thirty seconds. Quiz Wednesday covers bootstrap (last lecture) and permutation tests (today). Project proposal is a one-pager due Friday. HW 3 is out — uses both bootstrap and permutation tests.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="today" class="slide level2">
+<h2>today</h2>
+<ul>
+<li class="fragment"><strong>permutation tests</strong>: shuffle labels to simulate “no effect”</li>
+<li class="fragment"><strong>the null distribution</strong>: 10,000 permutations map out what chance looks like</li>
+<li class="fragment"><strong>the p-value</strong>: how surprised should we be?</li>
+<li class="fragment"><strong>second example</strong>: do NBA refs favor the home team? — association vs causation</li>
+<li class="fragment"><strong>one-sided vs two-sided tests</strong> — and why the default is two-sided</li>
+</ul>
+<aside class="notes">
+<p>Five beats. First: the core insight — if the drug does nothing, treatment labels are meaningless, so shuffling them should produce effects that look like ours. Second: do this 10,000 times to build the null distribution. Third: compute the p-value and address the number-one misconception. Fourth: a second dataset — NBA home vs.&nbsp;away personal fouls, testing the folk hypothesis that refs favor home teams. Groups aren’t randomly assigned, so rejecting the null tells us less; and the evidence is <em>marginal</em> here, unlike the overwhelming ACTG case. Fifth: one-sided vs two-sided — and the NBA data shows the verdict flips at α=0.05, which is exactly why direction must be pre-registered. The CI/test connection from Ch 8 gets formalized in Ch 10.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-lady-tasting-tea-your-turn" class="slide level2">
+<h2>The Lady Tasting Tea — your turn</h2>
+<p><strong>Rothamsted, 1920s.</strong> Muriel Bristol (algae researcher) claims she can taste whether milk went into the cup <strong>before</strong> or <strong>after</strong> the tea.</p>
+<div class="fragment">
+<p>R.A. Fisher’s test: <strong>8 cups</strong>, 4 of each kind, in random order — Bristol picks out the 4 “milk first” cups.</p>
+</div>
+<div class="fragment">
+<p><strong>your turn.</strong> on scrap paper, write <strong>M</strong> or <strong>T</strong> for each of positions 1–8. Pick 4 of each — make your best guess at the sequence.</p>
+</div>
+</section>
+<section id="and-the-actual-sequence" class="slide level2">
+<h2>…and the actual sequence:</h2>
+<div class="big-text">
+<p><strong>M · T · M · M · T · T · T · M</strong></p>
+</div>
+<div class="fragment">
+<p>show of hands: who got all 4 milk-firsts right?</p>
+</div>
+<div class="fragment">
+<p><span class="math inline">\(\binom{8}{4} = 70\)</span> arrangements → pure guessing hits the right answer <strong>1 in 70</strong> (~1.4%)</p>
+<p>with ~120 of us guessing, we’d expect <strong>1 or 2 winners by luck alone</strong></p>
+</div>
+<div class="fragment">
+<p><strong>Bristol got all eight right.</strong> that is not luck — it’s a permutation test in miniature.</p>
+<div class="source">
+<p>Fisher (1935) <em>The Design of Experiments</em>; Salsburg (2001) <em>The Lady Tasting Tea</em>.</p>
+</div>
+<aside class="notes">
+<p>The origin story for permutation tests — and a live demonstration. Bristol was a serious scientist at Rothamsted (algae researcher) who claimed she could taste the order of milk/tea pouring. Fisher took her seriously and designed the test on the next slide.</p>
+<p><strong>Facilitation for the interactive part:</strong> 1. On slide 1, read the setup and prompt. Give students 15 seconds to write M/T/M/… picking 4 of each. If they pick 3 or 5 milks, that’s still guessing; don’t police the constraint. 2. Flip to the reveal slide. The sequence <strong>M T M M T T T M</strong> is just one of the 70 arrangements — the “actual” for today’s demo. You can pick a different sequence if you prefer; change the slide body to match. 3. Ask for a show of hands: who got all 4 milk-firsts correct? There are 70 arrangements; under pure guessing, each student has a 1/70 = 1.4% chance. In a ~120-person class, expect 1-2 hands up; occasionally zero. 4. Land the lesson: Fisher asked “what would guessing look like?” and answered it combinatorially. Bristol got all 8 right — a 1-in-70 event under guessing. That either means she can really tell, or we just witnessed a 1-in-70 coincidence. This is exactly the shape of the reasoning we’re about to apply to a 2,100-patient HIV trial.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-1" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>if the drug does nothing, labels don’t matter</p>
+</div>
+</section>
+<section id="actg-175-where-we-left-off" class="slide level2">
+<h2>ACTG 175 — where we left off</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a></a>treatment_mean <span class="op">=</span> <span class="fl">33.3</span>     <span class="co"># CD4 change, combination therapy</span></span>
+<span id="cb1-2"><a></a>control_mean   <span class="op">=</span> <span class="op">-</span><span class="fl">17.1</span>    <span class="co"># CD4 change, AZT monotherapy</span></span>
+<span id="cb1-3"><a></a></span>
+<span id="cb1-4"><a></a>observed_effect <span class="op">=</span> <span class="fl">33.3</span> <span class="op">-</span> (<span class="op">-</span><span class="fl">17.1</span>)   <span class="co"># = 50.4 CD4 cells</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="fragment">
+<p>bootstrap 95% CI: <strong>[39.6, 61.3]</strong> — CI excludes 0, so at the 5% level, <strong>the effect is real</strong></p>
+</div>
+<div class="fragment">
+<p>so why do a hypothesis test?</p>
+<ul>
+<li class="fragment"><strong>history.</strong> p-values (Fisher, 1925) came first; CIs (Neyman, 1937) are the <em>inversion</em> of a test</li>
+<li class="fragment"><strong>generality.</strong> tests extend where CIs don’t — counts, orderings, whole distributions (the Lady Tasting Tea)</li>
+<li class="fragment"><strong>language.</strong> reject, α, p-value — how science reports evidence</li>
+</ul>
+<aside class="notes">
+<p>Quick recap of the data — not a recap of concepts, just the numbers we’ll use. Treatment group gained 33 cells on average, control lost 17 (the “control” is AZT monotherapy, not placebo — ethics of 1991 HIV trials). Observed effect 50.4 CD4 cells. Bootstrap CI excludes zero, so the data are already inconsistent with “no effect” at the 5% level — Ch 10 formalizes the link to tests.</p>
+<p>So why spend a chapter on hypothesis tests when the CI does the same work? Three honest reasons: (1) <strong>History</strong> — Fisher’s p-value came a decade before Neyman’s CI. Neyman invented the CI by <em>inverting</em> a test, not the other way around. (2) <strong>Generality</strong> — the permutation test extends cleanly to settings where a CI isn’t the right shape (the Lady Tasting Tea we just saw is about <em>ordering</em>, not a mean). (3) <strong>Language</strong> — p-value, reject, α, Type I error are the lingua franca of scientific and industry reporting. You’ll see them in every paper, clinical trial, and A/B test; you need to speak the language. The two frameworks agree on the same evidence — Ch 10 makes the link precise — but the test vocabulary is what you’ll encounter in the wild.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="the-key-insight" class="slide level2">
+<h2>the key insight</h2>
+<p>if the drug has <strong>no effect</strong>, each patient’s CD4 change is determined by the patient — <strong>not by the treatment label</strong></p>
+<div class="fragment">
+<p>treatment labels are <strong>meaningless</strong></p>
+</div>
+<div class="fragment">
+<p>so <strong>shuffling</strong> them should produce results that look like the real data</p>
+</div>
+<div class="fragment">
+<p>but if our observed effect is <strong>way larger</strong> than anything shuffling produces — the drug works</p>
+<aside class="notes">
+<p>This is the whole conceptual move. Under the null hypothesis of no effect, which group a patient was in doesn’t matter — their CD4 change would have been the same either way. So if we randomly reassign the labels “treatment” and “control” to the same pool of patients, the fake difference in means should look like just noise. If the real observed difference is much larger than what any shuffling produces, that’s evidence the labels DO matter — the drug has an effect. The logic is airtight: we only need the assumption that under no effect, labels are interchangeable.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-2" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2></h2>
+<div class="prompt">
+<p>observed effect: <strong>+50.4 CD4 cells</strong></p>
+<p>shuffle treatment/control labels under the null. <strong>what difference do you expect?</strong></p>
+<ul>
+<li><strong>A.</strong> still about +50</li>
+<li><strong>B.</strong> close to 0</li>
+<li><strong>C.</strong> could be anything</li>
+<li><strong>D.</strong> exactly 0</li>
+</ul>
+</div>
+<aside class="notes">
+<p><strong>DISCUSSION: Predict-then-reveal (3 min).</strong> Commit to A, B, C, or D; defend to a neighbor; debrief. Process goal: establish the intuition that shuffled effects should be near zero before formalizing the null distribution. Correct answer: B — close to 0 but not exactly 0. The pool of CD4 changes has a grand mean somewhere between the two group means. Randomly splitting into two groups of similar size gives means that are close to the grand mean, so their difference is close to zero. Not exactly zero — sampling variation means each shuffle gives a slightly different split. And not “could be anything” — the law of large numbers keeps shuffled means close to the grand mean. A would only happen if the drug actually works, which is what the null denies. If stuck: “If labels don’t matter, what determines the two group means? Just luck of the draw.” Key insight: Under the null, the expected difference is exactly 0, but any one shuffle gives a small random deviation around 0.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="five-shuffles" class="slide level2">
+<h2>five shuffles</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a></a>np.random.seed(<span class="dv">42</span>)   <span class="co"># so everyone sees the same shuffles</span></span>
+<span id="cb2-2"><a></a></span>
+<span id="cb2-3"><a></a><span class="kw">def</span> permutation_diff_of_means(values, n_first):</span>
+<span id="cb2-4"><a></a>    shuffled <span class="op">=</span> np.random.permutation(values)</span>
+<span id="cb2-5"><a></a>    <span class="cf">return</span> shuffled[:n_first].mean() <span class="op">-</span> shuffled[n_first:].mean()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="fragment">
+<pre><code>Permutation 1: fake effect = +3.2 CD4 cells
+Permutation 2: fake effect = -1.8 CD4 cells
+Permutation 3: fake effect = +0.5 CD4 cells
+Permutation 4: fake effect = -4.1 CD4 cells
+Permutation 5: fake effect = +2.7 CD4 cells</code></pre>
+</div>
+<div class="fragment">
+<p>fake effects bounce around <strong>zero</strong> — observed effect was <strong>+50.4</strong></p>
+<aside class="notes">
+<p>Five shuffles to build intuition before we scale up. The function takes all CD4 changes (ignoring labels), shuffles them, assigns the first n_control to “fake control” and the rest to “fake treatment,” and computes the difference in means. Five random shuffles give values scattered around zero — a few cells positive, a few negative. The largest is about 4 cells. Our observed effect was 50 cells — an order of magnitude larger than what chance produces. Five shuffles aren’t enough for a formal test, but the signal is already clear.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="permutation-tests-the-recipe" class="slide level2">
+<h2>permutation tests: the recipe</h2>
+<ol type="1">
+<li>combine all CD4 changes into one pool (ignore labels)</li>
+<li>randomly assign <span class="math inline">\(n_C\)</span> to “control,” the remaining <span class="math inline">\(n_T\)</span> to “treatment”</li>
+<li>compute the test statistic on the fake groups</li>
+<li>repeat many times</li>
+<li>compare the observed effect to the distribution of fake effects</li>
+</ol>
+<div class="fragment">
+<p>steps 1-4 build the <strong>null distribution</strong></p>
+<p>step 5 asks: <strong>how extreme is our result?</strong></p>
+<aside class="notes">
+<p>Name what we just did. Five shuffles made the pattern concrete — now write it down as a portable procedure. Same structure as the bootstrap recipe from last lecture — resample and compute — but the resampling mechanism is different. Bootstrap resamples <em>within</em> each group with replacement. Permutation shuffles labels <em>across</em> groups without replacement. Bootstrap measures precision of an estimate. Permutation measures whether the effect could be zero. Students should memorize both recipes and the distinction. Next, we name the two pieces the recipe refers to (null hypothesis, test statistic) and then scale up from five shuffles to ten thousand.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="now-we-need-vocabulary" class="slide level2">
+<h2>now we need vocabulary</h2>
+<div class="definition-box">
+<div class="def-term">
+<p>null hypothesis</p>
+</div>
+<p>the default claim a test tries to disprove</p>
+</div>
+<p>here: “the drug has no effect on CD4 count”</p>
+<div class="fragment">
+<div class="definition-box">
+<div class="def-term">
+<p>test statistic</p>
+</div>
+<p>the number we compute from the data to measure the effect</p>
+</div>
+<p>here: <strong>difference in group means</strong></p>
+<aside class="notes">
+<p>Name the two pieces before proceeding. The null hypothesis is the claim we’re trying to disprove — here, the drug has no effect. It’s “null” in the sense of “nothing” — nothing is going on beyond random noise. The test statistic is what we compute to measure the effect. For comparing two group means, the natural test statistic is their difference. These are informal definitions — Chapter 10 formalizes with H_0, H_1, alpha, and the full framework. For today, these two concepts are enough.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="the-permutation-test-definition" class="slide level2">
+<h2>the permutation test — definition</h2>
+<div class="definition-box">
+<div class="def-term">
+<p>permutation test</p>
+</div>
+<p>a hypothesis test that builds the <strong>null distribution</strong> by shuffling group labels and recomputing the test statistic</p>
+</div>
+<div class="definition-box">
+<div class="def-term">
+<p>null distribution</p>
+</div>
+<p>the distribution of the test statistic when the null hypothesis is true</p>
+</div>
+<div class="fragment">
+<p>key assumption: labels are <strong>exchangeable</strong> under the null</p>
+<aside class="notes">
+<p>Formal definition. A permutation test simulates what would happen if the null hypothesis were true by shuffling group labels. Each shuffle produces one draw from the null distribution — the distribution of the test statistic when the null is true. If the observed test statistic falls far into the tail of the null distribution, we have evidence against the null. The assumption is exchangeability: swapping labels doesn’t change the joint distribution of the data under the null. Random assignment guarantees this — if the drug has no effect, it doesn’t matter which group a patient was assigned to.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="from-the-null-hypothesis-to-the-null-distribution" class="slide level2">
+<h2>from the null hypothesis to the null distribution</h2>
+<ul>
+<li class="fragment"><strong>null hypothesis</strong> — a claim about the world: “the drug has no effect”</li>
+<li class="fragment"><strong>null distribution</strong> — the distribution of the test statistic <em>if that claim were true</em></li>
+</ul>
+<div class="fragment">
+<p>the permutation test builds the second <strong>from</strong> the first — by shuffling</p>
+<aside class="notes">
+<p>Quick terminology guardrail — students routinely conflate these two. The null HYPOTHESIS is a claim about the world (often “no effect”, “no difference”). The null DISTRIBUTION is the sampling distribution of the test statistic you’d see IF that claim were true. Permutation is a machine that turns the hypothesis into the distribution: every shuffle is one draw from the null distribution, because under the null the labels carry no information. Flag this distinction now; it’ll come back in Ch 10 when we formalize <span class="math inline">\(H_0\)</span>, <span class="math inline">\(H_1\)</span>, <span class="math inline">\(\alpha\)</span>.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="why-does-shuffling-simulate-from-the-null-distribution" class="slide level2">
+<h2>why does shuffling simulate from the null distribution?</h2>
+<p>ACTG 175 patients were <strong>randomly assigned</strong> to treatment groups</p>
+<div class="fragment">
+<div class="definition-box">
+<div class="def-term">
+<p>exchangeability</p>
+</div>
+<p>swapping labels does not change the joint distribution of the data under the null</p>
+</div>
+</div>
+<div class="fragment">
+<p><strong>random assignment guarantees exchangeability:</strong></p>
+<ul>
+<li class="fragment">under the null, the drug has no effect on outcomes</li>
+<li class="fragment">outcomes don’t depend on labels</li>
+<li class="fragment">shuffled data is just as plausible as the original</li>
+</ul>
+<aside class="notes">
+<p>This is the logical foundation. Random assignment means every patient had an equal chance of being in treatment or control, determined by a coin flip (or its clinical-trial equivalent). Under the null hypothesis of no effect, the CD4 outcomes are the same regardless of which group a patient was in. That means any permutation of the labels is equally likely to have been the actual assignment. This property — exchangeability — is what makes the permutation test valid. Without it (as we’ll see in the Airbnb example), the test still detects differences between groups, but the interpretation changes from causal to associational.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="building-the-null-distribution" class="slide level2">
+<h2>building the null distribution</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a></a>n_perms <span class="op">=</span> <span class="dv">10_000</span></span>
+<span id="cb4-2"><a></a>perm_effects <span class="op">=</span> np.array([</span>
+<span id="cb4-3"><a></a>    permutation_diff_of_means(all_cd4, n_T)</span>
+<span id="cb4-4"><a></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(n_perms)</span>
+<span id="cb4-5"><a></a>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="fragment">
+<pre><code>Null distribution summary:
+  Mean: +0.01
+  SD:   5.94
+  Min:  -22.40
+  Max:  +21.70</code></pre>
+</div>
+<div class="fragment">
+<p>tightly centered around <strong>zero</strong> — SD is about <strong>6 cells</strong></p>
+<p>our observed effect of <strong>50 cells</strong> is roughly <span class="math inline">\(50 / 6 \approx\)</span> <strong>8 SD away</strong></p>
+<aside class="notes">
+<p>Scale up from five to 10,000 permutations. The null distribution is centered at zero (as expected — shuffling preserves the grand mean) with a standard deviation of about 6 CD4 cells. The most extreme fake effect across all 10,000 permutations is about 22 cells. Our observed effect of 50 cells is more than 8 standard deviations above the center of the null distribution. In a normal distribution, 8 SD is essentially impossible. Next slide: the picture.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="the-null-distribution-visualized" class="slide level2">
+<h2>the null distribution — visualized</h2>
+<p><strong>where do you expect</strong> the observed <strong>+50.4</strong> to land?</p>
+<div class="fragment">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/lec09/null-distribution.png" class="quarto-figure quarto-figure-center" style="width:80.0%"></p>
+</figure>
+</div>
+</div>
+<div class="fragment">
+<p>not even close to what random shuffling produces</p>
+<aside class="notes">
+<p>Predict-then-reveal: before loading the histogram, ask students to sketch (or point on their neighbor’s paper) where they expect the observed +50.4 to sit relative to a null built from 10,000 shuffles. 15 seconds. Then reveal the picture. Null clusters tightly around zero, spans roughly -20 to +20. The red dashed line at +50 sits far to the right — completely separated. No permutation came close. If your sketch put the observed near the edge of the null, the real gap is bigger. Overwhelming evidence against the null. The drug works.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="the-p-value" class="slide level2">
+<h2>the p-value</h2>
+<div class="definition-box">
+<div class="def-term">
+<p>p-value</p>
+</div>
+<p>the probability of observing a result at least as extreme as what you got, assuming the null hypothesis is true</p>
+</div>
+<div class="fragment">
+<p>the p-value answers: <strong>if there were truly no effect, how often would we see something this extreme?</strong></p>
+<aside class="notes">
+<p>Now we can name the number. The p-value is the fraction of permutations that produced a test statistic at least as extreme as the observed one. “At least as extreme” means in either direction — we’ll use a two-sided test. The p-value is a probability <em>under the null</em>. It is NOT the probability that the null is true — that’s the most common misconception, addressed two slides from now.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="computing-the-p-value" class="slide level2">
+<h2>computing the p-value</h2>
+<p><strong>two-sided</strong>: count permutations where <span class="math inline">\(|\text{fake effect}| \geq |\text{observed effect}|\)</span> — extreme in <strong>either direction</strong></p>
+
+<img data-src="images/lec09/two-sided-schematic.png" class="quarto-figure quarto-figure-center r-stretch" style="width:85.0%"><div class="fragment">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a></a>n_extreme <span class="op">=</span> np.<span class="bu">sum</span>(np.<span class="bu">abs</span>(perm_effects) <span class="op">&gt;=</span> np.<span class="bu">abs</span>(observed_effect))</span>
+<span id="cb6-2"><a></a>p_value <span class="op">=</span> (n_extreme <span class="op">+</span> <span class="dv">1</span>) <span class="op">/</span> (n_perms <span class="op">+</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="fragment">
+<pre><code>Permutations with |effect| &gt;= |50.4|: 0
+p-value: 0.0001</code></pre>
+<aside class="notes">
+<p>Two-sided counting rule: permutations whose absolute effect is at least as large as 50.4, in either direction — a drug that dramatically helped or dramatically hurt would both count. Zero of 10,000 permutations reached it. Report p ≈ 0.0001.</p>
+<p><strong>Why <span class="math inline">\(+1/+1\)</span>?</strong> The identity permutation is also a permutation, and under the null it’s equidistributed with every other. Counting the observed data as one of the <span class="math inline">\(m+1\)</span> permutations prevents <span class="math inline">\(p = 0\)</span> exactly, which no finite simulation can earn. So <span class="math inline">\(\frac{0 + 1}{10{,}000 + 1} \approx 0.0001\)</span> is the <strong>simulation floor</strong>. The estimator is conservative — its expected value under the null is at least the true tail probability, so false positives are still controlled at the nominal level (Phipson &amp; Smyth 2010). Say one line if asked (“we count the observed data as one extra permutation to avoid reporting p = 0 from a finite simulation”); don’t read the whole justification unless asked.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="overwhelming-evidence" class="slide level2">
+<h2>overwhelming evidence</h2>
+<p>ACTG 175: <span class="math inline">\(p \approx 10^{-4}\)</span> — the observed effect lives in a place the null <strong>never visits</strong></p>
+<div class="fragment">
+<p>hold onto this number — we’ll revisit what “overwhelming” feels like once we see data where the evidence is <strong>much thinner</strong></p>
+<aside class="notes">
+<p>Brief setup for the contrast we’ll hit in the NBA example. A p-value of 10^-4 is not just “small,” it’s “the observed effect is in a region the null distribution literally doesn’t reach across 10,000 draws.” This is what <em>overwhelming</em> evidence looks like. In a few slides we’ll do the same test on NBA personal fouls and get p ≈ 0.05 — same mechanics, very different verdict. The contrast is the point: a p-value is a continuous measure, and “p ≈ 10^-4” and “p ≈ 0.05” license radically different claims.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="what-the-p-value-is" class="slide level2">
+<h2>what the p-value <strong>is</strong></h2>
+<p>a probability statement about the <strong>data</strong>, given the null</p>
+<div class="fragment">
+<ul>
+<li><strong>conditions on the null</strong> — <em>if</em> no effect, the data would be unlikely</li>
+<li><strong>continuous evidence</strong>, not a verdict — <span class="math inline">\(p \approx 10^{-4}\)</span> far stronger than <span class="math inline">\(p \approx 0.04\)</span></li>
+<li><strong>observed data only</strong> — replication, mechanism, priors not in the formula</li>
+</ul>
+<aside class="notes">
+<p>Pin down what the p-value IS before listing what it isn’t. The skeptic’s misconception in the next slide is one of the IS NOTs — framing IS first lets students recognize the shape of the error. Three implications follow from “P(data | H_0)”: (1) it conditions on the null, so a small p-value means “data would be unlikely IF no effect,” (2) continuous — p ≈ 10^-4 and p ≈ 0.04 license radically different claims even though both clear 0.05, (3) the formula doesn’t know about replication, mechanism, or prior plausibility. Keep this slide tight — the discussion is where the learning lands.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-3" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2></h2>
+<div class="prompt">
+<p>a skeptic says:</p>
+<blockquote>
+<p>“a p-value of 0.0001 means there’s only a <strong>0.01% chance the drug doesn’t work</strong>”</p>
+</blockquote>
+<p><strong>is the skeptic right?</strong></p>
+</div>
+<aside class="notes">
+<p><strong>DISCUSSION: Think-pair-share (4 min total).</strong> Think and jot; pair and compare; debrief. Hint to deliver verbally if students get stuck: “what does the p-value condition on?” Process goal: this is the single most important misconception in the entire course. Students must articulate the error in the skeptic’s reasoning before we reveal the correction. Correct answer: the skeptic is wrong. The p-value is the probability of data this extreme <em>given</em> the null is true — not the probability the null is true <em>given</em> the data. The direction of the conditional matters enormously. P(extreme data | null true) is what we computed. P(null true | extreme data) is what the skeptic claims, which would require Bayes’ theorem and a prior probability on the null hypothesis. If stuck: “Analogy: P(it’s raining | I have an umbrella) is not the same as P(I have an umbrella | it’s raining). The order of the conditional matters.” Key insight: The p-value lives in a world where the null IS true and asks how surprising the data are. It does not tell you the probability that the null is true.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="three-traps" class="slide level2">
+<h2>three traps</h2>
+<ol type="1">
+<li><strong>NOT</strong> the probability <span class="math inline">\(H_0\)</span> is true — the skeptic’s flipped conditional</li>
+</ol>
+<div class="fragment">
+<ol start="2" type="1">
+<li><strong>NOT</strong> the probability the result will replicate</li>
+</ol>
+</div>
+<div class="fragment">
+<ol start="3" type="1">
+<li><strong>p = 0.049 and p = 0.051</strong> are not meaningfully different — the 0.05 threshold is a convention</li>
+</ol>
+</div>
+<div class="fragment">
+<p>a p-value is a <strong>continuous measure of evidence</strong>, not a binary verdict</p>
+<aside class="notes">
+<p>Consolidate the IS NOT story into the same three-trap callout the chapter uses (Ch9 “Three traps”). Trap 1 — flipped conditional — is exactly the skeptic misconception we just resolved in discussion; this slide pins it as item 1 so students leave with one bundled summary, not a scattered two + one. Trap 2 — replication is a separate question; one small p-value doesn’t guarantee the next trial finds the same thing. Trap 3 — the 0.05 threshold is administrative, not scientific, so treating 0.049 and 0.051 as categorically different is a category error. Chapter 10 formalizes the framework with explicit significance levels; for now, the p-value is a continuous measure of surprise.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-4" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>do refs favor the home team?</p>
+<p>folk hypothesis: <strong>home teams get called for fewer fouls</strong></p>
+<p><em>same machinery, different interpretation</em></p>
+</div>
+<aside class="notes">
+<p>Transition into the NBA example. Bridge line under the tagline flags the pivot: the shuffle-and-recompute procedure is identical to ACTG, but the conclusions it licenses change completely because nobody randomized games to home vs away. Moskowitz and Wertheim’s Scorecasting (2011) made the popular case that referee bias — not rest, not crowd, not familiarity — explains most of home-court advantage. Their evidence: systematic pro-home bias in called strikes in baseball, stoppage time in soccer, and foul calls in basketball. If they’re right, one place it should show up loudest is in personal foul counts: home teams should be called for fewer of them than their visiting opponents. Three NBA regular seasons give us the data to test it.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="nba-personal-fouls-the-data" class="slide level2">
+<h2>NBA personal fouls — the data</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a></a><span class="co"># player-level logs -&gt; team-game foul totals</span></span>
+<span id="cb8-2"><a></a>team_game <span class="op">=</span> (logs.groupby([<span class="st">'GAME_ID'</span>, <span class="st">'TEAM_ABBREVIATION'</span>, <span class="st">'MATCHUP'</span>],</span>
+<span id="cb8-3"><a></a>                          as_index<span class="op">=</span><span class="va">False</span>)[<span class="st">'PF'</span>].<span class="bu">sum</span>())</span>
+<span id="cb8-4"><a></a>team_game[<span class="st">'home'</span>] <span class="op">=</span> team_game[<span class="st">'MATCHUP'</span>].<span class="bu">str</span>.contains(<span class="st">'vs.'</span>)</span>
+<span id="cb8-5"><a></a></span>
+<span id="cb8-6"><a></a>home_pf <span class="op">=</span> team_game[team_game[<span class="st">'home'</span>]][<span class="st">'PF'</span>].values</span>
+<span id="cb8-7"><a></a>away_pf <span class="op">=</span> team_game[<span class="op">~</span>team_game[<span class="st">'home'</span>]][<span class="st">'PF'</span>].values</span>
+<span id="cb8-8"><a></a>obs_diff_nba <span class="op">=</span> home_pf.mean() <span class="op">-</span> away_pf.mean()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="fragment">
+<pre><code>home:  19.36 fouls per game   (n = 3,690 team-games)
+away:  19.54 fouls per game   (n = 3,690)
+observed gap:   -0.18 fouls per game</code></pre>
+<aside class="notes">
+<p>Same pipeline we’d build for any NBA question: aggregate player-level rows to team-game totals by summing PF (personal fouls) within each (game, team) pair, then label each team-game as home or away from the MATCHUP string (“vs.” = home, “@” = away). Home teams are called for about 0.18 fewer fouls per game than away teams. That is small against a typical 19-foul game — but the question sharpens when we ask if it’s distinguishable from chance across thousands of team-games.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="same-null-different-interpretation" class="slide level2">
+<h2>same null, different interpretation</h2>
+<p><strong>key difference from ACTG 175</strong>: no random assignment here</p>
+<p>teams play each opponent home <strong>and</strong> away — schedule is fixed, not randomized</p>
+<div class="fragment">
+<p><strong>ACTG 175</strong>: “the drug has no effect” — labels exchangeable <em>by random assignment</em></p>
+<p><strong>NBA</strong>: “home and away foul counts come from the same distribution”</p>
+</div>
+<div class="fragment">
+<p>same null, same permutation mechanics (shuffle labels, recompute)</p>
+</div>
+<div class="fragment">
+<p>but rejecting the null <strong>only tells us the groups differ</strong> — not why</p>
+<aside class="notes">
+<p>Critically: NOBODY randomized games to home vs.&nbsp;away. The schedule is fixed by the league. Pause here to contrast with ACTG 175, where a coin flip decided each patient’s group. The null hypothesis has the same form: two groups, same distribution. Shuffling is still valid under that null because the label is uninformative about the outcome. What changes is what rejection <em>licenses</em>. In ACTG, rejection + randomization = the drug caused the effect. In NBA, rejection = the home group differs from the away group — full stop. “Referees favor the home team” is one possible story, but being the home team is bundled with rest, travel, crowd, familiarity, scheduling — any of those could produce the gap. The test can’t decompose which.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-5" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2></h2>
+<div class="prompt">
+<p><strong>permutation test finds:</strong> home teams get fewer foul calls</p>
+<ul>
+<li>can we conclude <strong>referee bias?</strong></li>
+<li>if not — name <strong>three alternative mechanisms</strong> confounded with home/away</li>
+</ul>
+</div>
+<aside class="notes">
+<p><strong>DISCUSSION: Think-pair-share (4 min).</strong> Think-pair-share; debrief by collecting explanations on the board. Prompt: Can we conclude referee bias from the NBA permutation test? Process goal: reinforce association vs.&nbsp;causation; students should generate confounders themselves before we rule out “ref bias” as the only story. Correct answer: No — no random assignment means no causal claim. Referee bias is one possibility but not the only one. Alternative mechanisms students should reach: - fatigue and travel: the visiting team has almost always traveled more recently; tired defenders reach in instead of sliding their feet, and reaching fouls get called - scheduling: back-to-backs (two games on consecutive nights) hit the visiting side of a given date more often over a season; compounds fatigue - defensive style: a team may play more (or less) aggressively at home — crowd pressure pushes both ways - familiarity: home team knows its own sightlines, rim stiffness, sideline location; visitors misposition - referee bias: the hypothesis we started with Closest thing to a natural experiment: the 2020 “bubble” playoffs in Orlando — every game on a neutral court with no fans. The permutation test detects the gap but cannot decompose which mechanism produces it; that requires different comparisons. If stuck: “If two teams played on Mars with no fans, would home teams still get called for fewer fouls? Which mechanisms would survive?”</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="nba-permutation-shuffle-labels-recompute" class="slide level2">
+<h2>NBA permutation — shuffle labels, recompute</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a></a>all_pf <span class="op">=</span> np.concatenate([home_pf, away_pf])</span>
+<span id="cb10-2"><a></a>n_home <span class="op">=</span> <span class="bu">len</span>(home_pf)</span>
+<span id="cb10-3"><a></a></span>
+<span id="cb10-4"><a></a>perm_diffs <span class="op">=</span> np.array([</span>
+<span id="cb10-5"><a></a>    permutation_diff_of_means(all_pf, n_home)</span>
+<span id="cb10-6"><a></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">10_000</span>)</span>
+<span id="cb10-7"><a></a>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="fragment">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a></a>n_extreme <span class="op">=</span> np.<span class="bu">sum</span>(np.<span class="bu">abs</span>(perm_diffs) <span class="op">&gt;=</span> np.<span class="bu">abs</span>(obs_diff_nba))</span>
+<span id="cb11-2"><a></a>p_value <span class="op">=</span> (n_extreme <span class="op">+</span> <span class="dv">1</span>) <span class="op">/</span> (<span class="bu">len</span>(perm_diffs) <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb11-3"><a></a></span>
+<span id="cb11-4"><a></a><span class="bu">print</span>(<span class="ss">f"permutation p-value (two-sided): </span><span class="sc">{</span>p_value<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="fragment">
+<pre><code>permutation p-value (two-sided): 0.0539</code></pre>
+<aside class="notes">
+<p>Same machinery as ACTG — pool all foul counts, shuffle, recompute the home-minus-away gap. Ten thousand shuffles. Count permutations whose absolute fake gap is at least as large as the observed 0.18, add the +1/+1 correction, divide. p ≈ 0.054. Next slide: the picture.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="nba-fouls-null-distribution" class="slide level2">
+<h2>NBA fouls — null distribution</h2>
+
+<img data-src="images/lec09/nba-null-distribution.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"><div class="fragment">
+<p>observed gap sits at the <strong>edge</strong> of the null — not outside it</p>
+</div>
+<div class="fragment">
+<pre><code>NBA:  ~540 / 10,000 permutations at least as extreme
+ACTG:     0 / 10,000</code></pre>
+</div>
+<div class="fragment">
+<p><strong>marginal</strong> evidence — contrast with ACTG’s <span class="math inline">\(p \approx 10^{-4}\)</span></p>
+<aside class="notes">
+<p>The histogram of the 10,000 fake gaps. Null sits tightly around zero — chance alone produces gaps up to about ±0.3 fouls per game. The observed −0.18 is at the EDGE of the null, not outside it. About 5% of permutations produce something at least as extreme. Very different picture from ACTG, where zero of 10,000 permutations reached the observed effect. Here, about 540 of 10,000 do. Read honestly: the data are <em>marginally</em> suggestive of a home-away difference in foul calls, not decisive. The contrast with ACTG (overwhelming) vs NBA fouls (marginal) is the point — both would be called “statistically significant” by the 0.05 rule-of-thumb, but they support very different statements. Report the number, not a yes/no.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-6" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>what if the question were narrower?</p>
+<p>“home teams get called for <strong>fewer</strong> fouls”</p>
+<p>not “they get called for different fouls”</p>
+</div>
+</section>
+<section id="one-sided-vs-two-sided" class="slide level2">
+<h2>one-sided vs two-sided</h2>
+<div class="definition-box">
+<div class="def-term">
+<p>two-sided vs one-sided tests</p>
+</div>
+<p><strong>two-sided</strong> — count fake effects at least as extreme as <span class="math inline">\(|\text{obs}|\)</span> in <em>either</em> direction</p>
+<p><strong>one-sided</strong> — count only one tail (direction chosen in advance)</p>
+</div>
+<div class="fragment">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/lec09/tail-shading.png" class="quarto-figure quarto-figure-center" style="width:70.0%"></p>
+</figure>
+</div>
+<aside class="notes">
+<p>Bridge to the one-sided idea. The NBA question we just ran was two-sided — “do the groups differ in either direction” — because we counted fake gaps extreme on both sides. But the folk hypothesis that motivated the analysis was directional: home teams are called for FEWER fouls. That’s one-sided. We only count fake gaps at least as negative as the observed one.</p>
+<p>The picture pairs the two definitions visually: same null distribution on both panels, same observed statistic. Left panel shades both tails beyond ±observed — two-sided, p ≈ 0.054. Right panel shades only the lower tail (the pre-registered direction: home − away &lt; 0) — one-sided, p ≈ 0.029. Same null, different counting rule, different verdict at α=0.05. “Extreme” has a precise meaning that depends on the question.</p>
+<p>Under a symmetric null, the one-sided p-value is roughly half the two-sided — “roughly” because Monte Carlo noise and the +1/+1 estimator treat the discrete atoms at ±|obs| slightly asymmetrically. In our actual NBA run, 2 × 0.0288 = 0.0576, not 0.0539 exactly. The approximate 2× relationship is the point — formalized on the next slide.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="the-verdict-flips" class="slide level2">
+<h2>the verdict flips</h2>
+<p>same data. same null distribution. same observed statistic.</p>
+<div class="fragment">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a></a><span class="co"># two-sided: |fake| &gt;= |obs|  — either direction</span></span>
+<span id="cb14-2"><a></a>two_sided <span class="op">=</span> (np.<span class="bu">sum</span>(np.<span class="bu">abs</span>(perm_diffs) <span class="op">&gt;=</span> np.<span class="bu">abs</span>(obs_diff_nba)) <span class="op">+</span> <span class="dv">1</span>) <span class="op">/</span> (<span class="bu">len</span>(perm_diffs) <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb14-3"><a></a></span>
+<span id="cb14-4"><a></a><span class="co"># one-sided lower: fake &lt;= obs  — pre-registered: home − away &lt; 0</span></span>
+<span id="cb14-5"><a></a>one_sided <span class="op">=</span> (np.<span class="bu">sum</span>(perm_diffs <span class="op">&lt;=</span> obs_diff_nba) <span class="op">+</span> <span class="dv">1</span>) <span class="op">/</span> (<span class="bu">len</span>(perm_diffs) <span class="op">+</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="fragment">
+<pre><code>Two-sided p-value:   0.0539    →  FAIL to reject at α = 0.05
+One-sided p-value:   0.0288    →  REJECT at α = 0.05</code></pre>
+</div>
+<div class="fragment">
+<p>under a symmetric null: <strong>two-sided p ≈ 2 × one-sided p</strong> — half the tail, half the p-value</p>
+</div>
+<div class="fragment">
+<p><strong>the analytic choice — not the data — drives the conclusion</strong> — direction must be chosen <em>before</em> seeing the data</p>
+<aside class="notes">
+<p>This is THE punchline of the one-sided section, and the big upgrade from the old scoring example (where both p-values were at the simulation floor, so the factor-of-two never did anything visible). Here, on real data, the two-sided test fails to reject and the one-sided test rejects. The analyst’s choice of test, not the numbers in the spreadsheet, determines the verdict. That’s why pre-registration matters: if a researcher looks at the data, sees home foul counts were lower, and <em>then</em> declares “one-sided,” they’ve effectively run two tests and doubled their false-positive rate. Post-hoc one-sided = inflated Type I error. Emphasize this slide heavily — students usually don’t feel the factor of two until they see it move the verdict.</p>
+<p>The 2× relation is approximate, not exact: if a student does the arithmetic and asks “but 2 × 0.0288 = 0.0576, not 0.0539”, the answer is that the null is discrete and the +1/+1 estimator isn’t symmetric about zero — Monte Carlo rounding. The approximate 2× relationship is the point; the flip is real.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="prefer-two-sided-by-default" class="slide level2">
+<h2>prefer two-sided by default</h2>
+<p>if you’re not sure, use <strong>two-sided</strong> — the honest default</p>
+<div class="fragment">
+<p>a one-sided test is justified only when:</p>
+<ul>
+<li class="fragment">effects in the other direction are <strong>logically impossible or irrelevant</strong></li>
+<li class="fragment">the direction was chosen <strong>before seeing the data</strong></li>
+</ul>
+</div>
+<div class="fragment">
+<p>picking the tail post-hoc = effectively running <strong>two</strong> one-sided tests, each at <span class="math inline">\(\alpha = 0.05\)</span></p>
+</div>
+<div class="fragment">
+<p>the <strong>rate of falsely rejecting a true null</strong> jumps from <span class="math inline">\(\alpha = 0.05\)</span> to <span class="math inline">\(\approx 0.10\)</span></p>
+<div class="source">
+<p>Ch 10 formalizes this as the <strong>Type I error rate</strong>.</p>
+</div>
+<aside class="notes">
+<p>The rule: default to two-sided. One-sided is rare in practice — reserve it for contract compliance, tamper detection, or regulatory settings where the other direction is genuinely uninteresting. The Type I error point is the one students most often get wrong: if you look at the data, see that the effect went one way, and then declare “one-sided,” you’ve done two tests (or equivalently, you’ve doubled your false-positive rate). The direction must be pre-registered. We’ll name this false-positive rate formally as the Type I error rate in Chapter 10 — today just plant the idea. Bring this back to the reproducibility crisis — this is one of the small mechanisms that contributes to it.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-7" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>a high-profile example: <strong>Deflategate</strong></p>
+</div>
+</section>
+<section id="deflategate-a-one-sided-story" class="slide level2">
+<h2>Deflategate — a one-sided story</h2>
+<p><strong>halftime, 2015 AFC Championship.</strong> officials measure the game balls.</p>
+<p>Patriots’ balls: <strong>below the legal minimum.</strong> Colts’ balls: fine.</p>
+<div class="fragment">
+<p>cooling explains <em>some</em> drop — same field, same weather, same physics.</p>
+<p>so why did the Pats drop <strong>more</strong>?</p>
+</div>
+<div class="fragment">
+<p>the accusation was <strong>directional</strong>: Pats dropped <em>more</em> than Colts.</p>
+<p>a Pats ball that dropped <em>less</em> → exoneration, not cheating.</p>
+</div>
+<div class="fragment">
+<div class="big-text">
+<p>only <strong>one direction</strong> counts as damaging → one-sided test</p>
+</div>
+<aside class="notes">
+<p>The cleanest pedagogical example of a one-sided test. Story in order: halftime of the 2015 AFC Championship; officials measure the game balls. Patriots’ balls are below the legal minimum; Colts’ balls are fine (same field, same weather). Cooling physics says both should have lost pressure at the same rate — so the question becomes: why did the Patriots’ balls lose <em>more</em>? That’s the NFL’s accusation — directional. Crucial: a Patriots ball that lost <em>less</em> than the Colts’ would have exonerated the Pats, not indicted them. Only one direction of the statistic counts as damaging. That asymmetry is exactly what a one-sided test encodes. Keep the story to 45 seconds; the pedagogical shape is the point, not the forensics.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-8" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2></h2>
+<div class="prompt">
+<p>state <span class="math inline">\(H_0\)</span> in plain language → pick <strong>one-sided</strong> or <strong>two-sided</strong></p>
+<ol type="1">
+<li><strong>factory</strong> — contract sets a <em>minimum</em> widget weight; weekly compliance check</li>
+<li><strong>school district</strong> — math curriculum pilot; keep, roll back, or revise?</li>
+<li><strong>biotech</strong> — new cholesterol drug; team hopes it lowers LDL</li>
+</ol>
+</div>
+<aside class="notes">
+<p><strong>DISCUSSION: Think-pair-share (5-6 min).</strong> Think and jot — null first, then one-sided vs two-sided; pair and compare; debrief by sharing answers and spotting the trap. Prompt: For each scenario, write the null <em>precisely</em> in plain language, then pick one-sided or two-sided. Process goal: force students to commit to a null phrasing before picking the test. The phrasing matters: “doesn’t <em>increase</em> scores” is a different null from “doesn’t <em>change</em> scores,” and they pick out different tests. Debrief in order — widget first (warm-up, contract clarifies the direction), school next (the null-phrasing point), biotech LAST (the safety trap).</p>
+<p>Answers: (1) <strong>One-sided.</strong> <span class="math inline">\(H_0\)</span>: <span class="math inline">\(\mu \ge w_{\min}\)</span> (shipment meets the minimum); <span class="math inline">\(H_1\)</span>: <span class="math inline">\(\mu &lt; w_{\min}\)</span>. The contract penalizes only under-weight shipments — over-weight is logically exculpatory, not noteworthy. Same structure as Deflategate. (2) <strong>Two-sided.</strong> <span class="math inline">\(H_0\)</span>: <span class="math inline">\(\mu_{\text{new}} = \mu_{\text{old}}\)</span> (no change in scores). The right framing is “no change,” not “no increase”: scores that <em>drop</em> drive the rollback decision, so the test has to be able to detect them. A one-sided “doesn’t increase” null would silently treat a score drop as just another way to fail to find an improvement, discarding evidence the district would act on. THIS is the null-phrasing point. (3) <strong>Two-sided — a trap.</strong> <span class="math inline">\(H_0\)</span>: <span class="math inline">\(\mu_{\text{new}} = \mu_{\text{control}}\)</span> (drug doesn’t change LDL). Tempting to go one-sided because the team <em>hopes</em> for a decrease, but a drug that <em>raises</em> LDL is a safety signal and would absolutely change the launch decision. Hoping for a direction ≠ only one direction matters. <em>(Aside if asked about FDA practice: real Phase III efficacy trials sometimes use one-sided tests at α=0.025, which is decision-theoretically equivalent to two-sided at α=0.05 — regulatory convention paired with separate safety monitoring. Not a free halving.)</em></p>
+<p>Meta-lesson to surface in debrief: writing the null <em>precisely</em> tells you which test to use. One-sided is genuinely rare outside contract-compliance or tamper-detection contexts. Reserve it for cases where the other direction is <em>logically</em> irrelevant (not merely undesired), and pre-register the choice before looking at the data.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="bootstrap-vs-permutation-when-to-use-which" class="slide level2">
+<h2>bootstrap vs permutation — when to use which</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>bootstrap</strong></th>
+<th><strong>permutation test</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>question</strong></td>
+<td>how precise is my estimate?</td>
+<td>is the effect real?</td>
+</tr>
+<tr class="even">
+<td><strong>produces</strong></td>
+<td>confidence interval</td>
+<td>p-value</td>
+</tr>
+<tr class="odd">
+<td><strong>null hypothesis</strong></td>
+<td>not needed</td>
+<td>required</td>
+</tr>
+<tr class="even">
+<td><strong>key assumption</strong></td>
+<td>i.i.d. samples in each group</td>
+<td>exchangeability under null</td>
+</tr>
+<tr class="odd">
+<td><strong>best for</strong></td>
+<td>any statistic</td>
+<td>comparing groups</td>
+</tr>
+<tr class="even">
+<td><strong>resampling</strong></td>
+<td>with replacement, <strong>within</strong> each group</td>
+<td>without replacement, shuffling <strong>across</strong> groups</td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p><em>i.i.d. = independent and identically distributed</em></p>
+</div>
+<div class="fragment">
+<p>both are <strong>simulation-based inference</strong>: the computer builds the reference distribution; no normality or closed-form formula needed</p>
+</div>
+<div class="fragment">
+<p><strong>bootstrap = precision</strong> <span class="math inline">\(\quad\)</span> <strong>permutation = significance</strong> <span class="math inline">\(\quad\)</span> use both</p>
+<aside class="notes">
+<p>The comparison table closes the unit. Two datasets shown (ACTG and NBA), two tools (bootstrap + permutation), one summary. Both are simulation-based and nonparametric, but they answer different questions. Bootstrap resamples within each group with replacement to estimate variability. Permutation shuffles labels across groups without replacement to test for differences. Bootstrap gives you a CI; permutation gives you a p-value. Bootstrap doesn’t need a null; permutation does. Punchline: bootstrap = precision, permutation = significance. Use both on the same data for complementary answers.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="ab-testing-same-idea-different-name" class="slide level2">
+<h2>A/B testing — same idea, different name</h2>
+<p>in data analytics, the permutation test between two groups is called <strong>A/B testing</strong></p>
+<div class="fragment">
+<ul>
+<li><strong>A</strong> = control <span class="math inline">\(\quad\)</span> <strong>B</strong> = treatment</li>
+<li>used at every tech company: feature rollouts, pricing, ad copy, UX tweaks</li>
+</ul>
+</div>
+<div class="fragment">
+<p><strong>the machinery is exactly what we just ran — shuffle labels, recompute, compare</strong></p>
+<aside class="notes">
+<p>Quick vocabulary slide. A/B testing is the industry term for a two-group permutation test — used at every tech company for feature rollouts, marketing campaigns, pricing experiments. “A” and “B” are just “control” and “treatment” renamed. The tool is the permutation test — same shuffle-and-recompute logic. If students go into tech, they will use this constantly. We’ll see A/B testing come back in Ch 11 when we talk about what happens if you run hundreds of these tests in a row (the multiple-testing problem).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="summary" class="slide level2">
+<h2>summary</h2>
+<ul>
+<li class="fragment"><strong>shuffle → null distribution → p-value</strong> — the recipe</li>
+<li class="fragment"><strong>small p-value <span class="math inline">\(\neq\)</span> small probability the null is true</strong> — the #1 misconception</li>
+<li class="fragment"><strong>report the number</strong> — <span class="math inline">\(p \approx 10^{-4}\)</span> (ACTG) and <span class="math inline">\(p \approx 0.05\)</span> (NBA) are different verdicts, not the same “significant”</li>
+</ul>
+<div class="fragment">
+<p>one recipe — <strong>8 cups of tea, 2,139 clinical patients, 7,000 NBA games</strong></p>
+<aside class="notes">
+<p>Three punchlines. (1) The recipe: pool, shuffle, recompute, compare — builds the null distribution and gives a p-value. (2) The misconception: the p-value is P(data | null true), not P(null true | data); students leave this lecture with that correction or not at all. (3) Report the number: <span class="math inline">\(10^{-4}\)</span> and <span class="math inline">\(0.05\)</span> are both below 0.05 but license radically different claims. The connections back to exchangeability and bootstrap-vs-permutation have their own dedicated slides earlier in the deck; don’t re-recap them here.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="next-time" class="slide level2">
+<h2>next time</h2>
+<p>we have the p-value — but <strong>what threshold should we use?</strong></p>
+<div class="fragment">
+<ul>
+<li><strong>Ch 10</strong>: formal hypothesis-testing framework — <span class="math inline">\(H_0\)</span>, <span class="math inline">\(H_1\)</span>, <span class="math inline">\(\alpha\)</span>, Type I/II errors, power</li>
+<li><strong>Ch 11</strong>: what happens when you run <strong>many</strong> tests?</li>
+<li><strong>Ch 18</strong>: when a test <em>can</em> license causal claims — designing for causation</li>
+</ul>
+<aside class="notes">
+<p>Forward pointer. Today we computed a p-value but used it informally — “very small, so the drug works.” Chapter 10 formalizes the framework: significance levels, error types, power. Chapter 11 tackles what happens when you run hundreds of tests (genomics, A/B testing at scale) — the multiple testing problem. Chapter 18 picks back up the thread we left at NBA home-court: how do you design an experiment or a natural experiment that lets you make a causal claim, not just an associational one?</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="one-minute-feedback" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2>one-minute feedback</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<ol type="1">
+<li>what was the most useful thing you learned today?</li>
+<li>what was the most confusing?</li>
+</ol>
+<p><strong><a href="https://docs.google.com/forms/d/e/1FAIpQLScokCu2Rsz7zZw7XTOzsE_OBODr6iHjB1ErOw0zizorHD0zXg/viewform?usp=pp_url&amp;entry.1875336381=Slides&amp;entry.1608396530=9">give feedback</a></strong></p>
+</div><div class="column" style="width:40%;">
+<p><img data-src="images/pollev-qr.png" width="300"></p>
+</div></div>
+<aside class="notes">
+<p>Closing ritual. Ask students to submit before they leave; keep the slide up until the room clears.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+
+
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+
+        height: 1080,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

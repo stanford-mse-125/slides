@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/tabby.min.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.37">
+
+  <meta name="author" content="Madeleine Udell">
+  <title>MSE 125 — Slides – Lecture 14: PCA — Dimensionality Reduction</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-7e9863cd0ef9c70c3784d80bfe5ce18d.css">
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+  <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Lecture 14: PCA — Dimensionality Reduction</h1>
+  <p class="subtitle">MSE 125 — Applied Statistics</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Madeleine Udell 
+</div>
+</div>
+</div>
+
+  <p class="date">Wednesday, May 13, 2026</p>
+</section>
+<section id="logistics" class="slide level2">
+<h2>logistics</h2>
+<ul>
+<li><strong>project midterm report</strong> due Friday May 15</li>
+<li><strong>HW 4</strong> out later this week — trees + PCA + clustering + Kaggle challenge</li>
+</ul>
+<aside class="notes">
+<p><strong>START RECORDING.</strong></p>
+<p>Quiz 6 covers Ch 11 (multiple testing) and Ch 13 (trees). HW 4 lands Monday and covers everything from regression inference through clustering.</p>
+<p>Today we step out of supervised learning into our first <strong>unsupervised</strong> method: PCA. No <code>y</code> column. No “right answer”. The job is to find structure inside the features.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-brief" class="slide level2">
+<h2>the brief</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<h3 id="risk-analyst-5b-asset-manager">risk analyst, $5B asset manager</h3>
+<p>your book: <strong>S&amp;P 100 stocks</strong>.</p>
+<p>last March: every name crashed together</p>
+<p><strong>CIO asks: what risk are we really exposed to?</strong></p>
+</div><div class="column" style="width:45%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/lec14/cell-2-output-1.png" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
+</figure>
+</div>
+</div></div>
+<aside class="notes">
+<p>The decision frame: a risk analyst whose CIO wants to know what the book is exposed to. “95 stocks” is not what a CIO wants to hear — they want the systematic exposures: market beta, sector tilt, style tilt. PCA’s answer (block 2): PC1 is the market factor, PC2 is cyclicals-vs-defensives, PC3 is growth-vs-yield. Three numbers per stock, an interpretable risk decomposition for the one-pager.</p>
+<p>The hook plot (right column) shows five S&amp;P 100 stocks across 2020 — AAPL, JPM, XOM, KO, MSFT. For January and February the lines drift apart; mid-March they all crash together (red dashed = COVID shutdown); by summer they diverge — tech up, energy lagging. The COVID moment is the live demonstration of “every name crashed together” — sets up the question of how to summarize that risk.</p>
+<p>Don’t spoil the punchline (PC1 explains ~40% of variance after standardization, and a 3-factor model wins on held-out portfolio variance). Hold for blocks 2 and 3.</p>
+<p>About 1 min.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="today" class="slide level2">
+<h2>today</h2>
+<ul>
+<li class="fragment"><strong>the picture</strong> — geometry of the best line, then the best subspace</li>
+<li class="fragment"><strong>reading the components</strong> — what PC1 / PC2 / PC3 mean for the S&amp;P 100</li>
+<li class="fragment"><strong>the payoff</strong> — minimum-variance portfolios in the <span class="math inline">p &gt; n</span> regime</li>
+</ul>
+<aside class="notes">
+<p>Three blocks. Block 1 is geometry: Pearson 1901 + JPM/BAC scatter, then standardization. Block 2 is interpretation: scree plot, named factors, then the variational + SVD math. Block 3 is the practical payoff: factor-model covariance unlocks portfolios when you have more stocks than days.</p>
+<p>The thread that runs through all three: <strong>interpretability is not validation</strong>. The named factors are appealing, but the proof PCA works comes from held-out portfolio variance, not from how nicely we can name PC2.</p>
+<p>About 30 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="bridge-from-supervised-learning" class="slide level2">
+<h2>bridge from supervised learning</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>regression / classification</th>
+<th>PCA</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>input</td>
+<td>features <span class="math inline">X</span> + label <span class="math inline">y</span></td>
+<td>features <span class="math inline">X</span> only</td>
+</tr>
+<tr class="even">
+<td>goal</td>
+<td>predict <span class="math inline">y</span> from <span class="math inline">X</span></td>
+<td>summarize <span class="math inline">X</span> in <span class="math inline">k \ll p</span> dims</td>
+</tr>
+<tr class="odd">
+<td>evaluation</td>
+<td>held-out prediction error</td>
+<td>(today: held-out portfolio variance)</td>
+</tr>
+<tr class="even">
+<td>family</td>
+<td><strong>supervised</strong></td>
+<td><strong>unsupervised</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>no <span class="math inline">y</span>, no “right answer”. the algorithm finds structure on its own.</strong></p>
+<aside class="notes">
+<p>The bridge slide. Everything since Ch 4 has been supervised — there was always a <span class="math inline">y</span> column. PCA is our first unsupervised method: no <span class="math inline">y</span>, no labels, no “answer key”. The job is to find structure that’s already in the features.</p>
+<p>The evaluation row is interesting — without a <span class="math inline">y</span>, there’s no obvious held-out metric. We’ll have to invent one (held-out portfolio variance), and the chapter’s central methodological move is to use <em>that</em> as the validation, not the prettiness of the loadings.</p>
+<p>K-means (next lecture) is also unsupervised; today’s PCA and Monday’s clustering are the unsupervised pair.</p>
+<p>About 90 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>the picture: best line, best subspace</p>
+</div>
+</section>
+<section id="pearson-1901-same-picture-drawn-before-computers" class="slide level2">
+<h2>Pearson 1901 — same picture, drawn before computers</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/lec14/pearson1901-fig.png" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
+</figure>
+</div>
+<p><span class="source">Pearson, <em>Phil. Mag.</em> 1901</span></p>
+</div><div class="column" style="width:50%;">
+<blockquote>
+<p><em>given a cloud of points, what line minimizes the sum of squared perpendicular distances from points to the line?</em></p>
+</blockquote>
+<p>Pearson answered this in any number of dimensions</p>
+<p>— <strong>just elementary geometry</strong></p>
+</div></div>
+<aside class="notes">
+<p>PCA is over a century old. Karl Pearson asked the question in 1901 and answered it in any number of dimensions with elementary geometry. The figure on the left is from the original <em>Philosophical Magazine</em> paper: a line <span class="math inline">AB</span> through a cloud of points, with perpendicular drops <span class="math inline">p_i</span> from each point to the line.</p>
+<p>PCA picks the line that minimizes <span class="math inline">\sum p_i^2</span>. That’s the whole problem. The eigenvalues and SVD come in as the <em>answer</em>, not the <em>question</em>.</p>
+<p>Spend a moment on the figure: students will see the original from over a century ago and recognize what it shows immediately. Same problem we’ll solve today on stocks.</p>
+<p>About 90 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="same-picture-real-data-jpmorgan-vs-bank-of-america" class="slide level2">
+<h2>same picture, real data — JPMorgan vs Bank of America</h2>
+
+<img data-src="images/lec14/cell-3-output-2.png" class="quarto-figure quarto-figure-center r-stretch" style="width:55.0%"><aside class="notes">
+<p>The same Pearson picture, drawn on real data. Each blue dot is one trading day’s pair of returns: JPM on the x-axis, BAC on the y-axis, 2014–2024. Two big banks; correlation 0.89.</p>
+<p>The cloud is elliptical. <strong>PC1</strong> (orange) is the long axis — the shared up/down move of the two banks. Call it the “banking sector” direction. <strong>PC2</strong> (green) is the short axis — what’s left after the common move is subtracted, the small idiosyncratic difference between the two stocks.</p>
+<p>The dotted red line shows one day’s perpendicular drop onto PC1. Its squared length is what PCA minimizes, summed over all days.</p>
+<p>About 2 min — let students absorb the geometry.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="pc1-by-hand-two-stocks-a-few-lines" class="slide level2">
+<h2>PC1 by hand — two stocks, a few lines</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a></a><span class="co"># 2x2 covariance, then top eigenvector (sorted largest first)</span></span>
+<span id="cb1-2"><a></a>C <span class="op">=</span> np.cov(jpm_centered, bac_centered, ddof<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb1-3"><a></a>eigvals, eigvecs <span class="op">=</span> np.linalg.eigh(C)</span>
+<span id="cb1-4"><a></a>order <span class="op">=</span> np.argsort(eigvals)[::<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb1-5"><a></a>v1 <span class="op">=</span> eigvecs[:, order[<span class="dv">0</span>]]                  <span class="co"># PC1 direction</span></span>
+<span id="cb1-6"><a></a></span>
+<span id="cb1-7"><a></a><span class="co"># project the example day onto PC1</span></span>
+<span id="cb1-8"><a></a>score <span class="op">=</span> (np.array([<span class="fl">6.0</span>, <span class="fl">3.0</span>]) <span class="op">-</span> mean_xy) <span class="op">@</span> v1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="fragment">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb2-1"><a></a>PC1 direction       : (+0.653, +0.757)</span>
+<span id="cb2-2"><a></a>PC1 variance share  : 94.4%</span>
+<span id="cb2-3"><a></a>PC2 variance share  :  5.6%</span>
+<span id="cb2-4"><a></a>Example day score on PC1: +6.12</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<aside class="notes">
+<p>The whole computation in four lines. Two banks, two PCs, no mystery.</p>
+<ul>
+<li><strong>PC1 direction</strong> = (+0.65, +0.76) — both positive, both around 0.7. Northeast in the JPM-BAC plane. The “banking sector” direction in numbers.</li>
+<li><strong>PC1 variance share</strong> = 94.4% of the total variance lives along PC1. PC2 picks up the rest.</li>
+<li><strong>Example day score</strong> = +6.12. The day with JPM up 6%, BAC up 3% projects far out along PC1 — almost the whole move is sector co-movement, only a sliver is BAC-vs-JPM idiosyncratic.</li>
+</ul>
+<p>Scaling to 95 stocks doesn’t change the recipe — only the size of the matrix.</p>
+<p>About 90 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="scaling-up-95-stocks-same-problem" class="slide level2">
+<h2>scaling up — 95 stocks, same problem</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a></a>returns <span class="op">=</span> pd.read_csv(<span class="st">'sp100_daily_returns_2014_2024.csv'</span>,</span>
+<span id="cb3-2"><a></a>                      index_col<span class="op">=</span><span class="dv">0</span>, parse_dates<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-3"><a></a><span class="bu">print</span>(returns.shape)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb4-1"><a></a>(2770, 95)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="fragment">
+<p>the <strong>data matrix</strong> <span class="math inline">X</span> has shape <span class="math inline">n \times p</span> &nbsp; — &nbsp; rows = 2770 days, columns = 95 stocks</p>
+</div>
+<div class="fragment">
+<p><strong>now what?</strong> in 2D we drew a picture. in 95D we run the same eigendecomposition (or its rectangular cousin, the SVD — coming up).</p>
+<aside class="notes">
+<p>The 95-stock dataset. 2,770 trading days × 95 surviving S&amp;P 100 names. The 95 × 95 sample covariance has 95 eigenvalues and 95 eigenvectors — same eigendecomposition we just ran on 2×2, only larger.</p>
+<p>We can’t draw a 95-dimensional cloud, but the math is identical: find the unit direction <span class="math inline">v \in \mathbb{R}^{95}</span> that maximizes the variance of projected points.</p>
+<p>About 30 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-1" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2></h2>
+<div class="prompt">
+<p><strong>predict before we run it.</strong></p>
+<p>we run PCA on the 95 stocks <strong>without standardizing</strong> (raw returns).</p>
+<p>which stocks dominate PC1?</p>
+<ul>
+<li><ol type="a">
+<li>the largest companies (Apple, Microsoft, Berkshire)</li>
+</ol></li>
+<li><ol start="2" type="a">
+<li>the most volatile stocks (Tesla, semiconductors)</li>
+</ol></li>
+<li><ol start="3" type="a">
+<li>the financials (banks, insurance)</li>
+</ol></li>
+<li><ol start="4" type="a">
+<li>PC1 will be roughly equal across all 95</li>
+</ol></li>
+</ul>
+</div>
+<aside class="notes">
+<p><strong>DISCUSSION: poll (2 min).</strong> Quick hands. Sets up the standardization reveal.</p>
+<p>Target: <strong>(b)</strong> — the most volatile stocks. Without standardization, PCA finds whichever direction has the largest <em>raw</em> variance. Tesla swings 5% on a slow day; Coca-Cola barely moves 1%. So Tesla and the other big movers dominate PC1’s loadings.</p>
+<p>If a student picks (a), the largest companies — that’s a natural confusion (large cap → large index weight) but PCA doesn’t see market caps, just the variance of returns. If they pick (d), they’re imagining the market factor — that’s correct <em>after</em> standardization but not before.</p>
+<p>Reveal on the next slide.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="without-standardization-high-vol-stocks-dominate" class="slide level2">
+<h2>without standardization — high-vol stocks dominate</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/lec14/cell-8-output-1.png" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
+</figure>
+</div>
+</div><div class="column" style="width:45%;">
+<p><strong>top 5 by |PC1 loading|</strong></p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>raw</th>
+<th></th>
+<th>standardized</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>AMD</td>
+<td>0.164</td>
+<td>BLK</td>
+<td>0.134</td>
+</tr>
+<tr class="even">
+<td>NVDA</td>
+<td>0.162</td>
+<td>HON</td>
+<td>0.131</td>
+</tr>
+<tr class="odd">
+<td>COF</td>
+<td>0.153</td>
+<td>MS</td>
+<td>0.131</td>
+</tr>
+<tr class="even">
+<td>TSLA</td>
+<td>0.152</td>
+<td>JPM</td>
+<td>0.130</td>
+</tr>
+<tr class="odd">
+<td>BA</td>
+<td>0.148</td>
+<td>C</td>
+<td>0.128</td>
+</tr>
+</tbody>
+</table>
+<p>→ <strong>raw</strong>: semis, EV, aerospace — the <strong>loud names</strong>, top 5 hold ~12%</p>
+<p>→ <strong>standardized</strong>: financials — the <strong>most market-correlated</strong>, top 5 hold ~8.5% (baseline 5.3%)</p>
+</div></div>
+<aside class="notes">
+<p>The contrast plot. Both panels show PC1 loadings sorted from largest to smallest, but the y-axis tells the story.</p>
+<p><strong>Left (raw returns):</strong> steep nose, long flat tail. The top five most volatile names hold ~12% of PC1’s squared mass — more than 2× their uniform-baseline share of 5/95 ≈ 5.3%. PC1 is shaped by “TSLA and the other big movers”, not the average company.</p>
+<p><strong>Right (standardized):</strong> broad, uniformly positive bar. Every stock contributes nearly equally. The top-5 share drops to ~8.5%, much closer to the uniform baseline.</p>
+<p>Same data, same algorithm — different scale.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-fix-standardize-before-pca" class="slide level2">
+<h2>the fix — standardize before PCA</h2>
+<div class="definition-box">
+<div class="def-term">
+<p>standardization (z-score)</p>
+</div>
+<p>subtract each feature’s mean, divide by its standard deviation</p>
+<p><span class="math display">z_{ij} = \frac{x_{ij} - \mu_j}{\sigma_j}</span></p>
+</div>
+<div class="fragment">
+<p>after standardization, every column has <strong>mean 0 and variance 1</strong></p>
+<p>→ PCA finds structure in the <strong>correlations</strong>, not the raw magnitudes</p>
+<p>→ for returns, this is almost always what we want</p>
+<aside class="notes">
+<p>The fix. StandardScaler in sklearn does this in one line. The mathematical statement: PCA on raw centered data decomposes the <strong>covariance matrix</strong>; PCA on standardized data decomposes the <strong>correlation matrix</strong>.</p>
+<p>For returns specifically, the correlation matrix is what we want — we care about <em>which stocks move together</em>, not which stocks are loudest. For other problems (image processing, where every pixel is on the same 0–255 scale) standardization may not matter as much, but the rule of thumb is: standardize unless you have a reason not to.</p>
+<p>About 60 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-2" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>reading the components</p>
+</div>
+</section>
+<section id="the-scree-plot-variance-per-pc" class="slide level2">
+<h2>the scree plot — variance per PC</h2>
+
+<img data-src="images/lec14/cell-9-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"><div class="fragment">
+<ul>
+<li>PC1 alone: ~<strong>40%</strong> of variance</li>
+<li>70% needs ~20 PCs; 80% needs ~35</li>
+<li>one big factor + a long flat tail — typical of equity returns</li>
+</ul>
+<aside class="notes">
+<p>The scree plot from the chapter. <strong>Left:</strong> bar chart of variance explained by each PC. PC1 dominates at ~40%; PC2 and PC3 are small but visible (~5% each); the tail is long and gradual. <strong>Right:</strong> cumulative variance — 70% takes ~20 components, 80% takes ~35.</p>
+<p>A naive “elbow” reading would pick <span class="math inline">k=1</span> — there’s a sharp drop after PC1. Hold that — we’ll see in block 3 that cross-validation actually picks <span class="math inline">k=3</span> instead. Different objectives, different answers.</p>
+<p>The shape (“one big factor + long tail”) is the textbook signature of equity returns: the market factor swamps everything; sector and style factors are smaller but real; the rest is idiosyncratic.</p>
+<p>About 90 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="elbow-method-a-heuristic-not-a-formula" class="slide level2">
+<h2>elbow method — a heuristic, not a formula</h2>
+<div class="definition-box">
+<div class="def-term">
+<p>elbow method</p>
+</div>
+<p>choose <span class="math inline">k</span> where the scree bars stop dropping quickly — the bend in the plot</p>
+</div>
+<div class="fragment">
+<ul>
+<li><strong>before</strong> the elbow: meaningful structure</li>
+<li><strong>after</strong> the elbow: noise</li>
+</ul>
+</div>
+<div class="fragment">
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Warning</strong></p>
+</div>
+<div class="callout-content">
+<p>the elbow can mislead. on real data, even a sharp elbow may not pick the <span class="math inline">k</span> that wins on a downstream task.</p>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>The elbow method is the standard heuristic. It’s a useful sanity check but not a decision rule.</p>
+<p>The chapter’s empirical demonstration: the scree elbow says <span class="math inline">k=1</span>, but cross-validation (block 3) picks <span class="math inline">k=3</span>. The elbow ranks PCs by <em>training</em> variance — and PC1 swamps the others. CV ranks them by <em>held-out</em> portfolio variance — and PC2, PC3 stabilize the covariance estimate enough to matter, even though they add little to total variance.</p>
+<p>Moral: pick <span class="math inline">k</span> by what wins on the task you care about, not by what looks elbow-shaped on the scree.</p>
+<p>About 60 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="interpret-pc1-the-market-factor" class="slide level2">
+<h2>interpret PC1 — the market factor</h2>
+
+<img data-src="images/lec14/cell-10-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:65.0%"><div class="fragment">
+<p><strong>top</strong>: every stock loads positively → PC1 is the <strong>common up-down move</strong></p>
+<p><strong>bottom (PC2, sectors)</strong>: financials + energy on top; staples + utilities on bottom</p>
+<p>→ <strong>PC2 = cyclicals vs defensives</strong></p>
+<aside class="notes">
+<p>The named-factor reveal. Each PC is a vector of weights, one per stock — the <strong>loadings</strong>.</p>
+<p><strong>Top panel (PC1):</strong> every loading is positive. A stock’s PC1 loading is its sensitivity to the market — a high-beta stock swings hard when the index swings; a defensive name has a smaller loading. PC1 is the textbook market factor.</p>
+<p><strong>Bottom panel (PC2, colored by GICS sector):</strong> sharp pattern by sector. Purple bars (Financials — JPM, BAC, WFC, C, COF) are positive. Red bars (Energy) also positive. Green bars (Consumer Staples — PG, KO) and dark blue bars (Utilities) are negative. <strong>PC2 is the cyclical-vs-defensive contrast</strong> — when the economy’s strong and cyclicals rally, PC2 is up; when investors flee to safety in staples and utilities, PC2 is down.</p>
+<p>PCA discovered this without anyone telling it about sectors. The factors <em>fell out</em> of the eigendecomposition.</p>
+<p>About 2 min.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="interpret-pc3-growth-vs-yield" class="slide level2">
+<h2>interpret PC3 — growth vs yield</h2>
+
+<img data-src="images/lec14/cell-14-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"><div class="fragment">
+<p>positive: NVDA, AMZN, META, GOOGL, ADBE — <strong>growth tech</strong></p>
+<p>negative: utilities (DUK, SO), staples (KO), high-dividend telecom (VZ) — <strong>yield</strong></p>
+</div>
+<div class="fragment">
+<p>by <strong>PC5 or PC6</strong>, the economic story runs out</p>
+<aside class="notes">
+<p>PC3 is the growth-versus-yield axis. Top loaders: Nvidia, Amazon, Meta, Adobe, Alphabet — all big-tech growth. Bottom loaders: utilities, staples, high-dividend telecom — the yield/income end of the market.</p>
+<p>By PC5 or PC6 the loadings stop telling crisp economic stories — those PCs are stabilizing the covariance estimate but not corresponding to nameable factors.</p>
+<p>About 60 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-3" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2></h2>
+<div class="prompt">
+<p><strong>we have named factors. did PCA work?</strong></p>
+<p>PC1 looks like the market. PC2 splits cyclicals from defensives. PC3 splits growth from yield.</p>
+<p><strong>have we proved PCA worked on the S&amp;P 100?</strong></p>
+<p>discuss with your neighbor (3 min).</p>
+</div>
+<aside class="notes">
+<p><strong>DISCUSSION: think-pair-share (3 min).</strong> 1 min think + 2 min pair. Set up the chapter’s central methodological lesson.</p>
+<p>Target answer: <strong>no.</strong> Beautifully named factors are appealing — they pass the human-narrative test — but they’re not validation. The factors named themselves <em>because we already know the universe</em>: we know what financials are, we know what utilities are, so when PC2 lines up with “financials high, utilities low” we recognize the story.</p>
+<p>What if we’d run PCA on a less-familiar dataset — gene expression, image pixels, customer behavior? We wouldn’t have the named-factor crutch. We need a method-agnostic test of whether the components carry useful information.</p>
+<p>The chapter’s answer (block 3): use the components on a downstream task and evaluate on data we never used to fit them. <em>Interpretability is not validation.</em></p>
+<p>If a student says “yes, the named factors prove it” — that’s exactly the position the chapter argues against. Hold that and let block 3 unsettle it.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-math-what-is-pca-solving" class="slide level2">
+<h2>the math — what is PCA solving?</h2>
+<div class="definition-box">
+<div class="def-term">
+<p>PCA (variational form)</p>
+</div>
+<p>among all <span class="math inline">k</span>-dimensional subspaces of <span class="math inline">\mathbb{R}^p</span>, PCA picks the one <strong>closest to the data</strong>:</p>
+<p><span class="math display">S^\star = \arg\min_{\dim S = k}\; \sum_{i=1}^n \|x_i - P_S x_i\|^2</span></p>
+<p>equivalently (by Pythagoras, after centering): the subspace that <strong>maximizes the total variance of the projections</strong></p>
+</div>
+<div class="fragment">
+<p>with <span class="math inline">k=1</span>: the best <strong>line</strong> through the cloud (Pearson’s picture)</p>
+<p>with <span class="math inline">k=2</span>: the best <strong>plane</strong>. with <span class="math inline">k</span> general: the best <strong><span class="math inline">k</span>-dim subspace</strong>.</p>
+<aside class="notes">
+<p>The variational form is the cleanest statement of what PCA solves. Among all <span class="math inline">k</span>-dim subspaces of <span class="math inline">\mathbb{R}^p</span>, pick the one minimizing total squared distance from the data.</p>
+<p>By Pythagoras (after centering): for each point, <span class="math inline">\|x_i\|^2 = \|\text{projection}\|^2 + \|\text{residual}\|^2</span>. So minimizing residual = maximizing projected variance. Two ways to say the same thing.</p>
+<p>The continuity from Pearson to today: <span class="math inline">k=1</span> is Pearson’s line; <span class="math inline">k=2</span> is a plane through the cloud; for our stocks, <span class="math inline">k=3</span> is a 3D subspace inside <span class="math inline">\mathbb{R}^{95}</span> — the “best” 3D summary of 95 stocks.</p>
+<p>About 90 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="the-math-how-do-we-solve-it" class="slide level2">
+<h2>the math — how do we solve it?</h2>
+<p>data matrix <span class="math inline">X \in \mathbb{R}^{n \times p}</span> &nbsp; — &nbsp; row <span class="math inline">i</span> = <span class="math inline">x_i</span></p>
+<div class="fragment">
+<ul>
+<li><strong>2 stocks</strong> (earlier): eigendecomposed the <span class="math inline">2 \times 2</span> covariance</li>
+<li><strong>general <span class="math inline">X</span></strong>: truncated SVD &nbsp; <span class="math inline">X \approx U_k S_k V_k^T</span> &nbsp; <em>(works directly on <span class="math inline">X</span> — no covariance to form)</em></li>
+</ul>
+</div>
+<div class="fragment">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/lec14/svd-diagram.png" class="quarto-figure quarto-figure-center" style="width:92.0%"></p>
+</figure>
+</div>
+</div>
+</section>
+<section id="what-each-piece-means" class="slide level2">
+<h2>what each piece means</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 45%">
+<col style="width: 27%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>symbol</th>
+<th style="text-align: center;">size</th>
+<th>meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">V_k</span></td>
+<td style="text-align: center;"><span class="math inline">p \times k</span></td>
+<td><strong>principal directions</strong> — basis for <span class="math inline">S^\star</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">U_k S_k</span></td>
+<td style="text-align: center;"><span class="math inline">n \times k</span></td>
+<td><strong>projected scores</strong> — each row = one day’s coordinates</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\Lambda_k = S_k^2/(n{-}1)</span></td>
+<td style="text-align: center;"><span class="math inline">k \times k</span></td>
+<td><strong>PC variances</strong></td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p>→ truncated SVD = <strong>best rank-<span class="math inline">k</span> approximation</strong> to <span class="math inline">X</span> in Frobenius error (Eckart–Young–Mirsky)</p>
+<aside class="notes">
+<p>The variational form said <em>what</em>; the SVD says <em>how</em>. Every <span class="math inline">n \times p</span> matrix factors as <span class="math inline">X = U S V^T</span> with <span class="math inline">U, V</span> orthonormal columns and <span class="math inline">S</span> diagonal. The first <span class="math inline">k</span> columns of <span class="math inline">V</span> are PC1, …, PC<span class="math inline">k</span> — the basis for the optimal subspace.</p>
+<p>The variance of PC<span class="math inline">_i</span> is the squared singular value over <span class="math inline">(n-1)</span> — what sklearn returns in <code>explained_variance_</code>.</p>
+<p>The cheat-sheet table at the bottom is for students who flip between sklearn docs, the finance literature, and us. Three communities, three names for the same objects. The same row in the table is the same column of <span class="math inline">V</span>.</p>
+<p>Don’t dwell on the table — point at it as a reference and move on.</p>
+<p>About 90 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="verify-pca-is-the-truncated-svd" class="slide level2">
+<h2>verify — <code>PCA()</code> is the truncated SVD</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a></a>U, S_svd, Vt_svd <span class="op">=</span> np.linalg.svd(Z, full_matrices<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb5-2"><a></a></span>
+<span id="cb5-3"><a></a><span class="co"># Match up to a sign per component (sign of a PC is arbitrary)</span></span>
+<span id="cb5-4"><a></a>signs <span class="op">=</span> np.sign((Vt_svd[:<span class="dv">3</span>] <span class="op">*</span> pca.components_[:<span class="dv">3</span>]).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb5-5"><a></a><span class="bu">print</span>(<span class="st">"max difference in directions:"</span>,</span>
+<span id="cb5-6"><a></a>      np.<span class="bu">abs</span>(Vt_svd[:<span class="dv">3</span>] <span class="op">*</span> signs[:, <span class="va">None</span>] <span class="op">-</span> pca.components_[:<span class="dv">3</span>]).<span class="bu">max</span>())</span>
+<span id="cb5-7"><a></a><span class="bu">print</span>(<span class="st">"max difference in variances:"</span>,</span>
+<span id="cb5-8"><a></a>      np.<span class="bu">abs</span>(S_svd[:<span class="dv">3</span>]<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> (n<span class="op">-</span><span class="dv">1</span>) <span class="op">-</span> pca.explained_variance_[:<span class="dv">3</span>]).<span class="bu">max</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="fragment">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb6-1"><a></a>max difference in directions: 1.4e-15</span>
+<span id="cb6-2"><a></a>max difference in variances:  3.5e-17</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="fragment">
+<p><strong><code>PCA()</code> and <code>np.linalg.svd</code> give the same answer</strong> to numerical precision</p>
+<aside class="notes">
+<p>A check we can run in five lines. The SVD components match sklearn’s <code>.components_</code> up to a sign per PC (which is arbitrary — PC1 and -PC1 span the same line); the squared singular values divided by <span class="math inline">n-1</span> match the explained variances.</p>
+<p>Differences at <span class="math inline">10^{-15}</span> to <span class="math inline">10^{-17}</span> are floating-point noise, not real. The two routines compute the same object, just packaged differently.</p>
+<p>This is a worthwhile habit — when a textbook says “X is just Y”, verify it on a real dataset before believing it.</p>
+<p>About 60 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-4" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>the payoff: portfolios in the <span class="math inline">p &gt; n</span> regime</p>
+</div>
+</section>
+<section id="why-minimum-variance-compounding" class="slide level2">
+<h2>why minimum variance? compounding</h2>
+<ul>
+<li class="fragment">two portfolios with the <strong>same average return</strong> don’t earn the same dollars</li>
+<li class="fragment">a portfolio that loses 50% then gains 50% finishes <strong>down 25%</strong>, not flat</li>
+<li class="fragment">compounding <strong>punishes losses more than gains</strong></li>
+</ul>
+<div class="fragment">
+<p>→ cutting volatility while holding return constant <strong>grows real wealth over time</strong></p>
+<p>→ low-volatility ETFs and pension-fund mandates: this is exactly their target</p>
+<p><span class="source">full Markowitz problem trades off return <em>and</em> variance; we focus on variance because that’s where covariance estimation — and PCA — bites</span></p>
+<aside class="notes">
+<p>The motivation slide. Students will instinctively want to maximize return, not minimize variance. The honest answer is: high variance kills long-run wealth.</p>
+<p>Walk through the 50%/50% example: $1 → $0.50 → $0.75. Down 25%, not flat. Compounding penalizes losses more than gains because the loss eats your base. The general statement: <span class="math inline">E[\log(1 + r)] \approx \mu - \sigma^2/2</span> — variance subtracts directly from compound growth (“volatility drag”).</p>
+<p>Practical: low-volatility ETFs (USMV, SPLV) are billion-dollar funds. Pension funds and risk-parity strategies are explicitly variance-minimizing. So minimum-variance isn’t a quirky academic objective — it’s a major chunk of how real money actually invests.</p>
+<p>The parenthetical at the bottom acknowledges what we’re not covering: the full Markowitz problem trades off return AND variance. We focus on the variance side because PCA is what helps us <em>estimate</em> covariance — and you need that to do anything else with <span class="math inline">\Sigma</span>.</p>
+<p>About 90 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="minimum-variance-portfolio-markowitz-1952" class="slide level2">
+<h2>minimum-variance portfolio — Markowitz 1952</h2>
+<p>minimize portfolio variance, subject to weights summing to 1:</p>
+<p><span class="math display">\min_w \, w^T \Sigma w \quad \text{s.t.} \quad \mathbf{1}^T w = 1</span></p>
+<div class="fragment">
+<p><strong>closed form:</strong> &nbsp;&nbsp; <span class="math inline">w_{\text{min-var}} \propto \Sigma^{-1} \mathbf{1}</span></p>
+</div>
+<div class="fragment">
+<p>read it qualitatively:</p>
+<ul>
+<li><strong>low-variance stocks</strong> get larger weights — less risk per dollar</li>
+<li><strong>natural hedges</strong> (negative covariances) get larger weights — cancel each other</li>
+<li><strong>volatile + correlated</strong> names get smaller weights — redundant risk</li>
+</ul>
+<p>→ to use this, we need <span class="math inline">\Sigma</span> — and to <strong>invert</strong> it</p>
+<p><span class="source">Markowitz, <em>J. Finance</em> 1952</span></p>
+<aside class="notes">
+<p>The Markowitz minimum-variance portfolio. Two-line problem: - Variance of the portfolio’s return is <span class="math inline">w^T \Sigma w</span> - Subject to weights summing to 1, the solution is <span class="math inline">w \propto \Sigma^{-1} \mathbf{1}</span></p>
+<p>Read the inverse-row-sum interpretation: a low-variance stock with low correlations to others has a small inverse-covariance row sum <strong>dominating its row</strong> — actually it’s a bit more subtle, but the qualitative read is right: low-vol stocks and natural hedges get larger weights, volatile and correlated stocks get smaller.</p>
+<p>So we need <span class="math inline">\Sigma^{-1}</span>. Where do we get <span class="math inline">\Sigma</span>? In practice, from a recent window of historical returns.</p>
+<p>About 90 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="the-failure-mode-p-n" class="slide level2">
+<h2>the failure mode — <span class="math inline">p &gt; n</span></h2>
+<p>60-day window with <strong>95</strong> stocks: &nbsp; <span class="math inline">p = 95</span>, &nbsp; <span class="math inline">n = 60</span></p>
+<div title="sample covariance is rank-deficient">
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>sample covariance is rank-deficient</strong></p>
+</div>
+<div class="callout-content">
+<p><strong>59 nonzero eigenvalues</strong> out of 95 → singular → inverse doesn’t exist</p>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>even with a tiny ridge (<span class="math inline">\lambda = 10^{-6}</span>), the “min-variance” portfolio is <strong>unusable</strong>:</p>
+<table class="caption-top">
+<tbody>
+<tr class="odd">
+<td>max single-stock weight</td>
+<td><strong>+32%</strong></td>
+</tr>
+<tr class="even">
+<td>min single-stock weight</td>
+<td><strong>−29%</strong></td>
+</tr>
+<tr class="odd">
+<td>gross exposure (long + short)</td>
+<td><strong>809%</strong></td>
+</tr>
+<tr class="even">
+<td>max weight change after shifting window <strong>1 day</strong></td>
+<td><strong>9% per stock</strong></td>
+</tr>
+</tbody>
+</table>
+<p>→ not investable — we need a <strong>structured</strong> estimate of <span class="math inline">\Sigma</span></p>
+<aside class="notes">
+<p>The crisis. We have 95 stocks but only 60 days of recent history. The 95 × 95 sample covariance from 60 observations has rank at most 59 (centering uses one degree of freedom) — it’s singular, the inverse doesn’t exist, the Markowitz formula crashes.</p>
+<p>Adding a small ridge (<span class="math inline">\Sigma + \lambda I</span>) makes it invertible but not stable: weights become enormous, change wildly with a one-day shift in the estimation window. Useless in practice.</p>
+<p>The math we were taught for <span class="math inline">\Sigma^{-1}</span> assumed <span class="math inline">n \gg p</span>. In high-dim finance, that’s rarely true. We need a <em>structured</em> estimate of <span class="math inline">\Sigma</span>.</p>
+<p>About 60 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="pca-gives-us-sigma-the-factor-model" class="slide level2">
+<h2>PCA gives us <span class="math inline">\Sigma</span> — the factor model</h2>
+<p>approximate <span class="math inline">\Sigma</span> as <strong><span class="math inline">k</span> factors + diagonal noise:</strong></p>
+<p><span class="math display">\hat\Sigma_k = V_k \Lambda_k V_k^T + \mathrm{diag}(D)</span></p>
+<div class="fragment">
+<ul>
+<li><span class="math inline">V_k</span> = top <span class="math inline">k</span> PC directions (the <strong>factors</strong>)</li>
+<li><span class="math inline">\Lambda_k</span> = diagonal of PC variances</li>
+<li><span class="math inline">\mathrm{diag}(D)</span> = stock-specific residual — ensures <span class="math inline">\mathrm{diag}(\hat\Sigma_k) = 1</span> on standardized data</li>
+</ul>
+</div>
+<div class="fragment">
+<p>→ <span class="math inline">\hat\Sigma_k^{-1}</span> exists, plugs cleanly into Markowitz</p>
+<p>→ <strong>how big should <span class="math inline">k</span> be?</strong> ask cross-validation</p>
+<aside class="notes">
+<p>The fix. Instead of estimating the full <span class="math inline">95 \times 95</span> covariance from 60 days, we <em>constrain</em> it: assume the structure is <span class="math inline">k</span> pervasive factors + idiosyncratic noise.</p>
+<p>The factor part <span class="math inline">V_k \Lambda_k V_k^T</span> captures the systematic risk that PCA found (market, sectors, etc.). The diagonal <span class="math inline">D</span> accounts for stock-specific risk that the factors don’t explain — and it’s what makes the estimate positive definite (so the inverse exists).</p>
+<p>Now we have <span class="math inline">\hat\Sigma_k</span> with rank up to <span class="math inline">\min(p, k + p) = p</span> — invertible by construction.</p>
+<p>The catch: we have to pick <span class="math inline">k</span>. The scree elbow says <span class="math inline">k=1</span>. Cross-validation will say <span class="math inline">k=3</span>. Coming up.</p>
+<p>About 90 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="the-four-estimators" class="slide level2">
+<h2>the four estimators</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>method</th>
+<th>formula</th>
+<th>role</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>equal-weight</strong></td>
+<td><span class="math inline">w = \mathbf{1}/p</span></td>
+<td>baseline (no covariance)</td>
+</tr>
+<tr class="even">
+<td><strong>ridge sample</strong></td>
+<td><span class="math inline">\Sigma + \lambda I</span></td>
+<td>invertibility hack</td>
+</tr>
+<tr class="odd">
+<td><strong>random projection</strong></td>
+<td>random <span class="math inline">V_k</span> + diag correction</td>
+<td>sanity check</td>
+</tr>
+<tr class="even">
+<td><strong>PCA factor</strong></td>
+<td>top-<span class="math inline">k</span> PC factors + diag correction</td>
+<td>the contender</td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p>we backtest with <strong>walk-forward</strong> evaluation — train on the past, hold for the next 21 days, slide</p>
+<aside class="notes">
+<p>The four estimators we’ll compare. The first two are the standard competitors any new estimator has to beat. The third — random projection — tests whether PCA’s variance-aligned directions actually matter, or whether <em>any</em> low-rank approximation would do. If random does as well as PCA, then the “structure” PCA finds is illusory.</p>
+<p>The walk-forward evaluation: train on the first 60 days, hold for the next 21 (about a month between rebalances), then slide the window forward and repeat. Time-respecting CV — never train on data that comes after the test window. We’ll come back to walk-forward properly in Ch 16.</p>
+<p>Why walk-forward instead of random 5-fold? Returns are correlated across time (volatility clusters, market regimes persist). A random fold puts March 15 in training and March 14, 16 in validation — same regime, leaks information. Random-fold validation underestimates true generalization error.</p>
+<p>About 90 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="the-result-variance-vs-k" class="slide level2">
+<h2>the result — variance vs <span class="math inline">k</span></h2>
+
+<img data-src="images/lec14/cell-21-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:75.0%"><div class="fragment">
+<ul>
+<li><strong>PCA factor</strong> (blue) drops fast 1→3, flat-ish 3→10, rises past 10</li>
+<li><strong>CV picks <span class="math inline">k = 3</span></strong> — well below scree’s “elbow at 1”</li>
+<li><strong>random projection</strong> (gray) lies <em>above</em> PCA throughout — variance-aligned directions matter</li>
+</ul>
+<aside class="notes">
+<p>The CV plot. Validation-half mean daily portfolio variance vs.&nbsp;number of components <span class="math inline">k</span>, log-scale on <span class="math inline">k</span>.</p>
+<p><strong>Blue (PCA factor):</strong> drops sharply from <span class="math inline">k=1</span> to <span class="math inline">k=3</span> as PC2 and PC3 stabilize the covariance estimate. Flat between <span class="math inline">k=3</span> and <span class="math inline">k=10</span>. Rises past <span class="math inline">k=10</span> as we start fitting noise — same bias-variance trade-off as in regression, but for covariance estimation.</p>
+<p><strong>Gray (random projection):</strong> consistently above PCA. A random low-rank approximation captures <em>some</em> of the structure, but always less than PCA’s variance-aligned directions. So PCA <em>is</em> finding signal, not just any low-rank summary.</p>
+<p><strong>Red dashed (ridge):</strong> worst of all. The ridge estimate is so unstable that even at any <span class="math inline">k</span>, PCA wins by a wide margin.</p>
+<p><strong>Green dashed (equal-weight):</strong> beats ridge but lags PCA. Equal-weight is a tough baseline — it’s parameter-free and robust.</p>
+<p>The CV pick is <span class="math inline">k=3</span>. Three factors is enough to capture the systematic structure; more components start adding noise.</p>
+<p>About 2 min.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="the-result-cumulative-variance-over-time" class="slide level2">
+<h2>the result — cumulative variance over time</h2>
+
+<img data-src="images/lec14/cell-22-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"><div class="fragment">
+<p>PCA factor portfolio sits <strong>lowest</strong> the entire test period</p>
+<p>every method jumps at COVID; <strong>PCA’s jump is smallest</strong></p>
+<aside class="notes">
+<p>The cumulative-variance curves on the held-out half. Lower = better.</p>
+<p><strong>PCA factor (dark blue):</strong> flattest curve. Lowest cumulative realized variance from start to finish.</p>
+<p><strong>Ridge sample cov (red dashed):</strong> second best in this run. Still well above PCA.</p>
+<p><strong>Random projection (gray):</strong> captures some structure, lags PCA throughout.</p>
+<p><strong>Equal-weight (green):</strong> worst here, but only marginally — equal-weight is a hard baseline to beat with this much instability in the sample covariance.</p>
+<p>The COVID jump in early 2020: every line shoots up — every covariance estimator was caught off guard, every portfolio took a variance shock. But PCA’s shock was the smallest of the four. The market’s structure changed fast in March 2020, and a factor-model estimate adapted faster than the alternatives.</p>
+<p>About 90 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="interpretability-is-not-validation" class="slide level2">
+<h2><em>interpretability is not validation</em></h2>
+<p>PC1 = market, &nbsp; PC2 = cyclicals / defensives, &nbsp; PC3 = growth / yield</p>
+<p>→ a clean story. <strong>but a story is not the test.</strong></p>
+<div class="fragment">
+<p><strong>the test:</strong> &nbsp; held-out portfolio variance, on data we never used to fit</p>
+</div>
+<div class="fragment">
+<p>→ pick the model that wins on the task you care about</p>
+<aside class="notes">
+<p>The chapter’s central methodological lesson, and the answer to the block-2 discussion. The named factors looked impressive, but a named factor is just a story — it doesn’t prove the method works.</p>
+<p>The proof comes from a downstream task evaluated on data we never used to fit the components. That’s what cross-validation does for predictive models, and that’s what walk-forward backtesting does here for covariance estimation.</p>
+<p>This is the eval-by-downstream-task rule. It’s the same idea as cross-validation in regression: don’t trust how well a model fits the training data; trust how well it predicts data you set aside.</p>
+<p>About 60 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="cautionary-tale-genes-mirror-geography" class="slide level2">
+<h2>cautionary tale — genes mirror geography</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/lec14/novembre-europe-pca.jpg" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
+</figure>
+</div>
+</div><div class="column" style="width:40%;">
+<p><strong>197K SNPs, 1,387 Europeans</strong></p>
+<p>no geographic info given to the algorithm</p>
+<p>→ it drew a <strong>map of Europe</strong> &nbsp; (<span class="math inline">r^2 \approx 0.7</span>)</p>
+<p>. . .</p>
+<p>→ math result: PCA on spatial data with distance-decaying similarity <em>generically</em> produces these patterns</p>
+<p>→ recovering an obvious pattern is <strong>not</strong> evidence of hidden structure</p>
+</div></div>
+<p><span class="source">Novembre 2008; Novembre &amp; Stephens 2008</span></p>
+<aside class="notes">
+<p>The cautionary callout from the chapter. Novembre et al.&nbsp;ran PCA on ~197K SNPs across 1,387 Europeans, gave the algorithm zero geographic information, and the first two principal components — when plotted against each other — reproduced the map of Europe with high fidelity. PC1 lined up with latitude, PC2 with longitude.</p>
+<p>The temptation is to read this as “PCA discovered hidden European population structure.” The same research community published the math showing otherwise: Novembre &amp; Stephens (2008, <em>Nature Genetics</em>) proved that <strong>PCA on any spatial data with distance-decaying similarity will produce gradient/sinusoidal patterns generically</strong> — no historical demographic event required.</p>
+<p>So the famous figure was always going to come out — the math made it inevitable given the sampling. The structure was built into the input geography, not discovered as European prehistory.</p>
+<p>The lesson — and a parallel to today’s named-factor discussion: a PCA figure that reproduces something obvious about the data (a map, a known taxonomy) is not by itself evidence that PCA discovered hidden structure. <strong>Same lesson next lecture, on clustering.</strong> Genes mirror geography → PredPol mirrors policing → MBTI mirrors cutpoints. Three fields, same artifact.</p>
+<p>About 2 min.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-5" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2></h2>
+<div class="prompt">
+<p><strong>PCA or pick five?</strong></p>
+<p>instead of computing principal components, could we just <strong>pick the five best stocks</strong> and form a portfolio from them?</p>
+<p>when would PCA be the right move? when would a sparse subset (Lasso) be the right move?</p>
+<p>discuss with your neighbor (3 min).</p>
+</div>
+<aside class="notes">
+<p><strong>DISCUSSION: think-pair-share (3 min).</strong> 1 min think + 2 min pair + brief debrief.</p>
+<p>Target answers:</p>
+<p><strong>Lasso</strong> is the right move when the truth really is sparse — only a handful of stocks matter for predicting some outcome, the rest are noise. Example: “predict next-quarter earnings from one of 200 specific accounting ratios.” You want a short list.</p>
+<p><strong>PCA</strong> is the right move when many features carry useful information and you want a low-dimensional summary that pools them. Example: today’s covariance matrix where every stock is partly driven by a common market factor. A sparse subset would miss the market hitting all of them.</p>
+<p>The third option — <strong>sparse PCA</strong> — splits the difference: principal components in which most loadings are zero. Less common, but it exists.</p>
+<p>The deeper point: PCA and Lasso answer different questions. Lasso says “which features matter?” PCA says “what’s a low-dim summary?” Both are valid; pick by what your downstream task needs.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="demo-pca-in-the-notebook" class="slide level2">
+<h2>demo: PCA in the notebook</h2>
+<div style="text-align: center; font-size: 1.3em; margin: 1em 0;">
+<p><strong><a href="https://colab.research.google.com/github/stanford-mse-125/web/blob/main/notebooks/lec14-pca.ipynb">colab.research.google.com/…/lec14-pca.ipynb</a></strong></p>
+</div>
+<p>what to watch:</p>
+<ul>
+<li>toggle standardization on/off — watch PC1 flip from “TSLA-dominated” to “market”</li>
+<li>vary <span class="math inline">k</span> from 1 to 20 — watch held-out variance drop, flatten, rise</li>
+<li>swap in your own time window — does CV’s pick of <span class="math inline">k</span> change?</li>
+</ul>
+<aside class="notes">
+<p>Demo slide. The notebook has the full pipeline (standardization toggle, scree plot, factor model, walk-forward backtest); the three knobs above are the experiments worth running.</p>
+<p>If running short: skip the live demo, point at it as homework prep. HW 4 has students do exactly this on Airbnb data.</p>
+<p>About 30 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="summary" class="slide level2">
+<h2>summary</h2>
+<ul>
+<li class="fragment"><strong>PCA</strong> finds the directions of maximum variance — best line, best plane, best <span class="math inline">k</span>-dim subspace</li>
+<li class="fragment"><strong>standardize first</strong> — otherwise the largest-magnitude features dominate</li>
+<li class="fragment"><strong>PC1, PC2, PC3</strong> on the S&amp;P 100 are the market, cyclical-vs-defensive, growth-vs-yield</li>
+<li class="fragment"><strong>truncated SVD</strong> is what PCA computes (Eckart–Young–Mirsky: best rank-<span class="math inline">k</span> approximation)</li>
+<li class="fragment"><strong>factor-model covariance</strong> <span class="math inline">\hat\Sigma_k = V_k \Lambda_k V_k^T + \text{diag}</span> unlocks portfolios when <span class="math inline">p &gt; n</span></li>
+<li class="fragment"><strong>interpretability is not validation</strong> — pick <span class="math inline">k</span> by held-out task, not the scree elbow</li>
+</ul>
+<aside class="notes">
+<p>Six takeaways, in lecture order.</p>
+<p>The last bullet is the headline. If a student takes one thing from the lecture, it’s this: pretty loadings tell a story, but the story isn’t the test. The test is what wins on a downstream task evaluated on data you didn’t fit.</p>
+<p>About 60 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="next-clustering-same-template-different-constraint" class="slide level2">
+<h2>next: clustering — same template, different constraint</h2>
+<p>PCA compresses each row into <strong>continuous</strong> coordinates in a <span class="math inline">k</span>-dim subspace</p>
+<div class="fragment">
+<p>K-means compresses each row into <strong>one of <span class="math inline">k</span> discrete labels</strong></p>
+</div>
+<div class="fragment">
+<p>same compress-into-<span class="math inline">k</span> idea, different geometry</p>
+</div>
+<div class="fragment">
+<p>→ Monday: K-means on Airbnb (and the same “your features pick your structure” lesson, on a different method)</p>
+<aside class="notes">
+<p>Forward pointer to lec15. PCA today gives every row continuous PC scores in a low-dimensional subspace. K-means Monday will give every row a single discrete cluster label.</p>
+<p>Mathematically these are cousins — both can be framed as low-rank approximation problems. PCA uses continuous coordinates; K-means uses one-hot indicators (each row gets weight 1 on one cluster, 0 on the rest). Same compress-into-<span class="math inline">k</span> template.</p>
+<p>A natural starting move on Monday: cluster the PC scores from today’s analysis rather than the raw features.</p>
+<p>The “your features pick your structure” lesson reappears: the Novembre cautionary tale today, the PredPol cautionary tale Monday — same lesson on adjacent methods.</p>
+<p>About 45 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="feedback" class="slide level2">
+<h2>feedback</h2>
+<div class="quarto-layout-panel" data-layout="[20, 80]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 20.0%;justify-content: center;">
+<p><img data-src="images/feedback-qr-lec01.png" width="280"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 80.0%;justify-content: flex-start;">
+<p><strong><a href="https://forms.gle/feedback">forms.gle/feedback</a></strong></p>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 20.0%;justify-content: flex-start;">
+<p>what worked? what didn’t? what’s still confusing?</p>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Standard feedback slide. Same form as previous lectures.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+
+
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+
+        height: 1080,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

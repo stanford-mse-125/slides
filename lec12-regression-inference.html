@@ -1,0 +1,1751 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/tabby.min.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.37">
+
+  <meta name="author" content="Madeleine Udell">
+  <title>MSE 125 — Slides – Lecture 12: Regression Inference + Diagnostics</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-7e9863cd0ef9c70c3784d80bfe5ce18d.css">
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+  <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Lecture 12: Regression Inference + Diagnostics</h1>
+  <p class="subtitle">MSE 125 — Applied Statistics</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Madeleine Udell 
+</div>
+</div>
+</div>
+
+  <p class="date">Wednesday, May 6, 2026</p>
+</section>
+<section id="logistics" class="slide level2">
+<h2>logistics</h2>
+<ul>
+<li><strong>HW 3</strong> due Fri May 8</li>
+<li>project proposal feedback returned end of this week</li>
+<li><strong>project midterm report</strong> due Friday May 15</li>
+</ul>
+<aside class="notes">
+<p><strong>START RECORDING.</strong></p>
+<p>HW 3 due Friday. Quiz 5 was earlier this week. Project proposals were submitted last week; feedback returned next week.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-brief" class="slide level2">
+<h2>the brief</h2>
+<div class="columns">
+<div class="column" style="width:48%;">
+<h3 id="airbnb-host-nyc">Airbnb host, NYC</h3>
+<p><strong>$50,000 renovation</strong> for a second bathroom?</p>
+<p>listings with more bathrooms charge more — is the premium <strong>real</strong>, <strong>large enough to recoup</strong>, <strong>stable enough to bet on</strong>?</p>
+</div><div class="column" style="width:4%;">
+
+</div><div class="column" style="width:48%;">
+<h3 id="nba-front-office">NBA front office</h3>
+<p>analytics team’s <strong>claim</strong>: rest boosts performance — restructure the schedule around it?</p>
+<p>before they act, let’s check: <strong>does the data support that claim?</strong></p>
+</div></div>
+<div style="text-align: center; margin-top: 1.5em; font-size: 1.2em;">
+<p><strong>same toolkit. very different answers.</strong></p>
+</div>
+<aside class="notes">
+<p>Two parallel decision problems frame the lecture:</p>
+<ol type="1">
+<li>Airbnb host: clean regression, decision-grade answer (yes, do the renovation).</li>
+<li>NBA front office: same machinery, finds “significance” without practical importance — and probably confounding on top.</li>
+</ol>
+<p>Don’t tease the punchlines. Just frame both decisions, signal that the chapter pulls them apart, and move on. The arc lands when block 2 plays out the NBA result against the Airbnb baseline.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="today" class="slide level2">
+<h2>today</h2>
+<ul>
+<li class="fragment"><strong>Airbnb regression</strong>: read a regression table; t-test, CI, prediction interval</li>
+<li class="fragment"><strong>NBA cautionary tale</strong>: significance vs practical importance, Simpson’s paradox</li>
+<li class="fragment"><strong>diagnostics</strong>: do the assumptions hold?</li>
+<li class="fragment"><strong>logistic regression</strong>: same template, <span class="math inline">z</span> instead of <span class="math inline">t</span>, odds ratios</li>
+</ul>
+<aside class="notes">
+<p>Three blocks plus a logistic coda. The next slide gives students the three diagnostic questions that organize all of it.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="three-questions-for-every-coefficient" class="slide level2">
+<h2>three questions for every coefficient</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>question</th>
+<th>tool</th>
+<th>doesn’t answer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Q1</strong></td>
+<td><strong>nonzero?</strong></td>
+<td>t-test, p-value, CI excludes 0</td>
+<td>how big</td>
+</tr>
+<tr class="even">
+<td><strong>Q2</strong></td>
+<td><strong>big enough?</strong></td>
+<td>coefficient, CI width, Cohen’s d</td>
+<td>are assumptions met</td>
+</tr>
+<tr class="odd">
+<td><strong>Q3</strong></td>
+<td><strong>trustworthy?</strong></td>
+<td>residual plot, Q-Q, LINE</td>
+<td>confounding</td>
+</tr>
+</tbody>
+</table>
+<p>we’ll walk through these questions twice:</p>
+<ul>
+<li>Airbnb answers yes to all → <strong>act on it</strong>.</li>
+<li>NBA shows equivocal answers → don’t act.</li>
+</ul>
+<aside class="notes">
+<p>This is the chapter’s pedagogical scaffold. Read it slowly. Q1 is the t-test; Q2 is effect size (Cohen’s d); Q3 is diagnostics (LINE). The pivot from Q1 to Q2 is the chapter’s central pedagogy (“statistical significance is no substitute for practical importance”). The boundary at Q3 is the chapter’s second pedagogy (“diagnostics catch statistical, not systematic, problems”).</p>
+<p>When students get lost later, this slide is the home base. The three dark transitions later in the deck are tagged to which question they’re answering.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>regression for decisions</p>
+</div>
+</section>
+<section id="airbnb-listings-nyc" class="slide level2">
+<h2>Airbnb listings, NYC</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a></a>airbnb <span class="op">=</span> pd.read_csv(<span class="st">'data/airbnb/listings.csv'</span>)</span>
+<span id="cb1-2"><a></a>airbnb_clean <span class="op">=</span> airbnb[</span>
+<span id="cb1-3"><a></a>    (airbnb[<span class="st">'price'</span>] <span class="op">&gt;</span> <span class="dv">0</span>) <span class="op">&amp;</span></span>
+<span id="cb1-4"><a></a>    (airbnb[<span class="st">'price'</span>] <span class="op">&lt;=</span> <span class="dv">500</span>) <span class="op">&amp;</span>       <span class="co"># filter outliers</span></span>
+<span id="cb1-5"><a></a>    (airbnb[<span class="st">'bathrooms'</span>].notna()) <span class="op">&amp;</span></span>
+<span id="cb1-6"><a></a>    (airbnb[<span class="st">'bedrooms'</span>].notna()) <span class="op">&amp;</span></span>
+<span id="cb1-7"><a></a>    (airbnb[<span class="st">'room_type'</span>] <span class="op">==</span> <span class="st">'Entire home/apt'</span>)</span>
+<span id="cb1-8"><a></a>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>n = 14,689 listings (after filtering)</code></pre>
+<aside class="notes">
+<p>Filter to entire-apartment listings under $500/night to keep the model in the regime that covers most hosts. The next slide shows the obvious bivariate patterns. Both are real but tangled — bigger places have more bathrooms AND more bedrooms, so the marginal effect of one bathroom holding bedrooms constant is what we want.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="price-by-bathrooms-and-borough" class="slide level2">
+<h2>price by bathrooms and borough</h2>
+
+<img data-src="images/lec12/cell-5-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:85.0%"><div class="fragment">
+<p>obvious patterns: more bathrooms → higher price; Manhattan &gt; Brooklyn &gt; rest.</p>
+<p><strong>but bathrooms and bedrooms are correlated.</strong></p>
+<aside class="notes">
+<p>Bivariate pictures. Both bathrooms and borough show clear patterns, but the bathrooms picture is confounded by bedrooms (more rooms → more of both). Multivariate regression is what isolates the bathroom premium holding bedrooms and borough constant.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="predict-before-you-fit" class="slide level2">
+<h2>predict before you fit</h2>
+<div class="prompt">
+<p>sketch your guess for two numbers in the regression below — sign and rough magnitude.</p>
+<ol type="1">
+<li><strong>bathrooms coefficient</strong> ($/night per extra bathroom)</li>
+<li><strong>Manhattan vs Bronx gap</strong> ($/night)</li>
+</ol>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a></a>airbnb_model <span class="op">=</span> smf.ols(</span>
+<span id="cb3-2"><a></a>    <span class="st">'price ~ bathrooms + bedrooms + C(borough)'</span>,</span>
+<span id="cb3-3"><a></a>    data<span class="op">=</span>airbnb_clean</span>
+<span id="cb3-4"><a></a>).fit()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<aside class="notes">
+<p><strong>INLINE PREDICT (45 sec).</strong> Write down your guesses for the two numbers. Don’t worry about being precise — get the sign and rough scale right.</p>
+<p>Most students will guess: bathrooms coefficient $50–$100, Manhattan-Bronx gap $50–$100. The actual answers ($62 and ~$80 respectively) are in the right neighborhood for confident guessers and a useful surprise for ones who guessed too low.</p>
+<p>This is the first activity. Keep it brief — students need to commit to a guess before seeing the table, so the surprise of the rest-effect punchline lands when we re-run the same predict-then-reveal in block 2.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-regression-table" class="slide level2">
+<h2>the regression table</h2>
+<pre><code>                              coef    std err     t     P&gt;|t|    [0.025   0.975]
+Intercept                   89.0594    3.487    25.541  0.000   82.225   95.894
+C(borough)[T.Brooklyn]      26.4317    3.347     7.898  0.000   19.871   32.992
+C(borough)[T.Manhattan]     78.9870    3.354    23.546  0.000   72.412   85.562
+C(borough)[T.Queens]        -3.6129    3.563    -1.014  0.310  -10.597    3.371
+C(borough)[T.Staten Island] -8.6260    7.063    -1.221  0.222  -22.471    5.219
+bathrooms                   62.4408    1.860    33.566  0.000   58.795   66.087
+bedrooms                    34.0263    0.961    35.394  0.000   32.142   35.911</code></pre>
+<div class="fragment">
+<p><strong>every regression output you’ll see has these columns.</strong> we’ll walk through bathrooms end to end, then have a template for the rest of the course.</p>
+<aside class="notes">
+<p>Display the actual <code>model.summary()</code> output. Five columns per coefficient row, plus header (R², F) and footer (Cond. No.). Don’t try to teach all eight elements at once — the next slide takes the bathrooms row and walks through the five columns; the rest of the table fills itself in.</p>
+<p>The intercept is “predicted price for a Bronx 0-bath 0-bed listing” — $89, which is a bit low for a 0-bath listing (the row is sparse, intercept’s there for the formula). Borough coefficients are gaps relative to Bronx (the alphabetically-first level dropped as reference).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="reading-the-table-5-columns-per-row" class="slide level2">
+<h2>reading the table: 5 columns per row</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>column</th>
+<th>what it answers</th>
+<th>bathrooms</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>coef</strong></td>
+<td><span class="math inline">\hat\beta_j</span></td>
+<td><strong>$62.44 / bath</strong></td>
+</tr>
+<tr class="even">
+<td><strong>std err</strong></td>
+<td>how precise?</td>
+<td>$1.86</td>
+</tr>
+<tr class="odd">
+<td><strong>t</strong></td>
+<td><span class="math inline">\hat\beta / \widehat{\text{SE}}</span></td>
+<td>33.6</td>
+</tr>
+<tr class="even">
+<td><strong>P&gt;|t|</strong></td>
+<td>reject <span class="math inline">H_0: \beta=0</span>?</td>
+<td><span class="math inline">&lt; 0.001</span></td>
+</tr>
+<tr class="odd">
+<td><strong>[0.025, 0.975]</strong></td>
+<td>95% CI</td>
+<td><strong>[$58.80, $66.09]</strong></td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p><strong>plus header</strong>: <span class="math inline">R^2 = 0.40</span>, <strong>footer</strong>: Cond. No.&nbsp;= 35</p>
+<aside class="notes">
+<p>Five columns walked through with the bathrooms numbers in the right column. The $62.44 / bath coefficient is the headline. SE $1.86 means we know that number to within a few dollars. t = 33.6 is enormous (far above the |t| &gt; 2 threshold). p &lt; 0.001. The CI [$58.80, $66.09] excludes zero by a country mile and is narrow enough to drive a renovation decision.</p>
+<p>Header: R² = 0.40 means the three predictors explain 40% of price variance. Cond. No.&nbsp;= 35 is just over the multicollinearity threshold (30) — bathrooms and bedrooms ARE correlated, expected. Not a problem.</p>
+<p>Footnote: the F-statistic is also in the header. We don’t lean on it in this course — when each individual coefficient already has its own t-test, the omnibus version rarely changes a decision. Just know it exists.</p>
+<p>About 90 sec on this slide.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="interpreting-the-coefficients" class="slide level2">
+<h2>interpreting the coefficients</h2>
+<ul>
+<li><strong>bathrooms ($62)</strong>: each extra bathroom → ~$62 more per night, controlling for bedrooms and borough</li>
+<li><strong>bedrooms ($34)</strong>: similar story; smaller premium</li>
+<li><strong>Manhattan vs Bronx (+$79)</strong>: the borough premium</li>
+<li><strong>Brooklyn vs Bronx (+$26)</strong>: closer to Manhattan than to outer boroughs</li>
+<li><strong>Queens, Staten Island</strong>: not distinguishable from Bronx at <span class="math inline">\alpha=0.05</span></li>
+</ul>
+<div class="fragment">
+<blockquote>
+<p><em>“holding everything else constant, a one-unit increase in <span class="math inline">x_j</span> is associated with a <span class="math inline">\hat\beta_j</span> change in <span class="math inline">y</span>”</em></p>
+</blockquote>
+<aside class="notes">
+<p>Walk through the signs. Most are unsurprising; the Brooklyn premium being smaller than Manhattan is the obvious geographic story. Queens and Staten Island not significantly different from Bronx is a function of (a) sample size in those boroughs and (b) actual similarity in the cheap end of the price range.</p>
+<p>The “holding everything else constant” gloss matters: this is what students should understand by “controlling for.” The next slide makes the warning explicit.</p>
+<p>Note: the intercept ($89) is the “Bronx 0-bath 0-bed listing” prediction — useful for the formula, not for interpretation.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-1" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2></h2>
+<div class="prompt">
+<p><strong>would adding a bedroom raise YOUR listing price by $34?</strong></p>
+<p>think about what changes when you add a bedroom to your apartment.</p>
+</div>
+<aside class="notes">
+<p><strong>DISCUSSION: think-pair-share (4 min).</strong> 1 min think; 2 min pair; 1 min debrief.</p>
+<p>Goal: get students to see that the regression coefficient is an across-listings <em>association</em>, not a personal <em>intervention</em> prediction. Adding a bedroom usually means the apartment is bigger (more sq ft) which means many things change at once: layout, comp set, possibly higher cleaning fees, etc. The coefficient picks up the entire correlation — it’s not isolating “bedroom” as a treatment.</p>
+<p>If stuck: “what does adding a bedroom usually require?” — bigger apartment, different building stock, etc.</p>
+<p>Key insight: an across-listings association is not a counterfactual claim about your unit. The coefficient says “listings <em>with</em> more bedrooms charge more”; it does not say “<em>adding</em> a bedroom would lift this listing’s price.” We’ll come back to this distinction in Ch 18 with DAGs.</p>
+<p>This is the central “association vs causation” beat for the chapter. Make sure it lands before moving on.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-conditional-null" class="slide level2">
+<h2>the conditional null</h2>
+<div class="definition-box">
+<div class="def-term">
+<p>coefficient null hypothesis</p>
+</div>
+<p><span class="math display">H_0: \beta_j = 0 \quad \text{vs} \quad H_a: \beta_j \neq 0</span></p>
+<p>predictor <span class="math inline">j</span> contributes nothing <strong>given the other predictors in this model</strong></p>
+</div>
+<div class="fragment">
+<ul>
+<li><strong>conditional</strong>, not unconditional</li>
+<li>same predictor: significant in one model, not in another</li>
+<li>saw it in <strong>Ch 5</strong>: bathrooms coef <em>shrank</em> once bedrooms entered</li>
+</ul>
+<aside class="notes">
+<p>Read the null carefully: it’s a conditional statement. The same variable can fail in one model and pass in another. Students saw exactly this in Ch 5 — the bathrooms coefficient was larger before bedrooms entered the model, because some “bathroom” signal was actually apartment size leaking through.</p>
+<p>Critical for the NBA section coming up: REST_DAYS is “significant” given player quality, opponent strength, home/away. The null we’re testing is NOT “rest days are unrelated to game score” but “rest days add nothing beyond what player quality and the other controls already explain.”</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="the-t-statistic-gosset-again" class="slide level2">
+<h2>the t-statistic — Gosset, again</h2>
+<div class="definition-box">
+<div class="def-term">
+<p>coefficient t-test</p>
+</div>
+<p><span class="math display">t = \frac{\hat\beta_j}{\widehat{\text{SE}}(\hat\beta_j)}</span></p>
+<p>ratio of an estimate to its <strong>estimated</strong> SE</p>
+</div>
+<div class="fragment">
+<ul>
+<li>exactly Gosset’s situation from <strong>Ch 10</strong></li>
+<li>estimating the SE → fatter tails → Student’s <span class="math inline">t</span></li>
+<li><span class="math inline">n</span> large here (<span class="math inline">\approx 15{,}000</span>) → <span class="math inline">t^* \approx 1.96</span></li>
+<li>read p-values off a normal in practice</li>
+</ul>
+<aside class="notes">
+<p>Gosset (Ch 10) faced the same problem: when you estimate the SE from data instead of knowing it, the test statistic has heavier tails than a standard normal. Same correction here — under the LINE conditions the ratio is exactly <span class="math inline">t_{n-p-1}</span> — but with sample sizes in the tens of thousands, the correction is invisible.</p>
+<p>If asked about df: it’s n − p − 1 (one per estimated parameter, including the intercept). This goes in the Going-deeper box of the book.</p>
+<p>Multiple-testing aside: a regression with p predictors runs p tests at once, so Bonferroni/BH applies in principle. Here all our p-values are &lt; 0.001 so the correction doesn’t change conclusions, but for marginal p-values (~0.01–0.05) it would.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="ci-for-the-bathrooms-coefficient" class="slide level2">
+<h2>CI for the bathrooms coefficient</h2>
+<p>formula: <span class="math display">\hat\beta_j \pm t^* \cdot \widehat{\text{SE}}(\hat\beta_j)</span></p>
+<div class="fragment">
+<p>plug in: <span class="math display">62.44 \pm 1.96 \cdot 1.86 = [\$58.80,\ \$66.09]</span></p>
+</div>
+<div class="fragment">
+<p>bootstrap (Ch 8) on 1,000 resamples agrees:</p>
+<pre><code>formula CI:    [$58.80, $66.09]
+bootstrap CI:  [$58.78, $66.04]</code></pre>
+</div>
+<div class="fragment">
+<p><strong>$59–$66 per bathroom is the range we’re betting on.</strong></p>
+<aside class="notes">
+<p>The CI is the decision-grade output. Width ~$7 is tight enough to use; the lower bound $59 is large enough to clear a renovation hurdle.</p>
+<p>Bootstrap agreement is the sanity check: if the formula and the bootstrap disagree, the LINE conditions are likely violated (we’ll check in block 3).</p>
+<p>Note the t* ≈ 1.96 plug-in: at n = 15,000 the t critical value matches the normal to four decimal places, so we use the familiar 1.96.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="decision-invest-50k" class="slide level2">
+<h2>decision: invest $50K?</h2>
+<ul>
+<li><strong>bathroom premium</strong>: $59–$66 / night (95% CI)</li>
+<li><strong>typical occupancy</strong>: ~70% × 365 = 256 nights/year</li>
+<li><strong>incremental revenue</strong>: ~$15,000–$17,000 / year</li>
+<li><strong>payback</strong>: ~3 years</li>
+</ul>
+<div class="fragment">
+<p><strong>yes, the data support the renovation.</strong> but two caveats —</p>
+</div>
+<div class="fragment">
+<ul>
+<li><strong>association ≠ intervention</strong>: across-listings coefficient may overstate what <em>adding</em> a bathroom does</li>
+<li><strong>diagnostics</strong>: does the regression’s promise of <span class="math inline">\pm 1.96 \cdot \text{SE}</span> actually hold? (block 3)</li>
+</ul>
+<aside class="notes">
+<p>The point of an entire block on Airbnb: a regression with a tight CI and a meaningful magnitude IS decision-grade in many real settings. The point of a stats course: don’t sell the decision without the caveats. Block 3 will check whether the CI is honest, and Ch 18 will sharpen the across-listings-vs-counterfactual point.</p>
+<p>About 75 min into block 1. Move to block 2.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="prediction-interval-vs-ci-for-the-mean" class="slide level2">
+<h2>prediction interval vs CI for the mean</h2>
+
+<img data-src="images/lec12/cell-11-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:65.0%"><ul>
+<li><strong>blue band</strong>: 95% CI for the <strong>mean</strong> price at this <span class="math inline">x</span></li>
+<li><strong>orange band</strong>: 95% <strong>prediction</strong> interval for a single new listing</li>
+</ul>
+<div class="fragment">
+<p>PI tracks the gray scatter where data is dense; <strong>extrapolated</strong> (red shading) at high bathroom counts.</p>
+<aside class="notes">
+<p>Two intervals, two questions. CI for the mean: how uncertain are we about the <em>average</em> price at this x? PI: where might a <em>single new</em> listing fall? PI is wider because it adds individual variability (<span class="math inline">\sigma^2</span>) on top of estimation uncertainty.</p>
+<p>The gray scatter is real Manhattan-1-bedroom listings. Where they’re dense (near 1 bathroom), the orange PI brackets most of them — exactly the job of a 95% PI. The red shading marks where Manhattan-1-bed listings barely exist (4-5 bathrooms) — the band there is extrapolated and not visually verifiable.</p>
+<p>Forward connection: building this kind of band correctly requires the residuals to be roughly normal-shaped. The right-skew we saw two slides ago means the upper end of the orange band is too low — actual high-end listings reach the $500 cap more often than the model predicts.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-2" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>NBA rest: significant, but not important</p>
+</div>
+</section>
+<section id="the-nba-question" class="slide level2">
+<h2>the NBA question</h2>
+<p>does <strong>extra rest</strong> help an NBA player’s game score?</p>
+<div class="fragment">
+<p>what tangles a raw comparison?</p>
+<ul>
+<li class="fragment"><strong>bench players</strong> get more rest (DNPs are “rest” by another name)</li>
+<li class="fragment"><strong>stars</strong> get rested before tough opponents</li>
+<li class="fragment"><strong>injured players</strong> return after long absences</li>
+</ul>
+</div>
+<div class="fragment">
+<p>so we control for <strong>player quality</strong>, <strong>opponent strength</strong>, <strong>home/away</strong>.</p>
+<aside class="notes">
+<p>The NBA front office wants to act on a claim that rest boosts performance. Before fitting anything, we already know who is in the data is correlated with how much rest they got — the very confounders that the regression has to handle.</p>
+<p>Set up the four-predictor model: REST_DAYS + PLAYER_SEASON_AVG + HOME + OPP_GS_ALLOWED. PLAYER_SEASON_AVG is the player’s season-long average game score (a measure of overall quality). OPP_GS_ALLOWED is the opponent’s average game score allowed (HIGH = porous defense — name flagged on a later slide).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="fit-then-read" class="slide level2">
+<h2>fit, then read</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a></a>model_full <span class="op">=</span> smf.ols(</span>
+<span id="cb6-2"><a></a>    <span class="st">'GAME_SCORE ~ REST_DAYS + PLAYER_SEASON_AVG '</span></span>
+<span id="cb6-3"><a></a>    <span class="st">'+ HOME + OPP_GS_ALLOWED'</span>,</span>
+<span id="cb6-4"><a></a>    data<span class="op">=</span>nba_games</span>
+<span id="cb6-5"><a></a>).fit()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="fragment">
+<pre><code>                       coef     std err      t       P&gt;|t|     [0.025  0.975]
+Intercept              -0.0072  0.071    -0.101    0.919     -0.146   0.131
+REST_DAYS              -0.1531  0.022    -7.020    0.000     -0.196  -0.110
+PLAYER_SEASON_AVG       1.0163  0.005   192.471    0.000      1.006   1.027
+HOME                    0.5022  0.057     8.764    0.000      0.390   0.614
+OPP_GS_ALLOWED          1.0049  0.011    87.953    0.000      0.982   1.027</code></pre>
+</div>
+<div class="fragment">
+<p>REST_DAYS: <span class="math inline">\hat\beta = -0.15</span>, <span class="math inline">p &lt; 0.001</span>. <strong>statistically significant.</strong> done?</p>
+<aside class="notes">
+<p>n = 72,156 player-game observations. The REST_DAYS row clears every threshold the t-test cares about: |t| = 7, p &lt; 0.001, CI [−0.20, −0.11] excludes zero comfortably. By the criteria of block 1, we should report this as a real finding.</p>
+<p>Don’t reveal the punchline yet — let students sit with “the data say rest <em>hurts</em> performance, p &lt; 0.001” for a moment. Block 1 said a tight CI excluding zero meant decision-grade. Here, taking that seriously would say “rest hurts; cut rest days.” That conclusion is wrong, and the next slide tells you why.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="but-check-the-size" class="slide level2">
+<h2>but check the size</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a></a>rest_coef <span class="op">=</span> <span class="op">-</span><span class="fl">0.153</span>          <span class="co"># game score points / extra rest day</span></span>
+<span id="cb8-2"><a></a>game_score_std <span class="op">=</span> <span class="fl">7.85</span>       <span class="co"># SD of game score across player-games</span></span>
+<span id="cb8-3"><a></a>cohens_d <span class="op">=</span> rest_coef <span class="op">/</span> game_score_std</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>Cohen's d = -0.0195 SD</code></pre>
+<div class="fragment">
+<div class="definition-box">
+<div class="def-term">
+<p>Cohen’s d</p>
+</div>
+<p>coefficient divided by response SD — <strong>how many SDs of the outcome does a one-unit predictor change move the prediction</strong></p>
+</div>
+<aside class="notes">
+<p>Cohen’s d puts the coefficient on a unitless scale. Here -0.02 — a fiftieth of a standard deviation. The Cohen convention (small = 0.2, medium = 0.5, large = 0.8) treats this as essentially zero on any benchmark.</p>
+<p>The slide is the formal definition. The next slide reveals the crucial pedagogical point: with n in the tens of thousands, the t-test sees this 50× more precisely than the magnitude warrants. Significance is not importance.</p>
+<p>Cohen’s benchmarks are conventions, not laws — context matters. A tiny effect on something high-stakes (mortality) can matter; a “large” effect on something low-stakes can fail to. Here our effect is small AND on something low-stakes; both ways out fail.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="significance-importance" class="slide level2">
+<h2>significance ≠ importance</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th></th>
+<th>NBA REST_DAYS</th>
+<th>Airbnb bathrooms</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>coefficient</strong></td>
+<td><span class="math inline">-0.15</span></td>
+<td>$62.44</td>
+</tr>
+<tr class="even">
+<td><strong>p-value</strong></td>
+<td><span class="math inline">&lt; 0.001</span></td>
+<td><span class="math inline">&lt; 0.001</span></td>
+</tr>
+<tr class="odd">
+<td><strong>95% CI excludes 0</strong></td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr class="even">
+<td><strong>Cohen’s d</strong></td>
+<td><span class="math inline">-0.02</span></td>
+<td><span class="math inline">0.30</span></td>
+</tr>
+<tr class="odd">
+<td><strong>practically meaningful?</strong></td>
+<td><strong>no</strong></td>
+<td><strong>yes</strong></td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<blockquote>
+<p><em>“statistical significance is no substitute for practical importance.”</em></p>
+</blockquote>
+<aside class="notes">
+<p>Side-by-side comparison makes the lesson concrete. The first three rows are identical (both clear every textbook bar). The fourth row is the dividing line — Cohen’s d is 15× larger for bathrooms. The fifth row is the decision.</p>
+<p>The aphorism caps the block. With n in the tens of thousands, the t-test is sensitive enough to flag effects too small to act on. Always report effect size alongside p-value.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-3" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2></h2>
+<div class="prompt">
+<p><strong>a sports analytics team comes to you and says:</strong></p>
+<blockquote>
+<p>“we ran a regression and found a negative coefficient for rest days — extra rest <em>hurts</em> performance, <span class="math inline">p &lt; 0.001</span>”</p>
+</blockquote>
+<p><strong>before they act, what questions should you ask?</strong></p>
+</div>
+<aside class="notes">
+<p><strong>DISCUSSION: think-pair-share (5 min).</strong> 1 min think; 2 min pair; 2 min debrief.</p>
+<p>Target answers (collect from class):</p>
+<ol type="1">
+<li><strong>how big is the effect?</strong> Tiny — Cohen’s d ~ 0.02, effectively zero.</li>
+<li><strong>is there confounding?</strong> Yes — coaches choose when to rest based on schedule, opponent strength, fatigue, and recent game outcomes. The “treatment” assignment is not random.</li>
+<li><strong>does the model capture all relevant factors?</strong> No — schedule difficulty, travel, fatigue history, injury status are not all measured.</li>
+<li><strong>would this hold out of sample?</strong> Uncertain — across-season generalization needs separate validation.</li>
+</ol>
+<p>Most students will land on #1 (size) and #2 (confounding) quickly. Push for #3 (omitted variables) and #4 (out-of-sample generalization). #2 sets up Simpson’s paradox, #3 sets up “Association ≠ Causation,” #4 sets up Ch 16 backtesting.</p>
+<p>Key insight to debrief: a tight CI does not protect you from any of these. CIs widen with sample noise, not with confounding or model misspecification. Ch 18 formalizes confounding via DAGs.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="standardized-coefficients" class="slide level2">
+<h2>standardized coefficients</h2>
+
+<img data-src="images/lec12/cell-15-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:75.0%"><div class="fragment">
+<p><strong>player quality dominates.</strong> REST_DAYS barely clears zero.</p>
+<aside class="notes">
+<p>Standardize each coefficient by multiplying by the predictor’s SD — puts all effects on a common “per 1 SD” scale and lets you eyeball relative importance. Player season average dominates (CI bar far from zero). Home court is a small but visible bump. Opponent’s GS allowed is also large, but mechanical (next slide). REST_DAYS is the sliver at the bottom — barely clears zero, with a CI that just touches zero.</p>
+<p>The bar that should drive a strategic decision is invisible next to the bars for variables we already understood.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="variable-names-can-deceive" class="slide level2">
+<h2>variable names can deceive</h2>
+<p>we called it <strong>OPP_GS_ALLOWED</strong> = mean game score players post against this opponent</p>
+<ul>
+<li><strong>high value</strong> = porous defense (opponents post big numbers)</li>
+<li><strong>low value</strong> = stingy defense</li>
+</ul>
+<div class="fragment">
+<p>coefficient: <span class="math inline">+1.00</span> — facing a porous defense → higher game score.</p>
+<aside class="notes">
+<p>This is the OPP_GS_ALLOWED warning from the chapter. The variable name lied about the direction of the encoding — high “strength” actually means weak defense. The positive coefficient is mechanical, almost tautological (the regression is partly fitting “your score is your opponent’s GS allowed plus deviations”).</p>
+<p>Real-world version: a teammate names a column ambiguously, you read the regression, the sign surprises you, you write it up — and the surprise is just a sign convention you missed. Always look at how the variable was computed before interpreting.</p>
+<p>Also flag: same in-sample-mechanical issue affects PLAYER_SEASON_AVG (coefficient near 1 because the season average IS partly the game we’re predicting).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="confounding-made-visible" class="slide level2">
+<h2>confounding made visible</h2>
+
+<img data-src="images/lec12/cell-17-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:75.0%"><div class="fragment">
+<p>aggregate slope (dashed) <strong>steeper</strong> than within-quality slopes (colored).</p>
+</div>
+<div class="fragment">
+<p>adding <code>PLAYER_SEASON_AVG</code> is the algebraic version of switching from the dashed line to the colored ones — <strong>Simpson’s paradox in regression form</strong>.</p>
+<aside class="notes">
+<p>The Simpson’s-paradox visualization. Dashed black line: aggregate trend (rest vs game score, all players). Colored lines: same trend within each player-quality quartile. The within-bucket slopes are nearly flat — once you compare like-to-like, extra rest barely moves game score. The aggregate slope is much steeper, because it picks up the <em>compositional</em> effect (bench players score low AND get more rest).</p>
+<p>Strictly speaking this is the <em>attenuation</em> form of Simpson’s paradox: signs don’t flip, but the aggregate magnitude is much larger than any within-bucket magnitude. The lesson is the same: an unadjusted regression of game score on rest days alone would have reported a misleadingly bigger coefficient.</p>
+<p>This visual does what the model-by-model coefficient progression in the book does — show that controlling for player quality is what isolates the rest effect.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="association-not-causation" class="slide level2">
+<h2>association, not causation</h2>
+<p>regression controls for <strong>measured</strong> covariates. it does not estimate <strong>causal</strong> effects.</p>
+<div class="fragment">
+<p>coaches <em>choose</em> when to rest:</p>
+<ul>
+<li>DNP after a soft loss ≠ DNP before a back-to-back</li>
+<li>rest before a tough opponent ≠ rest before a cupcake</li>
+</ul>
+<aside class="notes">
+<p>The chapter’s “Association, not causation” warning. Coaches choose when to rest players for strategic reasons we cannot observe. Even with all the measured controls, the rest coefficient mixes the rest effect with the strategic-scheduling effect.</p>
+<p>Forward to Ch 18: DAGs let you draw which paths a regression closes (variables you measured and controlled for) and which it leaves open (unmeasured confounders). Today’s chapter handles measured confounders well; unmeasured ones need the DAG framework.</p>
+<p>About 75 min into block 2. Move to block 3.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-4" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>Q3: is the inference trustworthy?</p>
+</div>
+</section>
+<section id="line-conditions" class="slide level2">
+<h2>LINE conditions</h2>
+<div class="definition-box">
+<div class="def-term">
+<p>LINE</p>
+</div>
+<p>assumptions for OLS inference:</p>
+<ul>
+<li><strong>L</strong> linearity</li>
+<li><strong>I</strong> independence</li>
+<li><strong>N</strong> normal residuals</li>
+<li><strong>E</strong> equal variance (no heteroscedasticity)</li>
+</ul>
+</div>
+<div class="fragment">
+<p>each letter has a diagnostic signature. residual plot covers <strong>L</strong> and <strong>E</strong>; Q-Q plot covers <strong>N</strong>; <strong>I</strong> needs you to ask whether rows are clustered.</p>
+<aside class="notes">
+<p>LINE is the standard mnemonic. Pronounce it slowly the first time. The chapter introduces residual plots in Ch 5 informally; here we’re using the same plots for a sharper purpose — deciding whether the t-tests and CIs we just computed are honest.</p>
+<p>Independence is the trickiest letter to check from residual plots alone. Both our datasets have an issue: NBA repeats players (correlated within player); Airbnb clusters by host (correlated within host). The fix is clustered standard errors. With n in the tens of thousands, clustering would widen the CIs but not flip any “significant vs not” calls — qualitative findings hold.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="residual-plots-do-residuals-have-constant-spread" class="slide level2">
+<h2>residual plots: do residuals have constant spread?</h2>
+
+<img data-src="images/lec12/cell-19-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:75.0%"><div class="fragment">
+<p><strong>Airbnb</strong>: spread fans out as fitted price grows (“funnel”). <strong>mild heteroscedasticity.</strong></p>
+<aside class="notes">
+<p>Left panel: residuals vs fitted values. Right panel: scale-location (sqrt|standardized residual| vs fitted), which is the cleanest view of variance.</p>
+<p>The orange LOWESS smoother on the scale-location plot trends upward — variance grows with predicted price. Expensive listings vary more in absolute dollars than cheap ones. This is a textbook E-violation, and it has a textbook fix: log-transform price.</p>
+<p>For inference on the bathrooms coefficient, this matters less than it might seem at smaller n: with n = 15,000, the CLT still buys us approximately correct CIs on the coefficients. But a <em>prediction interval</em> for an individual listing’s price would be misshapen at the high end.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="q-q-plot-are-residuals-normal" class="slide level2">
+<h2>Q-Q plot: are residuals normal?</h2>
+
+<img data-src="images/lec12/cell-21-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:55.0%"><div class="fragment">
+<p><strong>Airbnb residuals are right-skewed</strong>: prices have a hard floor at $0 but a long right tail. fix: log-transform price.</p>
+<aside class="notes">
+<p>Q-Q plot compares residual quantiles to a normal. Points on the diagonal = normal residuals. Bowing up on the right = right-skew.</p>
+<p>Airbnb: prices have a hard floor at $0 but a long right tail. Combined with the heteroscedasticity above, log price would clean both up.</p>
+<p>NBA shows a similar but milder pattern (covered in the chapter’s Going-deeper box). The Q-Q gallery — six residual distributions matched to their Q-Q signatures — is also there for reference.</p>
+<p>CLT covers us at n = 15,000–72,000 for <em>coefficient</em> CIs. Prediction intervals would underestimate the upper end.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="diagnostics-catch-statistical-problems-not-systematic-ones" class="slide level2">
+<h2>diagnostics catch <em>statistical</em> problems, not <em>systematic</em> ones</h2>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Warning</strong></p>
+</div>
+<div class="callout-content">
+<p>residual plots, Q-Q plots, and the LINE conditions catch <strong>statistical</strong> problems: non-normality, heteroscedasticity, the wrong functional form</p>
+<p>they do <strong>not</strong> catch the <strong>systematic</strong> problems that bias a coefficient as an answer to a causal question:</p>
+<ul>
+<li>selective treatment assignment</li>
+<li>omitted variables</li>
+<li>model misspecification you haven’t checked</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>CIs widen with sample noise or omitted variables.</p>
+<p><strong>they do necessarily widen with confounding.</strong></p>
+<aside class="notes">
+<p>The chapter’s strongest single sentence. The NBA REST_DAYS coefficient is the canonical case — its CI is statistically tight (<span class="math inline">n &gt; 70{,}000</span>), the residual plots are mostly clean — yet the coefficient would still be the wrong answer to “should we rest players more?” if rested players were also strategically scheduled against weaker opponents. Confounders bias the point estimate; they don’t show up in the SE.</p>
+<p>This is the bridge to Ch 18. Diagnostics are necessary but not sufficient. A regression can pass every LINE check and still be answering the wrong question.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-5" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2></h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<div class="prompt">
+<p>you fit a regression for monthly health-insurance claim costs:</p>
+<p><strong>cost ~ age + sex + smoking + zip code.</strong></p>
+<p>the <strong>Q-Q plot of residuals</strong> is on the right.</p>
+<p><strong>which LINE assumption is failing?</strong></p>
+<p><strong>which fix would you try first?</strong></p>
+</div>
+</div><div class="column" style="width:45%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/lec12/health-insurance-qq.png" class="quarto-figure quarto-figure-center" style="width:95.0%"></p>
+</figure>
+</div>
+</div></div>
+<aside class="notes">
+<p><strong>DISCUSSION: analyze-this (5 min).</strong> 30 sec think; 2 min pair; 2 min debrief.</p>
+<p>Diagnostic exercise. Right-skewed Q-Q: residuals match the normal line on the left side, then bow above it on the right — a small number of very large positive residuals. This is the <strong>N</strong> violation; common in cost data because of a small number of catastrophic claims.</p>
+<p>Standard fix: log-transform the response (insurance cost). After log, residuals usually look more normal; coefficients become “fractional change in cost per unit predictor” rather than “dollar change.”</p>
+<p>Probe: would clustered SEs help? Not for normality — clustering addresses <strong>I</strong> (independence). Probe: would adding more predictors help? Possibly for <strong>L</strong>, not for <strong>N</strong> directly.</p>
+<p>If stuck: “look at the right tail — what kind of cost distribution has heavier-than-normal tails?” Insurance, asset returns, claim sizes — all right-skewed.</p>
+<p>Key insight: each LINE letter has a characteristic Q-Q signature; matching the signature to the violation tells you what to fix. Diagnostics are a <em>toolkit</em>, not a binary “passed/failed” judgment.</p>
+<p>(If the slides are running short on time, skip to the logistic coda; this discussion can be cut.)</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-6" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>inference for logistic regression</p>
+</div>
+</section>
+<section id="logistic-regression-same-recipe" class="slide level2">
+<h2>logistic regression: same recipe</h2>
+<p>from <strong>Ch 7</strong>: logistic models a <strong>binary outcome</strong> via the log-odds.</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>linear regression</th>
+<th>logistic regression</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">t = \hat\beta_j / \widehat{\text{SE}}</span></td>
+<td><span class="math inline">z = \hat\beta_j / \widehat{\text{SE}}</span></td>
+</tr>
+<tr class="even">
+<td>exact <span class="math inline">t_{n-p-1}</span> under LINE</td>
+<td>asymptotic normal (Wald, MLE)</td>
+</tr>
+<tr class="odd">
+<td>coef in original units</td>
+<td><span class="math inline">e^{\hat\beta_j}</span> = <strong>odds ratio</strong></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">[\hat\beta - 1.96 \cdot \text{SE},\ \hat\beta + 1.96 \cdot \text{SE}]</span></td>
+<td>exponentiate to get OR CI</td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p><strong>read the table the same way; just remember <span class="math inline">z</span> instead of <span class="math inline">t</span>, and exponentiate at the end.</strong></p>
+<aside class="notes">
+<p>The logistic-regression coda. Two changes from OLS:</p>
+<ol type="1">
+<li><p>The test statistic is z, not t. Logistic uses MLE → Wald test → asymptotic normal. There’s no exact small-sample distribution. With sample sizes in the hundreds or thousands the normal approximation is fine; with rare-event outcomes or near-perfect separation, profile-likelihood CIs are the safer fallback.</p></li>
+<li><p>Coefficients are on the log-odds scale. Exponentiating gives the odds ratio (multiplicative change in odds per unit increase in <span class="math inline">x_j</span>). CIs on <span class="math inline">\hat\beta</span> map to CIs on the OR by exponentiating both endpoints.</p></li>
+</ol>
+<p>The table reading template from block 1 still works — just z replaces t and exponentiate the coefficients and CIs at the end.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="framingham-odds-of-10-year-chd" class="slide level2">
+<h2>Framingham — odds of 10-year CHD</h2>
+
+<img data-src="images/lec12/cell-28-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:65.0%"><div class="fragment">
+<p>age, smoking, sysBP, glucose: <strong>OR &gt; 1</strong>, CIs exclude 1</p>
+<p>BMI: <strong>CI crosses 1</strong> (not distinguishable from “no effect”)</p>
+<aside class="notes">
+<p>Forest plot: each row is a predictor’s odds ratio with a 95% CI. The dashed red line at OR = 1 is “no effect.” A CI crossing 1 means the OR is not distinguishable from 1.</p>
+<p>BMI’s CI crosses 1 — controlling for BP and glucose, BMI’s independent contribution is harder to pin down. Doesn’t mean BMI doesn’t matter; means within this model, after accounting for the other predictors, the data don’t distinguish its OR from 1.</p>
+<p>Next slide walks through the math for interpreting the age OR.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="interpreting-the-age-or" class="slide level2">
+<h2>interpreting the age OR</h2>
+<p>age <span class="math inline">\widehat{\text{OR}} \approx 1.78</span> per 1 SD; 1 SD of age <span class="math inline">\approx 9</span> years</p>
+<div class="fragment">
+<p>linear in log-odds <span class="math inline">\Rightarrow</span> <strong>multiplicative on odds</strong></p>
+<p><span class="math display">\frac{\text{odds at } x + \Delta}{\text{odds at } x} \;=\; \widehat{\text{OR}}^{\,\Delta / \sigma_x}</span></p>
+</div>
+<div class="fragment">
+<p>age <span class="math inline">50 \to 60</span> is <span class="math inline">10</span> years <span class="math inline">\approx \tfrac{10}{9}</span> SD:</p>
+<p><span class="math display">\frac{\text{odds}(60)}{\text{odds}(50)} \;\approx\; 1.78^{10/9} \;\approx\; 1.90</span></p>
+<p>odds of CHD at 60 are about <strong>2× the odds at 50</strong></p>
+<aside class="notes">
+<p>The pedagogy: “OR” always carries an implicit unit. The model is linear in log-odds; exponentiating gives a multiplicative effect on odds. The reported OR is per a unit change of the <em>standardized</em> predictor (1 SD here). To convert to a different change <span class="math inline">\Delta</span> in the original units, raise OR to <span class="math inline">\Delta/\sigma</span>.</p>
+<p>Two routes to the same answer:</p>
+<ol type="a">
+<li><p>Exponentiate once: <span class="math inline">1.78^{10/9} \approx 1.90</span>.</p></li>
+<li><p>Per-year first: <span class="math inline">\hat\beta_{\text{SD}} = \log(1.78) \approx 0.577</span> per SD → <span class="math inline">\hat\beta_{\text{year}} \approx 0.577/9 \approx 0.064</span> per year → per-year OR <span class="math inline">\approx e^{0.064} \approx 1.066</span> → 10-year multiplier <span class="math inline">\approx 1.066^{10} \approx 1.90</span>.</p></li>
+</ol>
+<p>Same answer. Route (a) is one line.</p>
+<p>If you wanted a per-year OR directly from the fitted model, you would refit on un-standardized age — or equivalently, divide <span class="math inline">\hat\beta_{\text{age}}</span> by <span class="math inline">\sigma_{\text{age}}</span> before exponentiating.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="summary" class="slide level2">
+<h2>summary</h2>
+<ul>
+<li class="fragment"><strong>Airbnb</strong>: bathrooms +$62/night, CI [$59, $66] — decision-grade. <strong>act on it.</strong></li>
+<li class="fragment"><strong>NBA</strong>: rest “significant” at <span class="math inline">p&lt;0.001</span>, but Cohen’s d <span class="math inline">\approx -0.02</span> — <strong>don’t act on it.</strong></li>
+<li class="fragment"><strong>same machinery, very different verdicts.</strong> check effect size, not just p-value</li>
+<li class="fragment"><strong>diagnostics</strong> catch statistical problems (non-normality, heteroscedasticity), not systematic ones (confounding, omitted variables)</li>
+<li class="fragment"><strong>logistic</strong> = same template, <span class="math inline">z</span> for <span class="math inline">t</span>, exponentiate the coefficients</li>
+</ul>
+<aside class="notes">
+<p>Five takeaways. The first two are the parallel decisions. The third is the central pedagogical point. The fourth is the chapter’s strongest sentence (CIs widen with sample noise, not with confounding). The fifth is the bridge to Ch 12.5.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="next-ch-12.5-classification-meets-inference" class="slide level2">
+<h2>next: Ch 12.5 — classification meets inference</h2>
+<p>how do we ask <strong>“is this classifier real?”</strong> with the same toolkit?</p>
+<div class="fragment">
+<ul>
+<li><strong>bootstrap CI for AUC</strong> — same idea as Ch 8, applied to classifier performance</li>
+<li><strong>permutation test</strong> for “classifier beats random guessing”</li>
+<li><strong>multiple-testing corrections</strong> over many logistic coefficients</li>
+</ul>
+<p>same template throughout. only the test statistic and the response variable change.</p>
+<aside class="notes">
+<p>Forward pointer to Ch 12.5. The chapter is short (15-20 min) and reuses Ch 8 (bootstrap), Ch 9 (permutation), Ch 11 (multiple testing) on classification metrics.</p>
+<p>Then Ch 13 opens Act 3 with a completely different model family: trees and random forests.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="feedback" class="slide level2">
+<h2>feedback</h2>
+<div class="quarto-layout-panel" data-layout="[20, 80]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 20.0%;justify-content: center;">
+<p><img data-src="images/feedback-qr-lec01.png" width="280"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 80.0%;justify-content: flex-start;">
+<p><strong><a href="https://forms.gle/feedback">forms.gle/feedback</a></strong></p>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 20.0%;justify-content: flex-start;">
+<p>what worked? what didn’t? what’s still confusing?</p>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Standard feedback slide. The QR points to the same form as previous lectures.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+
+
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+
+        height: 1080,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

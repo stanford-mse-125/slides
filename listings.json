@@ -1,0 +1,22 @@
+[
+  {
+    "listing": "/index.html",
+    "items": [
+      "/lec01-introduction.html",
+      "/lec02-eda-visualization.html",
+      "/lec03-data-munging.html",
+      "/lec04-linear-models.html",
+      "/lec05-feature-engineering.html",
+      "/lec06-validation.html",
+      "/lec07-classification.html",
+      "/lec08-sampling.html",
+      "/lec09-permutation-tests.html",
+      "/lec10-hypothesis-testing.html",
+      "/lec11-multiple-testing.html",
+      "/lec12-regression-inference.html",
+      "/lec13-trees.html",
+      "/lec14-pca.html",
+      "/lec15-clustering.html"
+    ]
+  }
+]

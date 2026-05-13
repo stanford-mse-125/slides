@@ -1,0 +1,1826 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/tabby.min.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.37">
+
+  <meta name="author" content="Madeleine Udell">
+  <title>MSE 125 — Slides – Lecture 13: Decision Trees and Random Forests</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-7e9863cd0ef9c70c3784d80bfe5ce18d.css">
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+  <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Lecture 13: Decision Trees and Random Forests</h1>
+  <p class="subtitle">MSE 125 — Applied Statistics</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Madeleine Udell 
+</div>
+</div>
+</div>
+
+  <p class="date">Monday, May 11, 2026</p>
+</section>
+<section id="logistics" class="slide level2">
+<h2>logistics</h2>
+<ul>
+<li><strong>HW 3</strong> review sessions this week</li>
+<li><strong>Quiz 6</strong> Wednesday May 13 — regression inference + trees</li>
+<li><strong>project midterm report</strong> due Friday May 15</li>
+</ul>
+<aside class="notes">
+<p><strong>START RECORDING.</strong></p>
+<p>HW 3 was due Friday — graded back this week. Quiz 6 covers trees (today) and dimensionality reduction (Wednesday). Project midterm report due Friday.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-brief" class="slide level2">
+<h2>the brief</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<h3 id="airbnb-host-nyc">Airbnb host, NYC</h3>
+<p>goal: develop a pricing tool to help hosts set competitive nightly rates</p>
+<p>ch 5: a reasonable <span class="math inline">R^2</span> — but you picked the interactions, polynomial degree, and neighborhood encodings by hand</p>
+<p><strong>keep hand-engineering, or use a model that splits on its own?</strong></p>
+</div><div class="column" style="width:45%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/lec13/cell-6-output-1.png" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
+</figure>
+</div>
+</div></div>
+<aside class="notes">
+<p>The decision frame: a host-facing pricing tool, deadline Friday. Ch 5’s regression required hand-picking interactions, polynomial terms, and neighborhood encodings. Today we ask whether a tree-based model can find that structure on its own — and whether it’s good enough to ship.</p>
+<p>The image (the depth-3 tree on Airbnb) is just visual furniture for now — they’ll see it in detail in block 1. Don’t decode it on this slide.</p>
+<p>The chapter’s surprise lands in block 3: 100 averaged overfit trees beat the hand-engineered linear model.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="today" class="slide level2">
+<h2>today</h2>
+<ul>
+<li class="fragment"><strong>decision trees</strong> — splits found automatically, no encoding needed</li>
+<li class="fragment"><strong>a single tree overfits</strong> — and CV picks the depth</li>
+<li class="fragment"><strong>random forests</strong> — average overfit trees, watch variance collapse</li>
+<li class="fragment"><strong>trees vs.&nbsp;linear</strong> — geometry of the data picks the model</li>
+<li class="fragment"><strong>feature importance</strong> — what the forest uses, what to doubt</li>
+</ul>
+<aside class="notes">
+<p>Five beats. Each block has its own discussion. Block 1 establishes how a tree splits and overfits. Block 2 introduces bagging + the surprise that 100 overfit trees beat a hand-crafted linear model. Block 3 closes with how to read (and doubt) feature importance.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="bridge-from-logistic-regression" class="slide level2">
+<h2>bridge from logistic regression</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th></th>
+<th>logistic regression</th>
+<th>decision tree</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>boundary</td>
+<td>one <strong>hyperplane</strong></td>
+<td>many <strong>axis-aligned cuts</strong></td>
+</tr>
+<tr class="even">
+<td>feature engineering</td>
+<td>manual (Ch 5)</td>
+<td>automatic</td>
+</tr>
+<tr class="odd">
+<td>categories, missing</td>
+<td>encode + impute</td>
+<td>native</td>
+</tr>
+<tr class="even">
+<td>output</td>
+<td>probability via <span class="math inline">\sigma(\beta^\top x)</span></td>
+<td>mean of leaf</td>
+</tr>
+</tbody>
+</table>
+<p><strong>both follow the same recipe: fit, score, CV, predict.</strong></p>
+<aside class="notes">
+<p>The bridge slide. Logistic and tree share the same model-fitting recipe (fit, score, CV, predict) — they differ in how they carve up the feature space. Logistic draws one hyperplane; a tree stacks axis-aligned cuts. Both use the validation tools from Ch 6 and the classifier metrics from Ch 7.</p>
+<p>This sets up the “trees vs.&nbsp;linear” comparison in block 2.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>how a tree splits</p>
+</div>
+</section>
+<section id="decision-tree-in-pictures" class="slide level2">
+<h2>decision tree, in pictures</h2>
+
+<img data-src="images/lec13/cell-6-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"><div class="fragment">
+<p>each leaf reports a <strong>predicted price</strong> + <strong>sample count</strong></p>
+<aside class="notes">
+<p>The depth-3 tree on Airbnb. Read top-down: each internal node asks an if/then question on one feature; each leaf is a region of feature space with a predicted price + sample count.</p>
+<p>Don’t memorize the tree — point at the structure: room type at the root, then borough/bedrooms beneath. The model discovered these splits without any encoding hint.</p>
+<p>About 60 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="tree-vocabulary" class="slide level2">
+<h2>tree vocabulary</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<div class="definition-box">
+<div class="def-term">
+<p>decision tree</p>
+</div>
+<p>recursive <strong>if/then</strong> splits on one feature at a time</p>
+</div>
+<ul>
+<li><strong>leaf</strong> — node with no children; carries a prediction</li>
+<li><strong>internal node</strong> — any non-leaf node; asks a yes/no question, routes to a child</li>
+<li><strong>root</strong> — the single internal node at the top</li>
+<li><strong>depth</strong> — longest root-to-leaf path</li>
+<li><strong><code>max_depth</code></strong> — sklearn knob that limits depth</li>
+</ul>
+</div><div class="column" style="width:45%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/lec13/cell-6-output-1.png" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
+</figure>
+</div>
+</div></div>
+<aside class="notes">
+<p>Definition box + vocabulary list on the left, the depth-3 tree on the right so students can pin each term to a node as they read it. Leaves = the bottom row of small boxes (no children, carry the prediction); internal nodes = every other box including the root; root = the one at the top; depth = 3 here.</p>
+<p>If anyone asks: the root counts as an internal node (the one at the top, with no parent).</p>
+<p>About 90 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="look-at-the-second-split" class="slide level2">
+<h2>look at the second split</h2>
+<div class="prompt">
+<p>on the more-expensive side, the tree splits on <code>bedrooms</code> ≤ 1.5.</p>
+<p><strong>why did the algorithm pick <code>bedrooms</code> here, instead of <code>bathrooms</code> or <code>accommodates</code>?</strong></p>
+</div>
+<aside class="notes">
+<p><strong>INLINE PREDICT (45 sec).</strong> Reasoning prompt — students already saw the answer on slide 7, so we shift from prediction to <em>why</em>.</p>
+<p>Target answer: at this node the algorithm searches every (feature, threshold) pair and picks the one that drops SSE the most. <strong><code>bedrooms</code></strong> wins because the price gap between studios/1-bedrooms and 2+ bedrooms is sharper here than the gap induced by bathroom count or accommodates count. Bathrooms and accommodates correlate with bedrooms, so they carry similar information but split less cleanly at this node.</p>
+<p>Lesson: greedy splitting picks the <strong>most discriminating cut at this node</strong> — not the feature that’s “most important” overall. Importance is a <em>summary</em>, splits are <em>local</em>.</p>
+<p>Quick activity, no debrief beyond a sentence.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="how-a-split-is-chosen" class="slide level2">
+<h2>how a split is chosen</h2>
+<p>at each node, search every <span class="math inline">(j, s)</span> — feature <span class="math inline">j</span>, threshold <span class="math inline">s</span>:</p>
+<p><span class="math display">\min_{j,\, s} \left[ \sum_{x_i \in R_1(j,s)} (y_i - \bar{y}_1)^2 + \sum_{x_i \in R_2(j,s)} (y_i - \bar{y}_2)^2 \right]</span></p>
+<p>(sum of squared errors, <strong>SSE</strong>)</p>
+<div class="fragment">
+<ul>
+<li>each child predicts the <strong>mean</strong> <span class="math inline">\bar{y}</span> of its training rows</li>
+<li>algorithm enumerates every (feature, threshold) pair</li>
+<li>pick the split that drops total SSE most</li>
+<li>recurse inside each child</li>
+</ul>
+<aside class="notes">
+<p>The formal split criterion. Squared-error loss for regression: pick the (feature, threshold) pair that minimizes total within-region squared error after the split. Each leaf predicts the within-leaf mean.</p>
+<p>Don’t dwell on the formula — students recognize SSE from Ch 4. The sketch on the next slide makes “greedy axis-aligned partitioning” concrete.</p>
+<p>About 90 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="greedy-partitioning-step-by-step" class="slide level2">
+<h2>greedy partitioning, step by step</h2>
+
+<img data-src="images/lec13/cell-7-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"><div class="fragment">
+<ul>
+<li><strong>greedy</strong> — best split now, never reconsidered</li>
+<li><strong>axis-aligned</strong> — every cut parallel to an axis; a diagonal becomes a staircase</li>
+</ul>
+<aside class="notes">
+<p>The 4-panel toy: 22 points, two classes (yellow + green), depth-2 tree. Step 1 — pick the first split. Step 2 — split on <span class="math inline">x_2 \leq 1.95</span> (peels off the bottom strip). Step 3 — the upper region still mixes classes; split on <span class="math inline">x_1 \leq 2.00</span>. Final — three pure leaves.</p>
+<p>Two takeaways below the figure: 1. Greedy: best split right now, never reconsiders. Standard practice; not guaranteed optimal (NP-hard in general). 2. Axis-aligned: every cut parallel to an axis. A diagonal boundary becomes a staircase. Comes back in block 2 (trees vs.&nbsp;linear).</p>
+<p>About 2 min.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="classification-same-recipe-swap-the-loss" class="slide level2">
+<h2>classification: same recipe, swap the loss</h2>
+<div class="definition-box">
+<div class="def-term">
+<p>Gini impurity</p>
+</div>
+<p><span class="math inline">\text{Gini} = 1 - \sum_{k=1}^K \hat p_k^2</span></p>
+</div>
+<p>binary case: <span class="math inline">2\hat p (1 - \hat p)</span></p>
+<div class="fragment">
+<ul>
+<li><strong>pure node</strong>: Gini <span class="math inline">= 0</span></li>
+<li><strong>50/50 binary node</strong>: Gini <span class="math inline">= 0.5</span></li>
+<li>everything else — depth, CV, evaluation — is <strong>identical</strong></li>
+</ul>
+<aside class="notes">
+<p>Drop the 60-second classification aside in. The only thing that changes between regression trees and classification trees is the splitting criterion: SSE becomes Gini impurity. Same greedy recursive partitioning, same depth control, same CV recipe.</p>
+<p>Pure node = 0; perfectly mixed binary node = 0.5. Tree picks the split that drops <span class="math inline">\text{Gini}_\text{parent} - p_L \cdot \text{Gini}_L - p_R \cdot \text{Gini}_R</span> the most — categorical analogue of “drop SSE the most.”</p>
+<p>Don’t dwell. Block 1’s main act is what happens when you let the tree go too deep.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-1" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>deep enough to memorize, shallow enough to generalize</p>
+</div>
+</section>
+<section id="do-deep-trees-overfit" class="slide level2">
+<h2>do deep trees overfit?</h2>
+<div class="prompt">
+<p>we’re about to fit a single tree at depths 1–20 on Airbnb, with <code>min_samples_leaf=5</code>.</p>
+<p><strong>sketch what train <span class="math inline">R^2</span> and test <span class="math inline">R^2</span> look like as depth grows.</strong></p>
+<p>at what depth does test <span class="math inline">R^2</span> peak?</p>
+</div>
+<aside class="notes">
+<p><strong>INLINE PREDICT (45 sec).</strong> Students sketch on paper. Most will know train R² rises monotonically; the prompt forces them to commit on test. Common predictions: “U-curve, peak around depth 5–7.”</p>
+<p>Reveal on the next slide. The actual peak is at depth 7 (test R² = 0.615). That makes a clean lead-in to CV.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="a-single-tree-overfits" class="slide level2">
+<h2>a single tree overfits</h2>
+
+<img data-src="images/lec13/cell-9-output-2.png" class="quarto-figure quarto-figure-center r-stretch" style="width:78.0%"><div class="fragment">
+<ul>
+<li>shallow — <strong>underfits</strong>, high bias</li>
+<li>deep — <strong>memorizes</strong> training rows, high variance</li>
+<li>test <span class="math inline">R^2</span> peaks near depth <span class="math inline">7</span>, then collapses</li>
+</ul>
+<aside class="notes">
+<p>The U-curve reveal. Train R² climbs toward 1.0 as the tree memorizes; test R² peaks near depth 7 (CV agrees on the next slide), then collapses.</p>
+<p>Numbers worth quoting: at depth 4, train = 0.561, test = 0.559 (no overfit yet). At depth 20, train = 0.945, test = 0.376. Unrestricted, train = 1.0 (every row in its own leaf), test = 0.311.</p>
+<p>This is the bias-variance tradeoff from Ch 6 — same shape, new “complexity knob” (max_depth instead of polynomial degree).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="shallow-vs.-deep-on-a-2d-slice" class="slide level2">
+<h2>shallow vs.&nbsp;deep, on a 2D slice</h2>
+
+<img data-src="images/lec13/cell-10-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:85.0%"><div class="fragment">
+<p>deep tree’s quilt <strong>shows memorization</strong> — adding a bedroom can <em>lower</em> the prediction</p>
+<aside class="notes">
+<p>Two trees, both trained on (bedrooms, bathrooms) only, predicted price as color. Shallow (depth 3): a few orderly blocks — bigger listings cost more, every step. Deep (depth 20): a quilt where some adjacent cells have lower prices for more bedrooms. That non-monotone behavior means the tree has memorized a few quirky training rows.</p>
+<p>A linear model would render the same plot as a smooth color gradient — no quilt. Trees draw rectangular blocks; that’s their signature.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="cv-picks-the-depth" class="slide level2">
+<h2>CV picks the depth</h2>
+
+<img data-src="images/lec13/cell-11-output-2.png" class="quarto-figure quarto-figure-center r-stretch" style="width:78.0%"><div class="fragment">
+<p>same recipe used for <strong>lasso <span class="math inline">\alpha</span></strong>, <strong>polynomial degree</strong>, <strong>k in kNN</strong></p>
+<aside class="notes">
+<p>The U-curve again — this time with 5-fold CV (errorbars are CV std). Best depth: 7. Test R² at the chosen depth: 0.615.</p>
+<p>Why CV not test? Picking depth on the test set burns it for honest evaluation. CV does the tuning on training data, so the test set stays clean for a final report.</p>
+<p>The recipe (sweep candidates, score with CV, take the best) generalizes — same thing for lasso α, polynomial degree, k in kNN, n_neighbors, anything tunable.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="from-regression-to-classification-fill-in-the-blanks" class="slide level2">
+<h2>from regression to classification: fill in the blanks</h2>
+<div class="prompt">
+<p>the regression recipe: <strong>split on SSE</strong>, <strong>predict the mean</strong> <span class="math inline">\bar y</span>.</p>
+<p>for classification, two things change:</p>
+<ol type="1">
+<li>splitting criterion: SSE → <strong>?</strong></li>
+<li>leaf prediction: mean of <span class="math inline">y</span> → <strong>?</strong></li>
+</ol>
+</div>
+<aside class="notes">
+<p><strong>INLINE PREDICT (45 sec).</strong> Two fill-in-the-blanks — conceptual, no code on screen.</p>
+<ol type="1">
+<li><strong>Gini impurity</strong> (defined two slides ago). The classification splitting criterion. Same recipe — pick the split that drops Gini the most.</li>
+<li><strong>Majority class</strong> (for hard predictions) or <strong>class proportions</strong> (for soft predictions / probabilities — needed for AUC).</li>
+</ol>
+<p>Everything else — depth control, CV, train/test split — stays the same. That’s the punchline: the recipe is shared; only the loss and the leaf statistic change.</p>
+<p>If anyone asks about the performance metric: R² doesn’t apply to 0/1 outcomes; we use accuracy or AUC. That’s an evaluation choice, separate from the splitting criterion.</p>
+<p>Quick reveal — no debrief beyond the wrap.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-2" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2></h2>
+<div class="prompt">
+<p><strong>a host with a 20-bedroom Manhattan apartment wants a price.</strong></p>
+<p>both models were fit on Airbnb listings, prices in <strong>$10–$500/night</strong>.</p>
+<p><strong>linear regression</strong> (simplified, Manhattan, entire home): <span class="math display">\widehat{\text{price}} = \$80 \;+\; \$30 \cdot \text{bedrooms}</span></p>
+<p><strong>depth-3 tree</strong> (Manhattan, entire home, bedrooms branch):</p>
+<ul>
+<li>bedrooms <span class="math inline">\leq 1.5</span> → <span class="math inline">\$135</span></li>
+<li><span class="math inline">1.5 &lt;</span> bedrooms <span class="math inline">\leq 2.5</span> → <span class="math inline">\$190</span></li>
+<li>bedrooms <span class="math inline">&gt; 2.5</span> → <span class="math inline">\$270</span></li>
+</ul>
+<p><strong>1.</strong> what does each model predict for <span class="math inline">20</span> bedrooms?</p>
+<p><strong>2.</strong> which would you trust — and why might <strong>both</strong> be wrong?</p>
+</div>
+<aside class="notes">
+<p><strong>DISCUSSION: think-pair-share (5 min).</strong> 1 min think + 2 min pair + 2 min debrief.</p>
+<p>Numerical answers (push for these first):</p>
+<ul>
+<li><strong>Linear:</strong> <span class="math inline">80 + 30 \cdot 20 = \$680</span> — the slope keeps going.</li>
+<li><strong>Tree:</strong> the bedrooms &gt; 2.5 leaf, $270 — the prediction <em>flatlines</em> because the tree was never trained on anything bigger.</li>
+</ul>
+<p>Pedagogical points:</p>
+<ol type="1">
+<li><strong>Linear extrapolates.</strong> It extends the fitted slope past the training range. If the true relationship really is linear out to 20 bedrooms, the extrapolation is roughly right; if it bends (luxury surcharges, capacity caps), it’s wrong in a smooth direction.</li>
+<li><strong>Trees flatline.</strong> A tree’s prediction is the mean training y inside one leaf. For inputs past the training range, the input routes into the boundary leaf — whose mean was calibrated on 3-, 4-, 5-bedroom listings. The tree is <em>guaranteed</em> to be wrong out there, by construction.</li>
+<li><strong>Both are wrong here.</strong> Training data was capped at $500; a real Manhattan 20-bedroom listing might be $5,000+. Neither model has any signal that far out.</li>
+</ol>
+<p>Connects forward to the “when to doubt the forest” section: distribution shift is a <em>forest’s</em> weakness, not a linear-model strength.</p>
+<p>If students get stuck on (2), prompt: “where does the training data end? what happens past that point in each model?”</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-3" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>average overfit trees</p>
+</div>
+</section>
+<section id="the-random-forest-briefly" class="slide level2">
+<h2>the random forest, briefly</h2>
+<div class="definition-box">
+<div class="def-term">
+<p>random forest</p>
+</div>
+<p>ensemble of <strong>deep trees</strong>, each trained on a <strong>bootstrap sample</strong> of rows, considering only a <strong>random subset of features</strong> at each split. predictions are <strong>averaged</strong> (regression) or <strong>voted</strong> (classification).</p>
+</div>
+
+<img data-src="images/lec13/cell-17-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"><ul>
+<li><strong>bagging</strong> — each tree sees different <strong>rows</strong></li>
+<li><strong>feature subsampling</strong> — each split considers different <strong>features</strong></li>
+<li>trees memorize different noise → <strong>averaging</strong> shrinks variance</li>
+</ul>
+<aside class="notes">
+<p>Direct definition. Two sources of randomness combine: bootstrap rows (Ch 8 callback) and feature subsampling. The result is an ensemble of overfit-but-different trees whose average has dramatically lower variance than any individual tree.</p>
+<p>Image: three trees from a tiny forest (n_estimators=3, depth=3, max_features=0.3). Same top-level idea (each tree partitions the feature space), but different splits at every level — that’s the diversity averaging needs.</p>
+<p>The next slide makes “bootstrap sample” concrete.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="bootstrap-samples-in-pictures" class="slide level2">
+<h2>bootstrap samples in pictures</h2>
+
+<img data-src="images/lec13/cell-20-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:68.0%"><div class="fragment">
+<ul>
+<li>each tree sees a different <strong>subset</strong> of rows</li>
+<li>some rows appear <strong>multiple times</strong>, some not at all</li>
+<li>skipped rows (<span class="math inline">\approx</span> 37%) → <strong>out-of-bag (OOB)</strong> free validation</li>
+</ul>
+<aside class="notes">
+<p>4 bootstrap samples of 10 rows each. White cells: row not in this tree’s sample. Light blue: appears once. Dark: appears 2× or 3× times.</p>
+<p>A bootstrap of size n from n rows includes about 63% of distinct rows; the other 37% are out-of-bag (OOB) — sklearn can use them for free CV (<code>oob_score=True</code>).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="galton-vox-populi-1907" class="slide level2">
+<h2>Galton, <em>Vox Populi</em> (1907)</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<ul>
+<li><strong>787 villagers</strong> at a country fair, 1906</li>
+<li>each guesses the weight of an ox</li>
+<li>guesses <strong>wildly varied</strong> — under and over by hundreds of pounds</li>
+<li>median guess: <strong>1207 lb</strong></li>
+<li>true weight: <strong>1198 lb</strong></li>
+<li><strong>median within 1% of truth</strong></li>
+</ul>
+</div><div class="column" style="width:45%;">
+<blockquote>
+<p><em>“the middlemost estimate expresses the</em> vox populi <em>… an excellent democratic judgment.”</em></p>
+</blockquote>
+<p><span style="font-size: 0.7em; color: #666;">Galton, “Vox Populi”, <em>Nature</em> 75, 450–451 (1907)</span></p>
+</div></div>
+<div class="fragment">
+<p>can the <strong>same idea</strong> work on overfit trees? — see next slide</p>
+<aside class="notes">
+<p>The Galton story. 1906 country fair, 787 entries in a guess-the-ox-weight contest. Individual guesses scatter wildly (some 100s of lb high, some 100s low) but the median sat at 1207, just 9 lb under the actual 1198 — accurate within 1%.</p>
+<p>Galton’s 1907 <em>Nature</em> paper is “Vox Populi” — the wisdom of the crowd. Bagging is the algorithmic analogue: each tree memorizes different noise from its own bootstrap, and averaging shrinks the spread toward the truth.</p>
+<p>This is the wisdom-of-the-crowd hook for the bagging argument that follows.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="bootstrapped-trees-vs.-their-average" class="slide level2">
+<h2>bootstrapped trees vs.&nbsp;their average</h2>
+
+<img data-src="images/lec13/cell-21-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"><div class="fragment">
+<ul>
+<li>thin blue: 25 deep trees, each fit on its own <strong>bootstrap sample</strong></li>
+<li>thick black: the <strong>average</strong> prediction</li>
+<li>where individual trees disagree, disagreements <strong>partly cancel</strong></li>
+</ul>
+<aside class="notes">
+<p>25 deep trees (thin blue) — each one fit on its own bootstrap sample of rows — predicting price along the bedrooms slice (other features held at their median). They swing all over the place. The thick black line is their average: much steadier.</p>
+<p>Visual evidence that the wisdom-of-the-crowd story from Galton works on trees: individuals are noisy, the average is calm.</p>
+<p>Next slide quantifies “calmer.”</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="variance-shrinks-with-b" class="slide level2">
+<h2>variance shrinks with B</h2>
+
+<img data-src="images/lec13/cell-22-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"><div class="fragment">
+<ul>
+<li>each <span class="math inline">4\times</span> more trees → <strong>half the spread</strong></li>
+<li>curves bend toward a <strong>floor</strong></li>
+</ul>
+<aside class="notes">
+<p>Same experiment, repeated for forests of different sizes B = 1, 5, 25, 100. For each B, draw a sample of B trees, average their predictions, and record the standard deviation across many such samples.</p>
+<p>Each 4× more trees roughly halves the standard deviation — that’s the variance-of-an-average shrinking like 1/B for the noise component.</p>
+<p>The floor that the curves bend toward is set by the average pairwise correlation between trees. <strong>Feature subsampling beats that floor down</strong> by forcing trees to consider different features at each split.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="why-feature-subsampling-matters" class="slide level2">
+<h2>why feature subsampling matters</h2>
+<p>variance of the average of <span class="math inline">B</span> trees, with per-tree variance <span class="math inline">\sigma^2</span> and pairwise correlation <span class="math inline">\rho</span>:</p>
+<p><span class="math display">\text{Var}(\bar f_B) = \rho \sigma^2 + \frac{1 - \rho}{B}\sigma^2</span></p>
+<div class="fragment">
+<ul>
+<li>the <strong><span class="math inline">(1-\rho)\sigma^2/B</span></strong> term shrinks like <span class="math inline">1/B</span> — what averaging buys</li>
+<li>the <strong><span class="math inline">\rho\sigma^2</span></strong> floor doesn’t depend on <span class="math inline">B</span> — only on <strong>how correlated the trees are</strong></li>
+<li><strong>feature subsampling lowers <span class="math inline">\rho</span></strong> — beats the floor down</li>
+</ul>
+<aside class="notes">
+<p>The variance-of-an-average formula. Two terms:</p>
+<ol type="1">
+<li><span class="math inline">(1 - \rho)\sigma^2 / B</span>: shrinks like 1/B in B (so SD shrinks like <span class="math inline">1/\sqrt{B}</span> — what the bottom panel of the previous slide plots).</li>
+<li><span class="math inline">\rho \sigma^2</span>: a floor that doesn’t depend on B. As long as the trees stay correlated, you can’t average your way to zero variance.</li>
+</ol>
+<p>Feature subsampling pushes <span class="math inline">\rho</span> down by forcing different splits in different trees. That’s the <em>only</em> lever for the floor.</p>
+<p>Skip if running short — comes back in Ch 17 with boosting. The picture on the previous slide carries 80% of the lesson.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="predict-more-trees-more-overfit" class="slide level2">
+<h2>predict: more trees, more overfit?</h2>
+<div class="prompt">
+<p>we sweep the forest from <span class="math inline">B = 1</span> to <span class="math inline">B = 500</span> trees on Airbnb.</p>
+<p><strong>does test <span class="math inline">R^2</span> keep climbing forever, hit a ceiling, or U-curve?</strong></p>
+<p>raise hands.</p>
+</div>
+<aside class="notes">
+<p><strong>INLINE PREDICT (30 sec).</strong> Quick polling/hands. Three options:</p>
+<ol type="1">
+<li>keeps climbing — wrong; bias is set by individual-tree depth</li>
+<li><strong>hits a ceiling</strong> — correct (slide 26 reveals the staircase)</li>
+<li>U-curves — wrong; bagging has no overfitting-from-too-many-trees mechanism</li>
+</ol>
+<p>The trap: students transfer the depth U-curve from Block 1 to <code>n_estimators</code>. The whole point of the next slide is that they’re different knobs — depth is the bias-variance lever, B is the variance-only lever.</p>
+<p>Reveal on the next slide.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="more-trees-rarely-hurt" class="slide level2">
+<h2>more trees rarely hurt</h2>
+
+<img data-src="images/lec13/cell-19-output-2.png" class="quarto-figure quarto-figure-center r-stretch" style="width:78.0%"><div class="fragment">
+<ul>
+<li><strong>no U-curve in <code>n_estimators</code></strong> — staircase replaces the <strong>bias-variance tradeoff</strong></li>
+<li>depth is the <strong>bias-variance</strong> lever, <span class="math inline">B</span> is <strong>variance-only</strong></li>
+</ul>
+<aside class="notes">
+<p>Test R² as a function of n_estimators. Numbers from the chapter: 1 tree (0.524), 5 trees (0.631), 10 (0.645), 25 (0.652), 50 (0.656), 100 (0.657), 200 (0.658), 500 (0.658). Rises and plateaus. Tiny dips can happen from finite-sample noise.</p>
+<p>This is the “one known escape” promised by Ch 6. The classical U-curve assumes you fit a single model; a forest is an average over hundreds. Adding more trees drives variance down without raising bias — a one-sided staircase replaces the U-curve.</p>
+<p>Caveat (later slide / Ch 17): this is specific to bagging. Gradient boosting <em>can</em> overfit if you add too many trees because each new tree corrects errors of earlier ones — different mechanism.</p>
+<p>About 1 min.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="the-surprise" class="slide level2">
+<h2>the surprise</h2>
+<div title="test $R^2$ comparison">
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>test <span class="math inline">R^2</span> comparison</strong></p>
+</div>
+<div class="callout-content">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>model</th>
+<th>test <span class="math inline">R^2</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>linear (bedrooms + bath + room + borough)</td>
+<td><span class="math inline">0.571</span></td>
+</tr>
+<tr class="even">
+<td>linear + bedrooms × borough interactions</td>
+<td><span class="math inline">0.576</span></td>
+</tr>
+<tr class="odd">
+<td><strong>decision tree (depth 4)</strong></td>
+<td><span class="math inline">0.559</span></td>
+</tr>
+<tr class="even">
+<td><strong>random forest (100 trees)</strong></td>
+<td><strong><span class="math inline">0.657</span></strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>forest <strong>improves <span class="math inline">R^2</span> by 0.08</strong> over hand-engineered linear — with <strong>no manual feature engineering</strong></p>
+<aside class="notes">
+<p>The chapter’s surprise lands here. Hand-engineered linear with bedrooms × borough interactions: 0.576. Random forest, same raw feature matrix, no manual interactions: 0.657. R² improves by 0.08 (about a 14% relative improvement) on held-out data.</p>
+<p>The forest wasn’t given the interactions — it discovered the relevant cuts on its own. That’s the answer to Friday’s brief from the opening: yes, ship the forest.</p>
+<p>Caveat for honesty: a single deep tree at the same default depth overfits; a forest at min_samples_leaf=5 doesn’t. The bagging structure is what makes it work — not just “more trees better.”</p>
+<p>About 90 sec — let the table sit.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-4" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2></h2>
+<div class="prompt">
+<p><strong>the forest improves <span class="math inline">R^2</span> by 0.08 over the linear model.</strong></p>
+<p>name <strong>three reasons</strong> you might still ship the linear model.</p>
+</div>
+<aside class="notes">
+<p><strong>DISCUSSION: think-pair-share (4 min).</strong> 1 min think + 2 min pair + 1 min debrief.</p>
+<p>Tight-prompt variant of “are linear models useless?” — forces students to commit to a number (three) and defend a counterintuitive call (ship the worse-on-R² model).</p>
+<p>Target answers — collect from class:</p>
+<ol type="1">
+<li><strong>interpretable coefficients.</strong> “$1 extra bathroom is worth +$62/night, controlling for everything else.” A regulator or a host can read it.</li>
+<li><strong>odds ratios for logistic.</strong> Log-odds per feature change → multiplicative odds — the host knows what to push.</li>
+<li><strong>small datasets.</strong> Forests need lots of rows; LR works at n = 100.</li>
+<li><strong>stable extrapolation.</strong> Linear models extrapolate (cleanly or otherwise); a forest’s prediction is bounded by the training <span class="math inline">y</span> range, so for inputs outside the training distribution it returns whichever leaf the splits route them to — often a poor proxy.</li>
+<li><strong>sparsity / lasso.</strong> Linear models can produce a small, selectable set of features; forests use everything.</li>
+<li><strong>causal-flavored interpretation under strong assumptions.</strong> Coefficient = marginal effect holding other things fixed (Ch 18).</li>
+</ol>
+<p>Push for at least three. Wrap with: forests dominate prediction on tabular benchmarks; linear models dominate when you also need interpretability, small data, or extrapolation.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-5" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>geometry of the data picks the model</p>
+</div>
+</section>
+<section id="trees-vs.-linear-two-synthetic-problems" class="slide level2">
+<h2>trees vs.&nbsp;linear, two synthetic problems</h2>
+
+<img data-src="images/lec13/cell-25-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:75.0%"><aside class="notes">
+<p>The 4-panel: rows are problems (linear boundary on top, axis-aligned rectangle on bottom); columns are models (logistic on left, depth-4 tree on right).</p>
+<p>Top-left: logistic on the linear problem — clean diagonal. Top-right: tree on the linear problem — staircase approximation. Bottom-left: logistic on the rectangle — fails (one hyperplane can’t enclose a box). Bottom-right: tree on the rectangle — perfect.</p>
+<p>Each model loses on the <em>other</em> model’s natural geometry. The next slide closes with the pedagogical reading.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="what-wins-where" class="slide level2">
+<h2>what wins where</h2>
+<div class="columns">
+<div class="column" style="width:48%;">
+<div class="act-card">
+<p><span class="act-title">linear models</span></p>
+<p>good at <strong>smooth, monotone effects</strong></p>
+<p>bad at <strong>corners and thresholds</strong></p>
+<p>a single slope, not a staircase</p>
+</div>
+</div><div class="column" style="width:4%;">
+
+</div><div class="column" style="width:48%;">
+<div class="act-card">
+<p><span class="act-title">trees / forests</span></p>
+<p>good at <strong>corners, thresholds, interactions</strong></p>
+<p>bad at <strong>smooth diagonals</strong></p>
+<p>a slope becomes a staircase</p>
+</div>
+</div></div>
+<div class="fragment">
+<div style="text-align: center; margin-top: 1em;">
+<p><strong>fit both. compare held-out scores. don’t guess the geometry.</strong></p>
+</div>
+<aside class="notes">
+<p>The two-card framing. Same act-card pattern as Ch 11’s “study A vs study B” slide.</p>
+<p>Pedagogical takeaway: the right model is a property of the data, not the model family. On real data you don’t know which geometry the truth has — fit both and compare on the test set.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="trees-handle-missing-data" class="slide level2">
+<h2>trees handle missing data</h2>
+<div class="definition-box">
+<div class="def-term">
+<p>missing values in trees</p>
+</div>
+<p>modern tree libraries (sklearn ≥1.3, XGBoost, LightGBM) learn <strong>at each split</strong> which child to send missing-valued rows to — picking the direction that <strong>reduces the loss more</strong>. no imputation needed.</p>
+</div>
+<div class="fragment">
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>linear regression</th>
+<th>decision tree</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>missing values</td>
+<td>break the model — must <strong>impute first</strong></td>
+<td><strong>handled natively</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="fragment">
+<p>real tabular data is mostly missing somewhere. trees skip the imputation question entirely.</p>
+<aside class="notes">
+<p>Tree-based models handle missing values without analyst-supplied imputation. The split learns which direction missing rows go — pick the direction that reduces the loss more.</p>
+<p>Why this matters: in real tabular data, missingness is the norm. Linear regression needs every row to have every feature; the analyst must decide how to impute (median, mean, model-based, …). Each imputation choice can bias the answer. Trees skip the question entirely.</p>
+<p>Loops back to the model-selection discussion on the next slide — particularly the clinic-charts scenario, where most patients are missing 5–10 of 40 fields.</p>
+<p>About 60 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-6" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2></h2>
+<div class="prompt">
+<p><strong>which model would you reach for first, and why?</strong></p>
+<div class="columns">
+<div class="column" style="width:32%;">
+<div class="act-card">
+<p><span class="act-title">insurance underwriter</span></p>
+<p>needs <strong>one-line explanation</strong> for each premium decision</p>
+</div>
+</div><div class="column" style="width:2%;">
+
+</div><div class="column" style="width:32%;">
+<div class="act-card">
+<p><span class="act-title">music app</span></p>
+<p>wants the model to <strong>discover</strong> which combinations of behavior predict upgrades — no hand-coded rules</p>
+</div>
+</div><div class="column" style="width:2%;">
+
+</div><div class="column" style="width:32%;">
+<div class="act-card">
+<p><span class="act-title">clinic chart coding</span></p>
+<p>flag billing errors</p>
+<p><strong>40 fields, most patients missing 5–10</strong></p>
+</div>
+</div></div>
+</div>
+<aside class="notes">
+<p><strong>DISCUSSION: think-pair-share (5 min).</strong> 1 min think + 2 min pair + 2 min debrief.</p>
+<p>Target answers:</p>
+<ol type="1">
+<li><p><strong>Insurance underwriter</strong> → <strong>logistic regression</strong>. Coefficients give the per-feature explanation a regulator wants. Trees can be visualized but lose interpretability quickly past depth 3.</p></li>
+<li><p><strong>Music app</strong> → <strong>tree / forest</strong>. The hidden rule is a threshold-and-interaction pattern (genre count AND playlist count, only on some devices). A tree can discover that rule from raw signals; a linear model needs to be hand-fed the cross.</p></li>
+<li><p><strong>Clinic charts</strong> → <strong>tree / forest</strong>. 40 features with massive missingness — trees handle missing data natively (XGBoost, LightGBM, recent sklearn). Linear regression breaks without a number to multiply.</p></li>
+</ol>
+<p>Key insight: the right model is a property of the <strong>data + decision</strong>. Interpretability requirements, missingness, sample size, and the geometry of the truth all matter.</p>
+<p>If running short, cut to two scenarios.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-7" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>what the forest used vs.&nbsp;what raises the price</p>
+</div>
+</section>
+<section id="feature-importance-mdi" class="slide level2">
+<h2>feature importance: MDI</h2>
+<div class="definition-box">
+<div class="def-term">
+<p>mean decrease in impurity (MDI)</p>
+</div>
+<p><strong>impurity drop at a split</strong> = parent’s impurity − weighted average of children’s impurity (impurity = SSE for regression, Gini for classification)</p>
+<p><strong>MDI for feature <span class="math inline">j</span></strong> = sum of impurity drops across every split on <span class="math inline">j</span>, weighted by samples, averaged across trees, normalized so features’ MDIs sum to 1</p>
+</div>
+<div class="fragment">
+<p>answers: <strong>how much does the forest use this feature?</strong></p>
+<aside class="notes">
+<p>The standard sklearn <code>feature_importances_</code> output. Conceptually: which variables does the model rely on most for splitting?</p>
+<p>The definition unpacks in two steps: 1. At one split, “impurity drop” is how much more homogeneous the children are than the parent. This is exactly what the tree was maximizing when it chose the split (greedy: minimize child impurity = maximize impurity drop). 2. For one feature, MDI accumulates the drops over every split that used that feature, weighted by the share of training rows flowing through the node — bigger nodes get more weight. Then average across trees, normalize.</p>
+<p>Result: a feature with a few big-node splits can dominate; a feature only used at tiny leaves contributes little.</p>
+<p>Doesn’t mean what students often hope it means (next slide).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="what-the-forest-uses" class="slide level2">
+<h2>what the forest uses</h2>
+
+<img data-src="images/lec13/cell-29-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:72.0%"><div class="fragment">
+<p>high MDI ≠ “this feature <strong>causes</strong> the outcome” — only “the forest <strong>splits</strong> on it”</p>
+<aside class="notes">
+<p>The MDI bar chart on Airbnb. Top features: <strong>room_type_Private room</strong> by a wide margin, then longitude, bedrooms, latitude, bathrooms, accommodates — the room-type + geographic + size cluster.</p>
+<p>Crucial gloss: high MDI means “the model uses this feature for splitting often”, <em>not</em> “this feature causes higher prices”. Location and room type are useful because they predict price, but redrawing the room_type column doesn’t make your apartment more expensive — that’s a causal claim, not a descriptive one.</p>
+<p>Same caveat for permutation importance (next slide).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="mdi-vs.-permutation-importance" class="slide level2">
+<h2>MDI vs.&nbsp;permutation importance</h2>
+
+<img data-src="images/lec13/cell-30-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"><div class="fragment">
+<ul>
+<li><strong>MDI</strong> — counts split chances, biased toward continuous, high-cardinality columns</li>
+<li><strong>permutation</strong> — measures held-out <span class="math inline">R^2</span> drop after shuffling a column, model-agnostic but slow</li>
+</ul>
+<aside class="notes">
+<p>Two panels — same forest, two metrics, each panel sorted by its own metric. Features re-rank between the panels.</p>
+<p>MDI bias: a continuous column has hundreds of possible split points; a binary column has one. Two equally predictive features can rank very differently just from cardinality.</p>
+<p>Permutation importance: shuffle the column on held-out data, watch how much test R² drops. Model-agnostic, less biased by cardinality, but slow.</p>
+<p>Two practical rules: 1. Compute permutation importance on <strong>held-out data</strong>, not training. 2. Watch correlated features. If two columns share signal, shuffling either alone can look unimportant because the model leans on the other. Drop correlated groups together.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-8" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>when to doubt the forest</p>
+</div>
+</section>
+<section id="three-failure-modes" class="slide level2">
+<h2>three failure modes</h2>
+<ul>
+<li class="fragment"><strong>distribution shift</strong> — predictions are <strong>bounded by the training <span class="math inline">y</span> range</strong>; new inputs route into some leaf whose mean may be irrelevant</li>
+<li class="fragment"><strong>importance is descriptive, not causal</strong> — high MDI on <code>accommodates</code> doesn’t mean adding capacity raises price</li>
+<li class="fragment"><strong>correlated features share importance</strong> — <code>bedrooms</code> and <code>accommodates</code>: <strong>interpret as a group</strong></li>
+</ul>
+<aside class="notes">
+<p>Three limitations that a strong test-set R² does not address:</p>
+<ol type="1">
+<li><p><strong>Distribution shift.</strong> Each prediction is the mean outcome in a training leaf, so the forest cannot extrapolate beyond its training data. For inputs unlike anything seen at training — new neighborhood, post-pandemic price regime — there is no nearby leaf to draw from. Same lesson as Ch 6.</p></li>
+<li><p><strong>Importance ≠ causal.</strong> Both MDI and permutation answer “what does the model use?” — not “what makes the price go up?”. Do not act on importance as a causal claim.</p></li>
+<li><p><strong>Correlated features.</strong> When two features carry overlapping signal, the per-feature importance understates each one’s real importance — the forest leans on the other when one is shuffled.</p></li>
+</ol>
+<p>Next two slides drill into (1) and (3) with concrete demonstrations.</p>
+<p>About 1 min for the overview; drill-ins are short.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="distribution-shift-linear-vs.-forest-extrapolation" class="slide level2">
+<h2>distribution shift: linear vs.&nbsp;forest extrapolation</h2>
+
+<img data-src="images/lec13/cell-31-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"><div class="fragment">
+<ul>
+<li><strong>linear</strong> extends its slope past the training range</li>
+<li><strong>forest</strong> flatlines — predicts the nearest leaf’s mean</li>
+</ul>
+<aside class="notes">
+<p>Synthetic 1D demo: training data in [0, 5] with a near-linear trend. The linear model extends the slope into [-2, 0] and [5, 8] — fine if the truth really is linear there, wrong otherwise. The forest predicts a constant outside the training range: it has no leaf for those inputs, so it returns whichever leaf the splits route them to (the boundary leaf’s mean).</p>
+<p>Takeaway: linear extrapolation might be right or wrong; the forest’s flat extrapolation is wrong <em>by construction</em> — it has no information out there. Drift monitoring matters more for trees than for linear models.</p>
+<p>About 60 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="correlated-features-hide-importance" class="slide level2">
+<h2>correlated features hide importance</h2>
+<div class="definition-box">
+<div class="def-term">
+<p>permutation drop in test R²</p>
+</div>
+<p>shuffle a feature’s column; measure how much R² drops</p>
+</div>
+<p><code>bedrooms</code> and <code>accommodates</code>: correlation <strong>0.64</strong></p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>shuffle</th>
+<th><span class="math inline">R^2</span> drop</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>bedrooms</code> alone</td>
+<td><span class="math inline">0.10</span></td>
+</tr>
+<tr class="even">
+<td><code>accommodates</code> alone</td>
+<td><span class="math inline">0.13</span></td>
+</tr>
+<tr class="odd">
+<td><strong>both together</strong></td>
+<td><strong><span class="math inline">0.29</span></strong></td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p>with near-duplicates, each alone <span class="math inline">\approx 0</span>; the group <span class="math inline">\gg</span> the sum</p>
+<aside class="notes">
+<p>Concrete demo. With moderate correlation (0.64), shuffling each feature individually still shows non-trivial drops — but the group drop (0.29) exceeds the sum of individual drops (0.23). Each feature’s individual permutation understates its real importance because the forest can lean on the correlated partner.</p>
+<p>The dramatic version, mentioned on the slide: imagine an accidental duplicate column. Each individual permutation would barely move R² (the forest just uses the other copy), but shuffling both would be ruinous. Same effect, exaggerated.</p>
+<p>Practical takeaway: <strong>interpret importance for correlated groups, not single columns.</strong> Don’t drop a feature on the basis of low individual importance if a correlated cousin is doing its work.</p>
+<p>About 75 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="back-to-the-host" class="slide level2">
+<h2>back to the host</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Tip</strong></p>
+</div>
+<div class="callout-content">
+<p><strong>Friday’s brief.</strong></p>
+<ul>
+<li><strong>ship the forest</strong> — improves <span class="math inline">R^2</span> by 0.08 over hand-engineered linear, no hand-picked interactions</li>
+<li><strong>monitor distribution shift</strong> — drift on inputs; e.g., new neighborhoods, new price regimes</li>
+<li><strong>don’t present importance as causal</strong> — <em>what the model used</em>, not <em>what raises a price</em></li>
+</ul>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>The chapter’s closing answer to the brief. Forest goes into production. Drift monitoring on the inputs (new neighborhoods show up as feature distributions outside the training range). Don’t present the importance chart as causal to the host.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="summary" class="slide level2">
+<h2>summary</h2>
+<ul>
+<li class="fragment"><strong>trees split automatically</strong> — find structure, no encoding, no imputation needed</li>
+<li class="fragment"><strong>a single deep tree memorizes</strong> — train <span class="math inline">R^2 \to 1</span>, test <span class="math inline">R^2</span> collapses, <strong>CV picks the depth</strong></li>
+<li class="fragment"><strong>random forests average overfit trees</strong> — bagging + feature subsampling, more trees rarely hurt</li>
+<li class="fragment"><strong>trees vs.&nbsp;linear is a geometry choice</strong> — corners + thresholds vs.&nbsp;smooth slopes</li>
+<li class="fragment"><strong>importance is descriptive</strong> — what the forest used, not what causes the outcome</li>
+</ul>
+<aside class="notes">
+<p>Five takeaways. The first three are the technical spine; the fourth is the comparison frame; the fifth is the critical-thinking caveat that closes the chapter.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="demo-trees-in-the-notebook" class="slide level2">
+<h2>demo: trees in the notebook</h2>
+<div style="text-align: center; font-size: 1.3em; margin: 1em 0;">
+<p><strong><a href="https://colab.research.google.com/github/stanford-mse-125/web/blob/main/notebooks/lec13-trees.ipynb">colab.research.google.com/…/lec13-trees.ipynb</a></strong></p>
+</div>
+<p>what to watch:</p>
+<ul>
+<li><strong><code>max_depth</code> sweep</strong> — see the U-curve happen</li>
+<li><strong><code>n_estimators</code> sweep</strong> — see the staircase</li>
+<li><strong>swap regression for classification</strong> — same recipe, <strong>AUC</strong> (area under ROC curve, Ch 9) instead of <span class="math inline">R^2</span></li>
+</ul>
+<aside class="notes">
+<p>Demo slide. The notebook has the full pipeline: load data → fit tree → tune depth via CV → fit forest → compare on test → look at feature importance. Students should run cells, change hyperparameters, watch the curves.</p>
+<p>If running short on lecture time, point at the notebook for the bagging-variance-reduction figure (one of the most important plots; can verbally walk through if not landed on slides).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="next-dimensionality-reduction-ch-14" class="slide level2">
+<h2>next: dimensionality reduction (Ch 14)</h2>
+<p>what if your features are <strong>already redundant</strong>?</p>
+<div class="fragment">
+<ul>
+<li><strong>PCA</strong> — find directions of maximum variance</li>
+<li><strong>scree plot</strong> picks the number of components</li>
+<li><strong>standardization</strong> is essential — otherwise the largest-magnitude column dominates</li>
+</ul>
+<aside class="notes">
+<p>Forward pointer. Lec 14 (Wednesday): PCA. The setup question: what if your features are correlated to start with — can you compress them to a smaller set without losing signal? PCA finds the directions of maximum variance; SVD computes them; loadings tell you which features drive each component.</p>
+<p>Then Ch 15 takes another step into unsupervised territory with k-means clustering.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="feedback" class="slide level2">
+<h2>feedback</h2>
+<div class="quarto-layout-panel" data-layout="[20, 80]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 20.0%;justify-content: center;">
+<p><img data-src="images/feedback-qr-lec01.png" width="280"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 80.0%;justify-content: flex-start;">
+<p><strong><a href="https://forms.gle/feedback">forms.gle/feedback</a></strong></p>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 20.0%;justify-content: flex-start;">
+<p>what worked? what didn’t? what’s still confusing?</p>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Standard feedback slide. Same form as previous lectures.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+
+
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+
+        height: 1080,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>lec11-multiple-testing – MSE 125 — Slides</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-244ce1b9ec229af56bb6f90d24b3371d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">MSE 125 — Slides</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+
+
+
+
+<section id="lecture-11-multiple-testing-facilitation-script" class="level1">
+<h1>Lecture 11: Multiple Testing — Facilitation Script</h1>
+<p><strong>Duration:</strong> 80 minutes <strong>Total slides:</strong> 50 (slide 1 = auto title from YAML) <strong>Primary dataset:</strong> NBA <code>shot_zones_2023-24.csv</code> (317 qualified players, 6 zones, FGM/FGA per zone) <strong>Hook:</strong> decision-problem framing — <em>you’re an analyst for the NBA, your boss asks “which players really shoot above league average?”</em> The numbers (141, 47, 117) land later in the lecture, not on the hook slide. <strong>Structure:</strong> Opening (3 min, slides 1–4) → Block 1: the multiple testing problem (~22 min, slides 5–19) → Block 2: two corrections (~20 min, slides 20–32) → Block 3: right answer, wrong question (~25 min, slides 33–45) → Closing (5 min, slides 46–50) → Buffer (5 min)</p>
+<hr>
+<section id="opening-3-min-slides-14" class="level2">
+<h2 class="anchored" data-anchor-id="opening-3-min-slides-14">Opening (3 min) — slides 1–4</h2>
+<p><strong>Slide 1 (title):</strong> 30 seconds. Date, name.</p>
+<p><strong>Slide 2 (logistics):</strong> <strong>START RECORDING.</strong> 30 seconds — quiz 5 next class (Wed May 6), HW 3 due Fri May 8 (uses multiple testing and correlation directly), next lecture is regression inference + diagnostics.</p>
+<p><strong>Slide 3 (the brief):</strong> Frame the lecture as a decision problem. <em>You’re an analyst for the NBA Director of Player Personnel. Last season’s box scores are on your desk. Your boss asks one question: which of our players really shoot better than the league average?</em> Today: run the analysis — and confront two ways the obvious approach goes wrong. Don’t tease numbers; the punchlines (141 reject, 47 survive Bonferroni, the Gordon/Thompson reversal) land in their own blocks.</p>
+<p><strong>Slide 4 (agenda):</strong> Three beats: (1) the multiple testing problem, (2) two corrections, (3) right answer, wrong question. The deeper theme — statistical results can mislead even when the math is right — links the two halves.</p>
+<hr>
+</section>
+<section id="block-1-the-multiple-testing-problem-22-min-slides-519" class="level2">
+<h2 class="anchored" data-anchor-id="block-1-the-multiple-testing-problem-22-min-slides-519">Block 1: the multiple testing problem (~22 min) — slides 5–19</h2>
+<section id="key-narrative" class="level3">
+<h3 class="anchored" data-anchor-id="key-narrative">Key narrative</h3>
+<p>Run 317 tests at α = 0.05; even with no real signal you’d expect ~16 false positives. We see 141 — the excess is real. But which 16 are the fakes? The chapter’s whole machinery is about separating signal from the noise floor. Then zoom out: the same arithmetic across labs <em>is</em> the replicability crisis.</p>
+<p><strong>Slide 5 (dark block marker).</strong> “the multiple testing problem.”</p>
+<p><strong>Slide 6 (the data):</strong> <code>shot_zones_2023-24.csv</code> — six zones (RA / PAINT / MID / LC3 / RC3 / ATB3), one row per player, makes and attempts in each. Source: NBA.com Stats, 2023–24 regular season. We’ll aggregate to overall FG% for the multiple-testing arc; come back to the zones in Block 3.</p>
+<p><strong>Slide 7 (who shoots above league average?):</strong> Filter to rotation players (FGA ≥ 200) — 317 players, league baseline 47.7%. Anchor with three names: Allen 63%, Gobert 66%, Carter 38%. The question: are the gaps real, or could they show up by chance over a season’s worth of shots?</p>
+<p><strong>Slide 8 (one test per player):</strong> State H₀: pᵢ = p₀ = 0.477. The one-sample two-sided z-test for a proportion (covered in Lec 10). Run it 317 times. Tests: 317. Significant at p &lt; 0.05: 141. Pause on 141 — that’s the question.</p>
+<p><strong>Slide 9 (DISCUSSION: how many would you expect by chance?):</strong> 3 minutes. 30 sec think + 1 min pair + debrief. Push for a <em>count</em>, not a rate. Most students land near 16 (= 317 × 0.05). If stuck: “fair coin, 100 flips, how many heads?” Key insight: linearity of expectation gives 16 false positives even under H₀ for everyone — works for correlated tests too.</p>
+<p><strong>Slide 10 (expected by chance):</strong> Formalize: E[FPs] = m · α. Numbers: tests 317, expected FPs 15.9, SD under null 3.9, observed 141, excess 125 (32.3 SDs above the null floor). Real signal is unmistakable, but mixed with ~16 fakes.</p>
+<p><strong>Slide 11 (multiple testing definition):</strong> Definition box. With m tests at level α: expect m · α false positives. Then the bridge: it doesn’t matter who runs the tests — one analyst with 317 tests vs 1,000 labs each with one test. Same arithmetic.</p>
+<p><strong>Slide 12 (p-value histogram diagnostic):</strong> Probability integral transform: under H₀, p-values are Uniform(0,1) — flat. With real signal: spike near zero + flat tail. The chart shows the first bin towering above ~16/bin null floor. Real signal unmistakable; flatness in the tail bounds how many of the small p-values are chance.</p>
+<p><strong>Slide 13 (why this matters beyond NBA):</strong> Pivot to the replicability crisis. 1,000 labs each run one underpowered study at α = 0.05 → ~50 publish a false positive. No fraud, no p-hacking, just arithmetic.</p>
+<p><strong>Slide 14 (the replication crisis: numbers):</strong> Three data points in a fifteen-year arc. <strong>2011 — Bem (precognition)</strong>: standard methods, top journal, conclusion: people sense the future. The embarrassment that made the crisis visible. <strong>2015 — Reproducibility Project</strong>: 100 psychology studies retried, only ~36% replicated with significance, effect sizes about half. <strong>2026 — SCORE</strong>: 274 claims across 164 papers, 55% replicated, only 34% of independent reanalyses agreed. Caveat: economics and political science fared notably better. The crisis is real, broad, structural — not a few bad actors.</p>
+<p><strong>Slide 15 (hidden multiplicity: p-hacking):</strong> Garden of forking paths (Gelman). Even one analyst with one final test made many implicit choices upstream — outliers, outcomes, subsets, stopping rules. Each is an implicit test. The reported p is the survivor of many. (Verbal: Simmons et al.&nbsp;2011 — exploiting a few common forks produces p &lt; 0.05 for nonexistent effects &gt;60% of the time.)</p>
+<p><strong>Slide 16 (structural pressure):</strong> File drawer (null results don’t get published) + incentives (careers built on novel significance). 20 labs test the same false hypothesis → one publishes a positive by chance — and that’s the only one you read. Not accusing fraud; structural feature.</p>
+<p><strong>Slide 17 (xkcd “Significant”):</strong> ~30 seconds. Let the room read and laugh. The cartoon makes the structural argument concrete: 20 colors of jellybean → 20 independent tests at α = 0.05 → expect 1 false positive under the null → green pops up → “Scientists! Green jellybeans linked to acne!” Hidden multiplicity (the 19 other tests) plus the file drawer (only the green test makes the news) in one panel. Transition: “the question is what to do about this.” → pre-registration.</p>
+<p><strong>Slide 18 (pre-registration):</strong> Definition box. Public commitment to question/data plan/analysis plan <em>before</em> looking at the data. Eliminates researcher degrees of freedom by fixing the analysis upfront. Doesn’t ban exploration — labels it as exploratory rather than confirmatory. Two layers to keep distinct: corrections fix <em>known</em> multiplicity (the 317 tests), pre-registration fixes <em>hidden</em> multiplicity (the choices upstream).</p>
+<p><strong>Slide 19 (DISCUSSION: which is more credible — A or B?):</strong> 4 minutes. 1 min think + 2 min pair + debrief. Goal: students see that a <em>failed</em> pre-registered test (Study A) is more informative than a <em>successful</em> exploratory one (Study B). Push: <em>why</em> does pre-registration matter? If stuck: “if Study B ran 50 tests at α = 0.05, how many would you expect to clear by chance?” → 2.5. Study A is a single pre-specified test that nearly hit; Study B’s “discovery” is a survivor of hidden multiplicity.</p>
+<hr>
+</section>
+</section>
+<section id="block-2-two-corrections-20-min-slides-2032" class="level2">
+<h2 class="anchored" data-anchor-id="block-2-two-corrections-20-min-slides-2032">Block 2: two corrections (~20 min) — slides 20–32</h2>
+<section id="key-narrative-1" class="level3">
+<h3 class="anchored" data-anchor-id="key-narrative-1">Key narrative</h3>
+<p>Bonferroni controls FWER (any false positive) via the union bound — bulletproof but conservative. BH controls FDR (fraction of false positives among rejections) via a rising bar — catches moderate effects Bonferroni misses. Stakes determine which.</p>
+<p><strong>Slide 20 (dark block marker).</strong> “two corrections.”</p>
+<p><strong>Slide 21 (correction 1 — Bonferroni intuition):</strong> False-positive <em>budget</em> of α = 0.05 → spread across m tests → each gets α/m. Union bound: Pr[any FP] ≤ m·(α/m) = α. Worth pausing here — the union bound is the workhorse, and it’s why Bonferroni works regardless of correlation between tests. Note that this is a worst-case bound; for positively correlated tests (like ours) the actual FWER is below α, which is why Bonferroni feels conservative.</p>
+<p><strong>Slide 22 (Bonferroni formal definition):</strong> Definition box. α_Bonf = α/m. Controls family-wise error rate (FWER) = Pr(at least one false positive across all m tests). Conservative but the guarantee is bulletproof.</p>
+<p><strong>Slide 23 (Bonferroni applied):</strong> Numbers. Threshold drops from 0.05 to 1.6 × 10⁻⁴ (317× stricter). Survivors: 47 (down from 141). Name names: rim-feasting big men (Allen, Gobert, Lively, Gafford, Giannis at 60–70%) and the worst-shooting outliers. These are the players whose effect sizes are so extreme no correction touches them.</p>
+<p><strong>Slide 24 (cost of conservatism):</strong> Damian Lillard, 42.6% on 1,270 attempts, p ≈ 3 × 10⁻⁴. Bonferroni threshold 1.6 × 10⁻⁴. Fails to reject. A real, moderate effect with strong evidence — <em>thrown away</em> by Bonferroni’s strictness. Motivates BH on the next slide.</p>
+<p><strong>Slide 25 (correction 2 — BH intuition):</strong> Bonferroni asks every p-value to clear the same flat bar (α/m). BH lets the bar rise with rank: α/m, 2α/m, …, α. If you call k discoveries, expect kα to be null → false-discovery <em>fraction</em> ≈ α. Trade Bonferroni’s “no FPs at all” for “α fraction of discoveries are FPs on average.”</p>
+<p><strong>Slide 26 (BH formal procedure):</strong> Definition box. Sort p-values. Find largest k with p_(k) ≤ (k/m)·α. Reject hypotheses 1…k. Step-up: walk from largest p down. Controls false discovery rate (FDR) = E[FPs / total rejections] at level α.</p>
+<p><strong>Slide 27 (BH on a toy example):</strong> Walk through 5 sorted p-values [0.001, 0.008, 0.030, 0.050, 0.400] at α = 0.05. Compute thresholds k/m·α = 0.01, 0.02, 0.03, 0.04, 0.05. Largest k where p_(k) ≤ threshold? k = 3 (0.030 ≤ 0.030). Reject the first 3. Note Bonferroni would reject only 1 (only p = 0.001 &lt; 0.01). The toy makes the step-up concrete before applying it to the 317-player chart on the next slide.</p>
+<p><strong>Slide 28 (Bonferroni vs BH on shot data):</strong> The visual is the punchline. Flat orange Bonferroni line at 1.6×10⁻⁴; red dashed BH line rising from 1.6×10⁻⁴ at rank 1 to 0.05 at rank 317. Players whose p-value sits below the BH line at their rank get rejected. Numbers below the chart: uncorrected 141, Bonferroni 47, BH 117 — 70-player gap.</p>
+<p><strong>Slide 29 (the 70-player gap):</strong> Name names: Lillard, VanVleet, Durant, Holmgren — recognizable players “two or three points off league average” that BH flags and Bonferroni rejects on principle. About 6 of these 117 (5% × 117) are expected to be false on average — that’s the FDR trade.</p>
+<p><strong>Slide 30 (when Bonferroni gives up):</strong> Hedenfalk et al.&nbsp;(2001) microarray callout (boxed on the slide). m = 3,170 genes, t-test per gene (BRCA1 vs BRCA2, 7 vs 8 samples). Low power per test → Bonferroni rejects ~1 gene; BH at q = 0.05 rejects ~94 (Storey &amp; Tibshirani 2003). NBA is friendly to Bonferroni — extreme rim shooters’ p-values are essentially zero. Microarray is the opposite: many moderate effects, no extreme ones — exactly where FDR was invented to work.</p>
+<p><strong>Slide 31 (DISCUSSION: which correction would you use?):</strong> 5 minutes. 30 sec each scenario + 2 min pair + debrief. Force them to articulate the cost-of-FP vs cost-of-missed-effect trade-off. - 20K genes for follow-up wet lab → BH (cheap follow-up; want power) - FDA single drug → Bonferroni or stricter (asymmetric severe cost of FP) - 500 students for scholarship → trick question (this is ranking, not classification; if pushed: Bonferroni-flavor, one mistake = one student wronged) - 100 churn features → BH (tolerate FPs for power) Key insight: stakes determine the correction.</p>
+<p><strong>Slide 32 (stakes determine the correction):</strong> Two-row table summarizing Bonferroni (FWER, when any FP costly) vs BH (FDR, when tolerable fraction OK). Then bridge to the rest of the lecture: corrections fix <em>known</em> multiplicity. Pre-registration fixes <em>hidden</em> multiplicity.</p>
+<hr>
+</section>
+</section>
+<section id="block-3-right-answer-wrong-question-25-min-slides-3345" class="level2">
+<h2 class="anchored" data-anchor-id="block-3-right-answer-wrong-question-25-min-slides-3345">Block 3: right answer, wrong question (~25 min) — slides 33–45</h2>
+<section id="key-narrative-2" class="level3">
+<h3 class="anchored" data-anchor-id="key-narrative-2">Key narrative</h3>
+<p>Even Bonferroni’s most ironclad rejections — Gordon high, Thompson low — answer the <em>wrong question</em>. Reveal the surprise first (Klay shoots better than Gordon in <em>every</em> zone), name it (Simpson’s paradox), then explain the mechanism (shot location confounds skill). Multiple testing corrections protect against false discoveries; they do nothing for confounded ones.</p>
+<p><strong>Slide 33 (dark block marker).</strong> “right answer, wrong question.”</p>
+<p><strong>Slide 34 (remember the survivors?):</strong> Bonferroni rejected 47 — the most extreme cases. Among them: Aaron Gordon at 55.7% (confidently above league) and Klay Thompson at 43.3% (confidently below). Both rejections survive <em>any</em> correction. So Gordon is the better shooter. Right? Pause on the rhetorical “right?” — sets up the reveal on the next slide.</p>
+<p><strong>Slide 35 (inside the Gordon/Thompson gap):</strong> <em>The surprise moment.</em> INLINE PREDICT (20 sec): “Gordon shoots 12 points better in aggregate. In how many of the 6 zones does he outshoot Klay?” Most will guess 4–6. Reveal the table. Answer: <strong>zero</strong>. Klay beats Gordon in every single zone, by 1.9 to 16.8 points. The aggregate flips the within-zone story entirely. Pause. Let the contradiction sink in. This is not a math error. This is the data.</p>
+<p><strong>Slide 36 (Simpson’s paradox):</strong> Definition box. An association reverses when you look inside subgroups. Aggregate trend ≠ within-subgroup trend. Edward Simpson described the structure in 1951. The reversal isn’t a logical paradox — it’s perfectly consistent arithmetic — but it violates strong intuitions about averages. A strong form of confounding: the aggregate doesn’t just <em>mislead</em>, it points the <em>wrong</em> direction. Bridge: “the math isn’t wrong. So <em>why</em> does this happen?” → next three slides explain the mechanism.</p>
+<p><strong>Slide 37 (a lurking variable: shot location):</strong> Compute rim_share = RA_FGA / FGA. Pearson r(rim_share, FG_PCT) = 0.797 (p ~ 10⁻⁷¹). The scatter is tight. Most of the variation in players’ aggregate FG% is explained by <em>where</em> they shoot from. Recall from Ch 4: r is the linear association, [-1, 1], unitless and symmetric. Don’t redefine — just remind.</p>
+<p><strong>Slide 38 (why the scatter is so tight):</strong> Mechanism. League shoots 67% from the rim, 36% above the break — nearly 2× difference. Whoever takes the easier shots posts the better aggregate. Mechanical, not skillful. This is the engine of the Gordon/Thompson reversal we just saw.</p>
+<p><strong>Slide 39 (ecological correlation — a warning):</strong> Brief detour. Correlations on group averages (per state, per team, per player) can look much stronger than individual-level correlations. Always check the unit of analysis. Verbal example: per-state income vs any social outcome looks enormous; per-person it’s modest. Same data, different unit.</p>
+<p><strong>Slide 40 (why Gordon’s aggregate looks better):</strong> Mechanism made concrete. Show shot-share table. Gordon takes 65% of shots from the rim (league: 67%); Klay takes 53% above the break (league: 36%). Gordon’s shot diet is concentrated in the easiest zone in basketball; Klay’s in the hardest. Even though Klay is better in every zone, his harder shot mix drags his aggregate below Gordon’s easier mix. This is shot <em>selection</em>, not shot <em>skill</em>.</p>
+<p><strong>Slide 41 (decomposing FG%):</strong> The fix. shot_mix_FG_PCT = what each player would shoot at league rate in every zone (pure selection). skill_above_league = residual = actual FG% minus shot-mix expectation. Numbers: Klay 0.433/0.411/+0.022, Gordon 0.557/0.573/−0.016. By the right measure, Klay is +2 points above league, Gordon −2 below — opposite of the raw FG% comparison. This is the <em>adjustment</em> move that regression formalizes next chapter.</p>
+<p><strong>Slide 42 (the reversal in one picture):</strong> Two-bar comparison side by side. Left: raw aggregate FG% — Gordon clearly higher. Right: skill-above-league given shot mix — Klay positive, Gordon negative. The bars flip. Left = what the multiple-testing arc handed us as a discovery. Right = answer to the question we actually meant to ask.</p>
+<p><strong>Slide 43 (confounding):</strong> Definition box. A variable that influences both the input we care about and the outcome — creating an aggregate association that doesn’t reflect the mechanism we want to measure. Here: input = which player, outcome = did the shot go in, <em>confounder = which zone</em>. Forward-pointer to causal diagrams in Ch 18 — don’t get into DAGs today.</p>
+<p><strong>Slide 44 (DISCUSSION: what kind of question…?):</strong> 4 minutes. 1 min think + 2 min pair + debrief. Goal: students articulate that the same statistical result answers some questions correctly and others incorrectly. If stuck: “if a coach is choosing between Klay and Gordon for a wide-open three, what does the aggregate FG% tell them?” Right question for the test: “is this player’s shot mix unusual compared to league?” — yes, both differ. Wrong question: “is this player a better shooter?” — answered backwards. The math didn’t lie. We pointed it at the wrong question.</p>
+<p><strong>Slide 45 (the limits of corrections):</strong> Synthesis. Bonferroni and BH protect against finding effects that aren’t there. They do <em>nothing</em> about finding effects that <em>are</em> there but reflect the wrong mechanism. Forward pointer: Ch 12 (regression) lets us adjust for confounders directly by including them in the model. We won’t get to causal inference proper until Ch 18, but regression already lets us “control for” zone in a way that aggregates can’t.</p>
+<hr>
+</section>
+</section>
+<section id="closing-5-min-slides-4650" class="level2">
+<h2 class="anchored" data-anchor-id="closing-5-min-slides-4650">Closing (5 min) — slides 46–50</h2>
+<p><strong>Slide 46 (Coase aphorism):</strong> <em>“If you torture the data long enough, it will confess to anything.”</em> — Ronald Coase. Frames the multiple-testing half: torture by running many tests gives a “result” that doesn’t mean what it appears to. (Coase’s original wording was “…Nature will confess.” The popular paraphrase is what we show.)</p>
+<p><strong>Slide 47 (correlation is not causation):</strong> Partner aphorism, framing the confounding half. Gordon and Klay have a real correlation between player and FG%, but the causal interpretation (“Gordon is the better shooter”) is wrong. Correlation can reflect a confounder. Ch 18 returns to this with the formal causal apparatus.</p>
+<p><strong>Slide 48 (today summary):</strong> Two halves recapped. Multiple testing: m·α false positives, p-value histogram, Bonferroni vs BH, replication crisis = same arithmetic. Confounding: correlation can reflect a third variable, Simpson’s paradox is reversal inside subgroups, significant ≠ the right question.</p>
+<p><strong>Slide 49 (next: regression):</strong> Bonferroni and BH protect from <em>false</em> discoveries. They don’t protect from <em>wrong-mechanism</em> discoveries. Ch 12: include the confounder in the model — adjust the question, not just the threshold.</p>
+<p><strong>Slide 50 (one-minute feedback):</strong> Closing ritual. Keep the slide up until the room clears.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

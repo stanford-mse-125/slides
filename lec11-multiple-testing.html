@@ -1,0 +1,2161 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/tabby.min.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.37">
+
+  <meta name="author" content="Madeleine Udell">
+  <title>MSE 125 — Slides – Lecture 11: Multiple Testing</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-7e9863cd0ef9c70c3784d80bfe5ce18d.css">
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+  <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Lecture 11: Multiple Testing</h1>
+  <p class="subtitle">MSE 125 — Applied Statistics</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Madeleine Udell 
+</div>
+</div>
+</div>
+
+  <p class="date">Monday, May 4, 2026</p>
+</section>
+<section id="logistics" class="slide level2">
+<h2>logistics</h2>
+<ul>
+<li><strong>quiz 5</strong>: Wed May 6</li>
+<li><strong>HW 3</strong>: due Fri May 8</li>
+</ul>
+<aside class="notes">
+<p><strong>START RECORDING.</strong></p>
+<p>Quiz 5 next class. HW 3 due Friday — uses multiple testing and correlation directly. Wednesday’s lecture (regression inference) is the natural follow-up to today’s “fix the question, not just the threshold” closing.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-brief" class="slide level2">
+<h2>the brief</h2>
+<p>you’re an analyst for the <strong>NBA Director of Player Personnel</strong>.</p>
+<p>last season’s shooting numbers are on your desk — every player’s makes and attempts. your boss asks one question:</p>
+<blockquote>
+<p><em>“which of our players really shoot better than the league average?”</em></p>
+</blockquote>
+<p><strong>how would you tackle this?</strong></p>
+<aside class="notes">
+<p>Frame the lecture as a decision problem, not a topic to cover. We are not here to “demonstrate multiple testing” — we are here to answer a real question that any sports analyst would face. Which of last season’s rotation players really shoot above league average?</p>
+<p>Two ways the obvious approach fails: - <strong>Block 1 (multiple testing):</strong> run a z-test per player at <span class="math inline">p &lt; 0.05</span>. We’ll see far more rejections than the math allows under the null — but the rejections are mostly noise, and the analyst who reports them ships a list full of false positives. - <strong>Block 3 (confounding):</strong> the corrections give us a tight list of “real” departures. But the most extreme high outlier turns out to be a <em>worse</em> shooter than the most extreme low outlier — once we look at where each one shoots from. Right answer, wrong question.</p>
+<p>Don’t tease the numbers (141, 47, 117) — those land in the next two blocks. Today’s hook is the question, not the punchline.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="today" class="slide level2">
+<h2>today</h2>
+<ul>
+<li class="fragment">the <strong>multiple testing</strong> problem</li>
+<li class="fragment">two corrections: <strong>Bonferroni</strong> and <strong>Benjamini-Hochberg</strong></li>
+<li class="fragment">right answer, wrong question: <strong>confounding</strong> and <strong>Simpson’s paradox</strong></li>
+</ul>
+<aside class="notes">
+<p>Two halves linked by one theme: statistical results can mislead even when the math is right. First half — multiple testing — is about false discoveries: tests that fire when nothing real is there. Second half — confounding — is about discoveries that are real but answer the wrong question. Both are diagnosed using the same NBA shot-zone dataset.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>the multiple testing problem</p>
+</div>
+</section>
+<section id="the-data-shots-by-zone" class="slide level2">
+<h2>the data: shots by zone</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><code>shot_zones_2023-24.csv</code> — for each NBA player, <strong>field goals made (FGM)</strong> and <strong>attempted (FGA)</strong> in each of six shot zones. <strong>FG%</strong> = FGM / FGA.</p>
+<ul>
+<li><code>RA</code> — restricted area (under the basket)</li>
+<li><code>PAINT</code> — rest of the painted lane</li>
+<li><code>MID</code> — mid-range (inside the arc)</li>
+<li><code>LC3</code>, <code>RC3</code> — corner threes</li>
+<li><code>ATB3</code> — above-the-break threes</li>
+</ul>
+<p>source: NBA.com Stats, 2023–24 regular season</p>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/lec11/shot-zones-court.png" class="quarto-figure quarto-figure-center"></p>
+</figure>
+</div>
+</div></div>
+<aside class="notes">
+<p>Six zones, ordered rim outward. The granularity matters for the second half — it’s how we’ll diagnose Simpson’s paradox. For now we’ll just aggregate to overall FG%.</p>
+<p><strong>Footnote:</strong> the CSV is the NBA.com Stats six-zone breakdown, which excludes back-court heaves and a few unclassified attempts. Klay’s CSV FGA = 1,131; Basketball-Reference’s official total is 1,230 (includes long heaves). The Simpson reversal we’ll reach in Block 3 doesn’t depend on this — it persists with either denominator — but the on-screen numbers (43.3%, 55.7%, 47.7% league baseline) are computed over the six-zone subset.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="who-shoots-above-league-average" class="slide level2">
+<h2>who shoots above league average?</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a></a>shots <span class="op">=</span> pd.read_csv(<span class="st">'data/nba/shot_zones_2023-24.csv'</span>)</span>
+<span id="cb1-2"><a></a>qual <span class="op">=</span> shots[shots[<span class="st">'FGA'</span>] <span class="op">&gt;=</span> <span class="dv">200</span>].copy()</span>
+<span id="cb1-3"><a></a>qual[<span class="st">'FG_PCT'</span>] <span class="op">=</span> qual[<span class="st">'FGM'</span>] <span class="op">/</span> qual[<span class="st">'FGA'</span>]</span>
+<span id="cb1-4"><a></a>p0 <span class="op">=</span> qual[<span class="st">'FGM'</span>].<span class="bu">sum</span>() <span class="op">/</span> qual[<span class="st">'FGA'</span>].<span class="bu">sum</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<pre><code>Players (rotation, FGA &gt;= 200):  317
+League FG% (qualified players):   0.4770</code></pre>
+<p>extremes:</p>
+<ul>
+<li><strong>Jarrett Allen</strong>: 63%</li>
+<li><strong>Rudy Gobert</strong>: 66%</li>
+<li><strong>Jevon Carter</strong>: 38%</li>
+</ul>
+<p>are these gaps <strong>real</strong>, or could they happen by chance over a season’s worth of shots?</p>
+<aside class="notes">
+<p>Filter to rotation players — minimum 200 attempts so individual tests have power. League baseline 47.7% across qualified shots. Extremes named to anchor the question. Filter cutoff is itself a researcher degree of freedom we’ll come back to in the replication-crisis discussion.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="bernoullis-free-lunch" class="slide level2">
+<h2>bernoulli’s free lunch</h2>
+<div class="fragment">
+<p><strong>Lec 10</strong>: two samples (treatment vs control), continuous outcome. SE pooled from both arms.</p>
+</div>
+<div class="fragment">
+<p><strong>now</strong>: one sample (one player), binary outcome (made or missed). no control.</p>
+</div>
+<div class="fragment">
+<p><strong>how do we get a standard error with no control?</strong></p>
+<p>bernoulli: variance per shot <span class="math inline">= p(1-p)</span> — <strong>mean determines variance.</strong></p>
+</div>
+<div class="fragment">
+<p>under <span class="math inline">H_0: p = p_0</span>, the SE is <strong>pinned</strong> at <span class="math inline">\sqrt{p_0(1-p_0)/n}</span>.</p>
+<p>no second group. no estimation from data. <strong>null carries its own SE.</strong></p>
+</div>
+<aside class="notes">
+<p>The bridge slide students needed and didn’t get on first delivery. Two jumps at once from Lec 10:</p>
+<ol type="1">
+<li>Two samples → one sample.</li>
+<li>Continuous outcome → binary outcome.</li>
+</ol>
+<p>Both rest on the same Bernoulli property: σ² = p(1−p). Once H₀ specifies p, the variance is known, so the SE is too. No control group, no estimation from data. That’s the free lunch.</p>
+<p>For continuous outcomes the variance is a free parameter — must be estimated from data, hence the t-distribution penalty (t_{n−1} instead of N(0,1)).</p>
+<p>Pace: ~90 sec.&nbsp;Pause after fragment 3 (“how do we get a standard error with no control?”) and let students answer before revealing fragment 4. The next slide drops the formula and the 141/317 headline; the slide after sharpens the z-vs-t comparison.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="one-test-per-player" class="slide level2">
+<h2>one test per player</h2>
+<p><strong>one-sample z-test for a proportion</strong> — large-FGA normal approximation.</p>
+<p>for each player <span class="math inline">i</span>, test <span class="math inline">H_0: p_i = p_0</span> where <span class="math inline">p_0 = 0.477</span> (league):</p>
+<p><span class="math display">z_i = \frac{\hat p_i - p_0}{\sqrt{p_0(1-p_0) / \text{FGA}_i}} \sim \mathcal{N}(0, 1)</span></p>
+<div class="fragment">
+<p>run it 317 times.</p>
+<pre><code>Tests run:                317
+Significant at p &lt; 0.05:  141</code></pre>
+<aside class="notes">
+<p>One-sample two-sided z-test for a proportion — motivated on the previous slide (Bernoulli’s free lunch). Same recipe as Lec 10’s t-test (standardized distance from the null), but with the SE pinned by H₀ rather than estimated from data. 141 of 317 — about 45% of the league — comes back significant. That number triggers the rest of the lecture.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="z-test-or-t-test" class="slide level2">
+<h2>z-test or t-test?</h2>
+<p>both standardize the gap: <span class="math inline">\dfrac{\text{statistic} - \text{null}}{\text{SE under null}}</span></p>
+<div class="fragment">
+<p><strong>t-test</strong> (continuous, e.g.&nbsp;CD4 counts):</p>
+<ul>
+<li>SE <strong>estimated</strong> from data: <span class="math inline">\hat\sigma / \sqrt{n}</span></li>
+<li>reference: <span class="math inline">t_{n-1}</span> (extra uncertainty from <span class="math inline">\hat\sigma</span>)</li>
+</ul>
+</div>
+<div class="fragment">
+<p><strong>z-test for a proportion</strong> (binary, e.g.&nbsp;made/missed):</p>
+<ul>
+<li>SE <strong>pinned by</strong> <span class="math inline">H_0</span>: <span class="math inline">\sqrt{p_0(1-p_0)/n}</span> — nothing to estimate</li>
+<li>reference: <span class="math inline">\mathcal{N}(0, 1)</span></li>
+</ul>
+</div>
+<div class="fragment">
+<p>both = <strong>large-<span class="math inline">n</span> limit of the bootstrap</strong> (Lec 8). bootstrap works for any <span class="math inline">n</span>; z and t are the CLT shortcuts.</p>
+</div>
+<aside class="notes">
+<p>The bridge for students who know t-tests but haven’t seen z. Two ideas to land:</p>
+<ol type="1">
+<li><p><strong>Same recipe:</strong> standardized distance from the null, then look up tail probability. The two tests differ only in (a) how you get the SE and (b) which reference distribution you use.</p></li>
+<li><p><strong>Why z here:</strong> the binomial SE is determined by p_0 alone — no estimation needed because H_0 fixes the variance. For a continuous outcome the variance is a separate unknown, so you have to estimate it from the data and pay the t-distribution penalty for the extra uncertainty.</p></li>
+<li><p><strong>Bootstrap connection:</strong> Lec 8 introduced the bootstrap as resampling the data and looking at the empirical distribution of the statistic. Both t and z are CLT-driven approximations to that. For a mean: bootstrap → normal centered at true mean, sd = s/√n; the t-test corrects for the small-sample sd estimate. For a proportion: bootstrap → normal centered at true p, sd = √(p(1−p)/n); the z-test plugs in the null p_0 since H_0 specifies it. <strong>The bootstrap works for both; z and t are the closed-form CLT shortcuts.</strong></p></li>
+<li><p><strong>When to use each:</strong> continuous and want to compare to a fixed value → t. Binary and want to compare to a fixed proportion → z (or equivalent: a binomial test, exact for any n). Continuous with huge n and known sd → z works too, but t is safer.</p></li>
+</ol>
+<p>This slide is dense. Consider stepping through the fragments slowly. If running long, skip the bootstrap line — it’s a recall, not new content.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-1" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2></h2>
+<div class="prompt">
+<p><strong>if each player’s true FG% equaled the league baseline, how many of 317 tests would you expect to appear significant at <span class="math inline">\alpha = 0.05</span>?</strong></p>
+<p>give a number.</p>
+</div>
+<aside class="notes">
+<p><strong>DISCUSSION: think-pair-share (3 min).</strong> 30 sec think; 1 min pair; debrief.</p>
+<p>Goal: get students to compute m × α = 317 × 0.05 ≈ 16 by themselves. Most will land near 16; some will say “5%” without converting. Push for a <em>count</em>, not a rate.</p>
+<p>If stuck: “if you had a fair coin and flipped 100 times, how many heads would you expect?” — same expectation argument.</p>
+<p>Key insight: linearity of expectation gives 16 false positives even under H₀ for everyone. Tests don’t need to be independent for this — works for correlated tests too. The next slide formalizes.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="expected-by-chance" class="slide level2">
+<h2>expected by chance</h2>
+<p>if <span class="math inline">H_0</span> holds for every player:</p>
+<p><span class="math display">\mathbb{E}[\text{false positives}] = m \cdot \alpha</span></p>
+<div class="fragment">
+<pre><code>Tests:                317
+Expected false +ves:  15.9
+SD under null:         3.9     # = sqrt(m · α · (1−α))
+Observed significant: 141
+Excess over null:     125  (32.3 SDs)</code></pre>
+</div>
+<div class="fragment">
+<p>125 over the null floor — <strong>real signal</strong>. but mixed with ~16 fakes.</p>
+<aside class="notes">
+<p>Key arithmetic. Even with 317 totally null tests, expect ~16 false positives at p &lt; 0.05. We observed 141. The excess is overwhelming — something real is going on. But we don’t yet know <em>which</em> of the 141 are real. Multiple testing is exactly the problem of separating signal from the noise floor.</p>
+<p>Note the parenthetical “linearity of expectation holds even with correlated tests” — keep it verbal, don’t crowd the slide.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="the-multiple-testing-problem" class="slide level2">
+<h2>the <strong>multiple testing</strong> problem</h2>
+<div class="definition-box">
+<div class="def-term">
+<p>multiple testing</p>
+</div>
+<p>when many hypothesis tests are run, a predictable fraction will clear <span class="math inline">\alpha = 0.05</span> by chance alone.</p>
+<p>with <span class="math inline">m</span> tests at level <span class="math inline">\alpha</span>: expect <span class="math inline">m \cdot \alpha</span> false positives.</p>
+</div>
+<div class="fragment">
+<p>it doesn’t matter who runs the tests:</p>
+<ul>
+<li><strong>one analyst</strong> runs 317 tests → expect 16 false positives</li>
+<li><strong>1,000 labs</strong> each run one test → expect 50 false positives</li>
+</ul>
+<aside class="notes">
+<p>The arithmetic is the same whether the multiplicity is in one analyst’s notebook or spread across the literature. This is the bridge to the replication crisis on the next slide.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="the-p-value-histogram-a-diagnostic" class="slide level2">
+<h2>the p-value histogram: a diagnostic</h2>
+<p>under <span class="math inline">H_0</span>: p-values are <strong>Uniform(0, 1)</strong> — flat.</p>
+<div class="fragment">
+<p><strong>predict</strong>: what does our 317-player histogram look like?</p>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/lec11/pvalue-histogram.png" class="quarto-figure quarto-figure-center" width="900"></p>
+</figure>
+</div>
+<aside class="notes">
+<p><strong>INLINE PREDICT (15 sec):</strong> “under H₀ p-values are uniform — flat histogram. given that 141 of our 317 already rejected at p &lt; 0.05, what shape will the histogram have?” Take a guess.</p>
+<p>Reveal: spike near zero + flat tail at the null floor (~16 per bin). The probability integral transform — applying any continuous CDF to its own random variable produces a uniform draw — is what guarantees uniform p-values under H₀. So a histogram tells you immediately whether your tests have any signal: flat = nothing, spike = something.</p>
+<p>Here the first bin towers over the rest. Real signal is unmistakable. The flat tail tells you roughly how many of the small p-values are chance — about 16 per bin.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="this-isnt-just-nba" class="slide level2">
+<h2>this isn’t just NBA</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/lec11/xkcd-significant.png" class="quarto-figure quarto-figure-center" width="320"></p>
+</figure>
+</div>
+
+<aside class="notes">
+<p>The bridge from the NBA arc into science. The cartoon does dual duty in one panel:</p>
+<ol type="1">
+<li><p><strong>Multiple testing arithmetic.</strong> 20 colors of jellybean, 20 independent tests at <span class="math inline">\alpha = 0.05</span>. Under the null you expect ~1 false positive. Green pops up.</p></li>
+<li><p><strong>Publication bias / file drawer.</strong> Only the “significant” finding makes the news. The 19 negative results are invisible. By the time the public reads the headline, the multiplicity that produced it has been erased.</p></li>
+</ol>
+<p>This is the same arithmetic we just ran on 317 NBA players — just spread across studies, labs, and the press instead of one analyst’s notebook. ~30 seconds for the room to read and laugh.</p>
+<p>Verbal bridge before clicking forward: “the NBA had 317 tests on one analyst’s screen. Science has the same problem distributed across labs and journals — and the stakes are quite a bit higher than getting Aaron Gordon’s FG% wrong.”</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+<aside><div>
+<p>xkcd #882, “Significant” — Randall Munroe (CC BY-NC 2.5)</p>
+</div></aside></section>
+<section id="whats-at-stake" class="slide level2">
+<h2>what’s at stake</h2>
+<p>a published false positive doesn’t sit on a shelf — <strong>someone acts on it.</strong></p>
+<ul>
+<li class="fragment"><strong>medicine</strong>: Amgen tried to replicate <strong>53 landmark cancer studies</strong> — confirmed only <strong>6</strong> (Begley &amp; Ellis, <em>Nature</em> 2012). Failed preclinical work feeds drug trials that cost ~$1B each.</li>
+<li class="fragment"><strong>psychology / policy</strong>:
+<ul>
+<li class="fragment">“power posing” (Cuddy 2010) → 50M+ TED views, corporate trainings → <strong>didn’t replicate</strong>.</li>
+<li class="fragment">“Growth mindset” interventions → district-wide rollouts, <strong>near-zero average effect</strong>.</li>
+</ul></li>
+<li class="fragment"><strong>biomedical waste</strong>: Freedman et al.&nbsp;(2015) estimate <strong>$28 B/year</strong> spent in the US on preclinical research that doesn’t reproduce.</li>
+</ul>
+<div class="fragment">
+<p>cost isn’t just dollars: <strong>patients enrolled in trials, students taught by failed interventions, policy built on phantom effects.</strong></p>
+<aside class="notes">
+<p>The “why care” slide. The arithmetic on the previous slide is mechanical; this slide is the consequence in fields where stakes are high.</p>
+<p><strong>Begley &amp; Ellis (2012, Nature 483:531)</strong>: Amgen’s hematology/oncology team tried to replicate 53 “landmark” preclinical cancer findings before building drug programs on them. They confirmed 6 (11%). Bayer ran a parallel exercise (Prinz, Schlange, Asadullah 2011) on 67 target-ID papers and reproduced fewer than 25%. This isn’t psychology — it’s the foundation of cancer drug development, where each failed clinical trial costs hundreds of millions and exposes patients to real risk.</p>
+<p><strong>Power posing (Carney, Cuddy, Yap 2010)</strong>: claimed 1-min “high-power” poses raised testosterone, lowered cortisol, increased risk-taking. Cuddy’s 2012 TED talk has 70M+ views and is one of the most-watched ever. Corporate training programs adopted it. By 2016 the original co-author Dana Carney had publicly disavowed it as not replicable.</p>
+<p><strong>Growth mindset</strong>: Carol Dweck’s work led to interventions deployed in tens of thousands of K-12 classrooms. Large-scale RCTs (Sisk et al.&nbsp;2018 meta-analysis; Yeager &amp; Dweck 2019 NSGM trial) found average effects near zero or very small, with most studies underpowered. School districts spent millions on programs whose population-level benefit is now in serious doubt.</p>
+<p><strong>$28B figure</strong>: Freedman, Cockburn, Simcoe (2015, PLOS Biology) — based on irreproducibility rates from preclinical biology, life-sciences R&amp;D spending, and downstream costs.</p>
+<p>The point of this slide is that “replication” is not academic hygiene. It determines what diseases get treated, what students get taught, what policies get adopted.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="the-replication-crisis-numbers" class="slide level2">
+<h2>the replication crisis: numbers</h2>
+<ul>
+<li class="fragment"><strong>2011 — Bem (precognition)</strong>: standard methods, top journal, conclusion: people sense the future. published, then unreplicable.</li>
+<li class="fragment"><strong>2015 — Reproducibility Project</strong>: 100 psychology studies retried. <strong>~36% replicated</strong> with significance. effect sizes roughly <strong>half</strong> the originals.</li>
+<li class="fragment"><strong>2026 — SCORE</strong>: 274 claims across 164 papers, 54 social/behavioral journals. <strong>55%</strong> of claims replicated; given the same data, only <strong>34%</strong> of independent analysts using defensible alternative specs reached the original conclusion.</li>
+</ul>
+<aside class="notes">
+<p>Three data points in a fifteen-year arc. Bem isn’t the cause — it was the embarrassment that made the crisis visible. The 2015 and 2026 numbers are the empirical scale.</p>
+<p>SCORE caveats: economics and political science fared notably better (&gt;85% computationally reproducible, 72% surviving reanalysis). The crisis isn’t uniform — it reflects structural features of how research is done in different fields.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="hidden-multiplicity-p-hacking" class="slide level2">
+<h2>hidden multiplicity: p-hacking</h2>
+<p>even one analyst running “one test” is hiding multiplicity:</p>
+<ul>
+<li class="fragment">exclude an outlier? that’s a choice</li>
+<li class="fragment">which outcome variable? that’s a choice</li>
+<li class="fragment">collect more data until significant? that’s a choice</li>
+<li class="fragment">which subset to analyze? that’s a choice</li>
+</ul>
+<div class="fragment">
+<p>each choice is an <strong>implicit hypothesis test</strong>. the final reported <span class="math inline">p</span> is the survivor of many.</p>
+<aside class="notes">
+<p>Andrew Gelman’s “garden of forking paths.” Each fork in the analysis is an implicit comparison. Even a researcher who runs only “one test” at the end may have made dozens of choices upstream that constitute hidden multiplicity.</p>
+<p>Simmons, Nelson, Simonsohn (2011) showed exploiting a few common degrees of freedom — optional stopping, control for gender, drop a condition — produces p &lt; 0.05 for nonexistent effects more than 60% of the time.</p>
+<p>Next slide: students apply the idea to a concrete analyst’s notebook.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-2" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2></h2>
+<div class="prompt">
+<p>your boss: <em>“find me a clutch shooter.”</em> you pick Player X and test:</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>restriction</th>
+<th><span class="math inline">p</span>-value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>4th quarter</td>
+<td>0.18</td>
+</tr>
+<tr class="even">
+<td>last 5 min</td>
+<td>0.12</td>
+</tr>
+<tr class="odd">
+<td>last 2 min</td>
+<td>0.09</td>
+</tr>
+<tr class="even">
+<td>last 2 min, score within 3</td>
+<td><strong>0.04</strong> ✓</td>
+</tr>
+<tr class="odd">
+<td>…same, home games only</td>
+<td><strong>0.02</strong> ✓</td>
+</tr>
+</tbody>
+</table>
+<p>write-up: <em>“Player X shoots above league average in clutch home situations, <span class="math inline">p = 0.02</span>.”</em></p>
+<p><strong>what’s the chance you’d find something significant under the null?</strong></p>
+</div>
+<aside class="notes">
+<p><strong>DISCUSSION: spot-the-forks (5 min).</strong> 1 min think; 2 min pair; debrief.</p>
+<p>This is Andrew Gelman’s <em>garden of forking paths</em> (Gelman &amp; Loken, 2014) made concrete. The reported <span class="math inline">p = 0.02</span> is not the probability the analyst would have seen this result by chance — it is the probability conditional on this <em>exact</em> sequence of restrictions. The relevant probability is “would I have found <em>some</em> sub-restriction with <span class="math inline">p &lt; 0.05</span> under the null?” — and that is much larger.</p>
+<p><strong>Forks visible in the table</strong> (5):</p>
+<ol type="1">
+<li>Quarter window: 4th, last 5, last 2, last 1, last 30 sec, last 10 sec…</li>
+<li>Score margin: within 1, 2, 3, 5, 10, “any close game”</li>
+<li>Home / away / both</li>
+<li>Stopping rule: “I’ll stop when I find <span class="math inline">p &lt; 0.05</span>” (optional stopping)</li>
+<li>Sign of the effect: above league, below league, “different from league”</li>
+</ol>
+<p><strong>Forks invisible in the table</strong> (just as many):</p>
+<ul>
+<li>Choice of player (Player X vs Y vs Z — 50+ candidates)</li>
+<li>Definition of “shot” (FGA only? include free throws? assisted vs unassisted?)</li>
+<li>Outcome metric (FG%? eFG%? TS%? points-per-shot?)</li>
+<li>Reference comparison (league average? his own season average? historical clutch baseline?)</li>
+<li>Time period (this season? career? last 3 seasons?)</li>
+<li>How to handle missing/garbage-time minutes</li>
+</ul>
+<p><strong>Effective <span class="math inline">\alpha</span>.</strong> Even taking only the 5 visible forks at face value, <span class="math inline">1 - 0.95^5 \approx 23\%</span> — and if you keep going through the invisible forks (30+ plausible analyses), the chance of finding <em>something</em> at <span class="math inline">p &lt; 0.05</span> under the null is essentially 1. The reported <span class="math inline">p = 0.02</span> massively understates the actual evidence.</p>
+<p><strong>The takeaway to land before the next slide:</strong> the analyst here didn’t lie. Each test was honest. Each <span class="math inline">p</span>-value was correctly computed. The “garden” is not in any one test — it’s in the choice of which tests to <em>look at</em> and which to <em>report</em>. Bonferroni and BH can’t help here because they only correct for the tests you tell them about. → next slide: structural pressure makes the file drawer worse, then xkcd, then the actual fix (pre-registration) on the slide after.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="structural-pressure" class="slide level2">
+<h2>structural pressure</h2>
+<p>two features of science amplify the problem:</p>
+<ul>
+<li><strong>file drawer</strong>: null results don’t get published</li>
+<li><strong>incentives</strong>: careers are built on novel significant findings</li>
+</ul>
+<div class="fragment">
+<p>if 20 labs test the same false hypothesis, <strong>one</strong> will publish a significant result by chance — and <strong>that’s the only one you read</strong></p>
+<aside class="notes">
+<p>The file drawer problem: published literature is a biased sample of all research conducted. Combined with publication and career incentives that reward significance, the system selects for false positives that look like real discoveries.</p>
+<p>This isn’t accusing anyone of fraud — it’s a structural feature.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="the-fix-pre-registration" class="slide level2">
+<h2>the fix: <strong>pre-registration</strong></h2>
+<div class="definition-box">
+<div class="def-term">
+<p>pre-registration</p>
+</div>
+<p>publicly committing to your research question, data plan, and analysis plan <strong>before</strong> looking at the data.</p>
+<p>a pre-registered analysis is a single pre-specified test — not the survivor of many.</p>
+</div>
+<div class="fragment">
+<p>doesn’t ban exploration — requires labeling it as <strong>exploratory</strong>, not confirmatory</p>
+<aside class="notes">
+<p>Pre-registration eliminates researcher degrees of freedom by fixing the analysis upfront. It doesn’t prevent exploratory analysis — it just demands honesty about what’s confirmatory and what’s exploratory.</p>
+<p>Two layers of multiplicity to keep distinct: - <em>known</em> multiplicity (the 317 tests we explicitly ran today) → fixed by Bonferroni / BH - <em>hidden</em> multiplicity (p-hacking, file drawer) → fixed by pre-registration + transparent reporting</p>
+<p>Both are the same core problem: test many things, cherry-pick, find an apparent effect.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-3" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2></h2>
+<div class="prompt">
+<p><strong>which is more credible?</strong></p>
+<div class="columns">
+<div class="column" style="width:48%;">
+<div class="act-card">
+<p><span class="act-title">study A</span></p>
+<p>pre-registered hypothesis: drug X reduces blood pressure by ≥ 5 mmHg.</p>
+<p>result: 4.2 mmHg, <span class="math inline">p = 0.08</span></p>
+</div>
+</div><div class="column" style="width:4%;">
+
+</div><div class="column" style="width:48%;">
+<div class="act-card">
+<p><span class="act-title">study B</span></p>
+<p>exploratory analysis of 50 outcomes.</p>
+<p>result: drug X reduces ankle swelling by 18%, <span class="math inline">p = 0.02</span></p>
+</div>
+</div></div>
+<p><strong>pick one and defend it</strong></p>
+</div>
+<aside class="notes">
+<p><strong>DISCUSSION: think-pair-share (4 min).</strong> 1 min think; 2 min pair; debrief.</p>
+<p>Goal: students see that a <em>failed</em> pre-registered test is more informative than a <em>successful</em> exploratory one.</p>
+<p>If stuck: “if Study B ran 50 tests at α = 0.05, how many would you expect to clear by chance?” → 2.5.</p>
+<p>Key insights: - Study A: pre-specified, single test, p just above threshold but effect direction matches hypothesis. Failure is informative. - Study B: 50 outcomes means ~2-3 false positives expected by chance. p = 0.02 on one of 50 is consistent with noise. The “discovery” is the survivor of hidden multiplicity. - Don’t accept “Study A — it’s pre-registered” without follow-up. Push: <em>why</em> does pre-registration matter here?</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-4" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>two corrections</p>
+</div>
+<aside class="notes">
+<p>Block 2: now that we’ve named the problem, give students two tools to control it.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="correction-1-bonferroni" class="slide level2">
+<h2>correction 1: Bonferroni</h2>
+<p>start with a <strong>false-positive budget</strong> of <span class="math inline">\alpha = 0.05</span> — total chance of <em>any</em> wrong rejection.</p>
+<div class="fragment">
+<p>spread it evenly across <span class="math inline">m</span> tests: each gets <span class="math inline">\alpha/m</span>.</p>
+</div>
+<div class="fragment">
+<p><strong>union bound</strong>:</p>
+<p><span class="math display">\Pr[A_1 \cup \cdots \cup A_m] \;\le\; \sum_{i=1}^{m} \Pr[A_i]</span></p>
+</div>
+<div class="fragment">
+<p>so</p>
+<p><span class="math display">\Pr[\text{any false positive}] \;\le\; m \cdot \frac{\alpha}{m} \;=\; \alpha</span></p>
+</div>
+<div class="fragment">
+<p>works <strong>regardless of correlation</strong> between tests</p>
+<aside class="notes">
+<p>The intuition. Union bound is the workhorse — gives you the guarantee even when tests are dependent. Worth pausing on the union-bound line: it’s the reason Bonferroni is bulletproof.</p>
+<p>Note: the union bound is a worst-case bound, which is why Bonferroni is conservative. When tests are positively correlated (as ours are — players’ p-values aren’t independent), the actual FWER is below α/m × m. We’re paying for a guarantee we may not strictly need.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="bonferroni-the-formal-version" class="slide level2">
+<h2><strong>Bonferroni</strong>: the formal version</h2>
+<div class="definition-box">
+<div class="def-term">
+<p>Bonferroni correction</p>
+</div>
+<p>test each hypothesis at the stricter level</p>
+<p><span class="math display">\alpha_{\text{Bonf}} = \frac{\alpha}{m}</span></p>
+<p>controls <strong>family-wise error rate (FWER)</strong>: probability of <em>any</em> false positive across all <span class="math inline">m</span> tests.</p>
+<p>conservative, but the guarantee is bulletproof.</p>
+</div>
+<aside class="notes">
+<p>FWER = Pr(at least one false positive). Bonferroni controls FWER at level α. The conservatism is the cost of the worst-case bound.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="bonferroni-applied" class="slide level2">
+<h2>Bonferroni applied</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a></a>alpha <span class="op">=</span> <span class="fl">0.05</span></span>
+<span id="cb5-2"><a></a>bonf_threshold <span class="op">=</span> alpha <span class="op">/</span> <span class="dv">317</span>   <span class="co"># = 0.000158  (317x stricter)</span></span>
+<span id="cb5-3"><a></a>n_bonf <span class="op">=</span> (qual[<span class="st">'p_value'</span>] <span class="op">&lt;</span> bonf_threshold).<span class="bu">sum</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>threshold dropped <strong>317×</strong> — what’s your guess for the new count, out of 141?</p>
+<div class="fragment">
+<pre><code>Significant after Bonferroni:  47   (down from 141)</code></pre>
+</div>
+<div class="fragment">
+<p><strong>survivors</strong> — the obvious extremes:</p>
+<ul>
+<li>rim-feasting big men: Allen, Gobert, Lively, Gafford, Giannis (60–75%)</li>
+<li>worst shooters at the other tail</li>
+</ul>
+<aside class="notes">
+<p><strong>INLINE PREDICT (15 sec):</strong> “threshold got 317 times stricter. how many survive?” Take a couple of guesses verbally.</p>
+<p>The threshold drops from 0.05 to 1.6 × 10⁻⁴ — 317 times stricter. Out of 141 unc-significant players, only 47 survive. Most students will guess far lower (single digits) given the 317× framing — the reveal that 47 survive shows how many extreme-effect players the league has.</p>
+<p>Damian Lillard at 42.6% on 1,270 attempts has p ≈ 3 × 10⁻⁴ — <em>plausibly</em> below average — but doesn’t clear the Bonferroni threshold. Save him for the next slide on BH.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="the-cost-of-conservatism" class="slide level2">
+<h2>the cost of conservatism</h2>
+<pre><code>Damian Lillard:   42.6% on 1,270 attempts
+                  p-value ≈ 3 × 10⁻⁴
+                  Bonferroni threshold: 1.6 × 10⁻⁴
+                  → fails to reject</code></pre>
+<div class="fragment">
+<p>a real moderate effect that Bonferroni <strong>throws away</strong></p>
+<aside class="notes">
+<p>Lillard is the poster child for what Bonferroni misses: a meaningful effect with strong evidence (p ≈ 3 × 10⁻⁴ is not a borderline result), rejected because the bar is set so high to bound <em>any</em> false positive.</p>
+<p>This motivates BH on the next slide.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="correction-2-bh-rising-bar" class="slide level2">
+<h2>correction 2: BH (rising bar)</h2>
+<p>Bonferroni asks every p-value to clear <span class="math inline">\alpha/m</span> — <strong>flat bar</strong></p>
+<div class="fragment">
+<p>BH lets the bar <strong>rise with rank</strong>:</p>
+<p><span class="math display">\alpha/m, \; 2\alpha/m, \; 3\alpha/m, \; \ldots, \; \alpha</span></p>
+</div>
+<div class="fragment">
+<p>if you call <span class="math inline">k</span> results discoveries, <em>expect</em> <span class="math inline">k\alpha</span> to be null → <strong>expected</strong> false-discovery fraction ≈ <span class="math inline">\alpha</span></p>
+<aside class="notes">
+<p>The intuition. Bonferroni demands every test clear the same strict bar. BH demands only that the k-th smallest p-value clear k/m × α. The early p-values still face a strict bar; later ones face an easier one.</p>
+<p>Why this works: under the null, p-values are uniform, so k of them under k/m means roughly k null rejections × α/m × m = kα false out of k discoveries. Trade Bonferroni’s “no FPs at all” for “α fraction of discoveries are FPs on average.”</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="benjamini-hochberg-procedure" class="slide level2">
+<h2><strong>Benjamini-Hochberg</strong> procedure</h2>
+<div class="definition-box">
+<div class="def-term">
+<p>Benjamini-Hochberg (BH)</p>
+</div>
+<ol type="1">
+<li>sort p-values: <span class="math inline">p_{(1)} \le p_{(2)} \le \cdots \le p_{(m)}</span> — so <span class="math inline">p_{(k)}</span> is the <span class="math inline">k</span>-th smallest.</li>
+<li>find the largest <span class="math inline">k</span> such that <span class="math inline">p_{(k)} \le \frac{k}{m} \alpha</span></li>
+<li>reject hypotheses <span class="math inline">1, \ldots, k</span></li>
+</ol>
+<p>controls <strong>false discovery rate (FDR)</strong>: expected fraction of false positives <strong>among rejections</strong>.</p>
+</div>
+<aside class="notes">
+<p>FDR = E[false positives / total rejections]. BH controls FDR at level α. Step-up procedure: walk from the largest p-value down, find the first one that crosses the threshold, accept everything below it.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="bh-on-a-toy-example" class="slide level2">
+<h2>BH on a toy example</h2>
+<p><span class="math inline">m = 5</span> tests, <span class="math inline">\alpha = 0.05</span>. sort p-values, compare to <span class="math inline">k\alpha/m = 0.01k</span>:</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th><span class="math inline">k</span></th>
+<th><span class="math inline">p_{(k)}</span></th>
+<th><span class="math inline">k\alpha/m</span></th>
+<th><span class="math inline">\le</span> ?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>0.001</td>
+<td>0.01</td>
+<td>✓</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>0.008</td>
+<td>0.02</td>
+<td>✓</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>0.030</td>
+<td>0.03</td>
+<td>✓</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>0.050</td>
+<td>0.04</td>
+<td>✗</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>0.400</td>
+<td>0.05</td>
+<td>✗</td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p>walk from the bottom; <strong>largest <span class="math inline">k</span> where <span class="math inline">\le</span> holds is <span class="math inline">k = 3</span></strong> → reject 1, 2, 3.</p>
+</div>
+<div class="fragment">
+<p>compare: <strong>Bonferroni</strong> (<span class="math inline">\alpha/m = 0.01</span>) rejects only <span class="math inline">k=1</span>; <strong>uncorrected</strong> rejects 1–4.</p>
+<aside class="notes">
+<p>Walk through it slowly. Toy example before applying to NBA on the next slide.</p>
+<p>Step-up: walk from k = 5 (largest p) down until the first ✓. That’s k = 3. Reject hypotheses 1, 2, 3 — including k = 2 even though we passed k = 4 (which failed) on the way down. The “step-up” name is because we <em>step up</em> from large p-values to find the first crossing.</p>
+<p>Bonferroni: every test must clear α/m = 0.01. Only p = 0.001 clears. One rejection.</p>
+<p>Uncorrected: every test must clear α = 0.05. Tests 1, 2, 3, 4 clear. Four rejections — but no FDR control.</p>
+<p>BH lands in the middle: three rejections, of which roughly 0.05 × 3 ≈ 0.15 are false in expectation.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="bonferroni-vs-bh-on-shot-data" class="slide level2">
+<h2>Bonferroni vs BH on shot data</h2>
+
+<img data-src="images/lec11/bonf-vs-bh.png" class="quarto-figure quarto-figure-center r-stretch" width="1100"><div class="fragment">
+<pre><code>Uncorrected (p &lt; 0.05):  141
+Bonferroni (FWER):        47
+BH (FDR &lt;= 0.05):        117</code></pre>
+</div>
+<aside class="notes">
+<p><strong>INLINE PREDICT (15 sec, before clicking the reveal):</strong> “Bonferroni rejected 47, uncorrected rejected 141. where does BH land — closer to 47, closer to 141, or in the middle?” Take a couple of guesses.</p>
+<p>The visual is the punchline. Bonferroni is the flat orange line at 1.6e-4. BH is the red dashed line rising linearly from there to 0.05 at rank 317. Players whose p-value is <em>below</em> the BH line at their rank get rejected.</p>
+<p>Most predictions land in the middle (70–100). Reveal: 117 — closer to the uncorrected count than to Bonferroni. BH is much more permissive than students typically expect. 70 extra players caught by BH that Bonferroni missed. The next slide names some.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-70-player-gap" class="slide level2">
+<h2>the 70-player gap</h2>
+<p>players caught by <strong>BH but not Bonferroni</strong>:</p>
+<ul>
+<li>Damian Lillard (42.6%)</li>
+<li>Fred VanVleet</li>
+<li>Kevin Durant</li>
+<li>Chet Holmgren</li>
+<li>… and ~66 others</li>
+</ul>
+<div class="fragment">
+<p>moderate effects — “two or three points off league average” — that BH flags and Bonferroni rejects on principle</p>
+<aside class="notes">
+<p>These are recognizable names with effect sizes you’d want to know about. Bonferroni’s strict bar would treat them as indistinguishable from noise. BH says: I’ll accept a 5% false-discovery fraction in exchange for catching them.</p>
+<p>Trade-off framing: about 6 of these 117 (5% × 117) are expected to be false on average.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="when-bonferroni-gives-up" class="slide level2">
+<h2>when Bonferroni gives up</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Hedenfalk et al.&nbsp;(2001) — breast cancer microarrays</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><span class="math inline">m = 3{,}170</span> genes, t-test per gene (BRCA1 vs BRCA2 tumors)</li>
+<li>only 7 vs 8 samples per gene → low power per test</li>
+<li>Bonferroni rejects roughly <strong>1</strong> gene</li>
+<li>BH at <span class="math inline">q = 0.05</span> rejects roughly <strong>94 genes</strong> (Storey &amp; Tibshirani, 2003)</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><strong>many moderate effects, no extreme ones</strong> → exactly where FDR was invented to work</p>
+<aside class="notes">
+<p>NBA data is friendly to Bonferroni — the rim-feasting big men have p-values essentially zero. Microarray data is the opposite extreme: thousands of genes, low power per test, no individual gene can clear the Bonferroni bar even with real signal.</p>
+<p>The p-value histogram for Hedenfalk has a clear spike near zero — signal exists. BH is willing to call it; Bonferroni is not.</p>
+<p>Storey, J.D. (2002) “A direct approach to false discovery rates” — the canonical reanalysis.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-5" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2></h2>
+<div class="prompt">
+<p><strong>which correction — and does it matter?</strong></p>
+<p>for each: is your budget <span class="math inline">K</span> <strong>fixed</strong> (top-<span class="math inline">K</span>) or <strong>data-driven</strong> (threshold)? what guarantee do you want about the list?</p>
+<ul>
+<li class="fragment">screening 20,000 genes; wet lab can run <strong>100</strong> follow-ups</li>
+<li class="fragment">evaluating a single drug for FDA safety approval</li>
+<li class="fragment">ranking 500 students for <strong>50</strong> scholarships</li>
+<li class="fragment">testing 100 churn features; ship the <strong>top 5</strong></li>
+<li class="fragment">30,000 SNPs in a GWAS; report all that pass</li>
+</ul>
+</div>
+<aside class="notes">
+<p><strong>DISCUSSION: analyze-this (5 min).</strong> 30 sec per scenario; 2 min pair; debrief.</p>
+<p><strong>Goal:</strong> push students past “Bonferroni vs BH” into the deeper question: <em>does the correction even change who I act on?</em> Both corrections preserve the p-value ranking — they only differ in where the threshold falls. So when <span class="math inline">K</span> is fixed by budget, you take the top-<span class="math inline">K</span> regardless of correction. The correction is doing characterization (how noisy is my reported set?), not selection.</p>
+<p><strong>Selection vs characterization</strong> — the framing for each:</p>
+<ul>
+<li><strong>20K genes, 100 follow-ups (K fixed):</strong> Take the top 100 by p-value. Correction doesn’t change selection. BH-style FDR is useful for <em>characterization</em> — “of these 100, expect ~5 to be noise” — but you didn’t need BH to pick them.</li>
+<li><strong>FDA approval (K data-driven, single decision):</strong> This is the only scenario where the threshold actually drives the decision. Bonferroni-flavor — controlling FWER for one go/no-go is appropriate; the cost of crossing the line wrongly is severe and asymmetric.</li>
+<li><strong>500 students, 50 scholarships (K fixed):</strong> Pure ranking problem. Take the top 50. No correction changes the selection. The interesting question is “of the borderline 10, what fraction don’t deserve it?” — an FDR-style characterization, not a threshold.</li>
+<li><strong>100 features, top 5 (K fixed):</strong> Same as scholarships and genes. Take the top 5; characterize how many might be noise.</li>
+<li><strong>30K SNPs, threshold-based (K data-driven):</strong> This is the textbook GWAS case where corrections matter for selection. Bonferroni at <span class="math inline">5 \times 10^{-8}</span> is the field’s convention — single false positive can spawn years of follow-up work. BH is gaining traction for discovery work where K is genuinely data-driven.</li>
+</ul>
+<p><strong>Key insight:</strong> “which correction” is the wrong first question when budgets are fixed. Right first question: <strong>does the threshold drive my action set, or am I taking top-<span class="math inline">K</span> either way?</strong></p>
+<p>If the latter, the correction adds nothing for selection but can still characterize your batch’s expected noise — Storey’s q-value framework formalizes this (chapter callout).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="stakes-determine-the-correction" class="slide level2">
+<h2>stakes determine the correction</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>controls</th>
+<th>use when</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Bonferroni</strong></td>
+<td>family-wise error rate</td>
+<td>any false positive is costly</td>
+</tr>
+<tr class="even">
+<td><strong>BH</strong></td>
+<td>false discovery rate</td>
+<td>tolerable fraction of FPs is OK</td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p>corrections fix the <strong>known</strong> multiplicity — the tests you ran on purpose.</p>
+</div>
+<div class="fragment">
+<p>pre-registration fixes the <strong>hidden</strong> multiplicity — the choices you made before the test.</p>
+<aside class="notes">
+<p>Summary of the corrections half. Tie back to the replication crisis material from Block 1: Bonferroni and BH handle multiplicity <em>within</em> an analysis. Pre-registration handles multiplicity <em>across</em> analyses (the file drawer, the forking paths).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-6" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>right answer, wrong question</p>
+</div>
+<aside class="notes">
+<p>Block 3: we’ve fixed the false-positive problem. But even our most ironclad rejections — the Bonferroni survivors — can still mislead. This is the conceptual peak of the lecture.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="remember-the-survivors" class="slide level2">
+<h2>remember the survivors?</h2>
+<p>Bonferroni rejected <strong>47</strong> players — the most extreme cases.</p>
+<p>among them:</p>
+<ul>
+<li><strong>Aaron Gordon</strong>: 55.7% — confidently above league</li>
+<li><strong>Klay Thompson</strong>: 43.3% — confidently below league</li>
+</ul>
+<div class="fragment">
+<p>both rejections <strong>survive any correction</strong>. so Gordon is the better shooter. right?</p>
+
+<aside class="notes">
+<p>Set up the wrong-question payoff. Gordon and Thompson are both Bonferroni survivors — these aren’t borderline cases. The math is unimpeachable.</p>
+<p>The setup question — “Gordon shoots 55.7%, Thompson 43.3%, so Gordon is better” — is what almost any student would conclude. The lecture spends the rest of the block disassembling this.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+<aside><div>
+<p>FG% here = makes / attempts over the six NBA.com zones; back-court heaves excluded. Klay’s Basketball-Reference total includes long heaves and runs ~2 points lower.</p>
+</div></aside></section>
+<section id="inside-the-gordonthompson-gap" class="slide level2">
+<h2>inside the Gordon/Thompson gap</h2>
+<p>aggregate: Gordon <strong>+12.4</strong> over Klay.</p>
+<p><strong>predict</strong>: in how many of the 6 zones does Gordon outshoot Klay?</p>
+<div class="fragment">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>zone</th>
+<th>Klay Thompson</th>
+<th>Aaron Gordon</th>
+<th>Klay − Gordon</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>RA</td>
+<td>75.3</td>
+<td>70.8</td>
+<td><strong>+4.5</strong></td>
+</tr>
+<tr class="even">
+<td>PAINT</td>
+<td>41.2</td>
+<td>24.4</td>
+<td><strong>+16.8</strong></td>
+</tr>
+<tr class="odd">
+<td>MID</td>
+<td>44.8</td>
+<td>29.7</td>
+<td><strong>+15.1</strong></td>
+</tr>
+<tr class="even">
+<td>LC3</td>
+<td>30.4</td>
+<td>24.1</td>
+<td><strong>+6.3</strong></td>
+</tr>
+<tr class="odd">
+<td>RC3</td>
+<td>50.0</td>
+<td>48.1</td>
+<td><strong>+1.9</strong></td>
+</tr>
+<tr class="even">
+<td>ATB3</td>
+<td>38.7</td>
+<td>24.7</td>
+<td><strong>+14.0</strong></td>
+</tr>
+<tr class="odd">
+<td><strong>TOTAL</strong></td>
+<td><strong>43.3</strong></td>
+<td><strong>55.7</strong></td>
+<td><strong>−12.4</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="fragment">
+<p><strong>Klay wins every zone. Gordon wins the aggregate.</strong></p>
+</div>
+<aside class="notes">
+<p><em>This is the surprise moment — amplified by the predict-then-reveal.</em></p>
+<p><strong>INLINE PREDICT (20 sec):</strong> “Gordon shoots 12 points better in aggregate. in how many of the 6 zones does he outshoot Klay?” Most students will guess 4–6 (since Gordon dominates the aggregate). A few skeptics may guess 3.</p>
+<p>Reveal the table. Answer: <strong>zero</strong>. Klay beats Gordon in every single zone, by 1.9 to 16.8 points. The aggregate flips the within-zone story entirely.</p>
+<p>Pause. Let the contradiction sink in. This is not a math error. This is the data.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="simpsons-paradox" class="slide level2">
+<h2><strong>Simpson’s paradox</strong></h2>
+<div class="definition-box">
+<div class="def-term">
+<p>Simpson’s paradox (Simpson, 1951)</p>
+</div>
+<p>an association <strong>reverses</strong> when you look inside subgroups.</p>
+<p>aggregate trend ≠ within-subgroup trend.</p>
+</div>
+<div class="fragment">
+<p>a strong form of confounding — the aggregate doesn’t just <em>mislead</em>, it points the <strong>wrong direction</strong></p>
+<aside class="notes">
+<p>Edward Simpson described the structure in 1951. The reversal isn’t a paradox in the logical sense — it’s perfectly consistent arithmetic — but it violates strong intuitions about averages.</p>
+<p>The aggregate result is correct. The within-subgroup results are correct. They give opposite answers because they answer different questions.</p>
+<p>Block 3 pivot: we’ve shown the reversal and named it. The next three slides explain the mechanism.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="a-lurking-variable-shot-location" class="slide level2">
+<h2>a lurking variable: shot location</h2>
+<p><code>rim_share = RA_FGA / FGA</code> — fraction of shots from the restricted area.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/lec11/rim-share-scatter.png" class="quarto-figure quarto-figure-center" width="1100"></p>
+</figure>
+</div>
+
+<aside class="notes">
+<p>Pearson r ≈ 0.80 between share-of-shots-from-rim and overall FG%. Most of the variation in players’ aggregate FG% is explained by <em>where</em> they shoot from, not how skilled they are.</p>
+<p>Code in the notebook: <code>r, p = stats.pearsonr(qual['rim_share'], qual['FG_PCT'])</code> → <code>r = 0.797, p = 7.7e-71</code>.</p>
+<p>Recall from Ch 4 / Lec 4: r is the linear association between two variables, range [-1, +1], unitless and symmetric.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+<aside><div>
+<p>recall <strong>Pearson <span class="math inline">r</span></strong> (Ch 4): linear association, <span class="math inline">r \in [-1, +1]</span>, unitless.</p>
+</div></aside></section>
+<section id="why-the-scatter-is-so-tight" class="slide level2">
+<h2>why the scatter is so tight</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>zone</th>
+<th>league FG%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>restricted area</td>
+<td>67%</td>
+</tr>
+<tr class="even">
+<td>above-the-break 3</td>
+<td>36%</td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p><strong>whoever takes the easier shots posts the better aggregate number</strong> — mechanical, not skillful.</p>
+<aside class="notes">
+<p>The mechanism. Restricted area shots go in nearly twice as often as above-the-break threes. A player whose shot mix is rim-heavy will have a high aggregate FG% even if they’re a worse shooter than someone who takes harder shots.</p>
+<p>This is the engine of the Gordon/Thompson reversal we just saw.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="ecological-correlation-a-warning" class="slide level2">
+<h2>ecological correlation — a warning</h2>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>ecological correlation</strong></p>
+</div>
+<div class="callout-content">
+<p>correlations on <strong>group averages</strong> (one point per state, per team, per player) can be much stronger than correlations on individual observations.</p>
+<p>averaging hides within-group variation.</p>
+<p>always check the <strong>unit of analysis</strong>.</p>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Brief detour. The r ≈ 0.80 correlation is at the player level — already an aggregate over hundreds of shots per player. Player-level correlations can look much stronger than shot-level correlations.</p>
+<p>Classic example (verbal): per-state correlations between income and any social outcome look enormous; per-person they’re modest. Same data, different unit.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="why-gordons-aggregate-looks-better" class="slide level2">
+<h2>why Gordon’s aggregate looks better</h2>
+<pre><code>Share of shots taken in each zone (%):
+                Klay Thompson  Aaron Gordon
+RA                        8.2          64.8
+PAINT                    10.5          10.9
+MID                      20.3           5.2
+LC3                       4.1           4.1
+RC3                       4.1           3.8
+ATB3                     52.8          11.3</code></pre>
+<div class="fragment">
+<p>Gordon: <strong>65%</strong> of shots from the rim (league: 67%) Klay: <strong>53%</strong> above the break (league: 36%)</p>
+<aside class="notes">
+<p>The mechanism made concrete. Gordon’s shot diet is concentrated in the easiest zone in basketball. Klay’s is concentrated in the hardest zone. Even though Klay is better in every zone, his harder shot mix drags his aggregate below Gordon’s easier mix.</p>
+<p>This is <em>shot selection</em>, not shooting skill. The aggregate FG% conflates the two.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="decomposing-fg" class="slide level2">
+<h2>decomposing FG%</h2>
+<p>shot_mix_FG_PCT: what each player would shoot if they hit league rate <strong>in every zone</strong> skill_above_league: residual — actual FG% minus shot-mix expectation</p>
+<pre><code>                 FG_PCT  shot_mix_FG_PCT  skill_above_league
+Klay Thompson    0.433        0.411              +0.022
+Aaron Gordon     0.557        0.573              −0.016</code></pre>
+<div class="fragment">
+<p><strong>Klay: +2 points</strong> above his shot-mix expectation.</p>
+</div>
+<div class="fragment">
+<p><strong>Gordon: −2 points</strong> below his.</p>
+<aside class="notes">
+<p>The fix. Decompose aggregate FG% into two components: - shot_mix expectation: what you’d shoot if you hit league rate everywhere — pure selection - skill above league: residual, conditional on shot mix</p>
+<p>By the right measure, Klay is above league average and Gordon is below it. Opposite of the raw FG% comparison.</p>
+<p>This is the <em>adjustment</em> move that regression will formalize next chapter.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="the-reversal-in-one-picture" class="slide level2">
+<h2>the reversal in one picture</h2>
+
+<img data-src="images/lec11/gordon-vs-klay.png" class="quarto-figure quarto-figure-center r-stretch" width="1100"><aside class="notes">
+<p>Two-bar comparison side by side. Left panel: raw aggregate FG% — Gordon clearly higher. Right panel: skill above league given shot mix — Klay positive, Gordon negative. The columns flip.</p>
+<p>Left panel = what the multiple-testing arc handed us as a discovery. Right panel = answer to the question we actually meant to ask.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="confounding" class="slide level2">
+<h2><strong>confounding</strong></h2>
+<div class="definition-box">
+<div class="def-term">
+<p>confounder (informal)</p>
+</div>
+<p>a variable tied to <strong>both</strong> the input we care about and the outcome — creating an aggregate association that doesn’t reflect the mechanism we want to measure.</p>
+</div>
+<div class="fragment">
+<p>here:</p>
+<ul>
+<li>input: which player took the shot</li>
+<li>outcome: did it go in</li>
+<li><strong>confounder: which zone</strong></li>
+</ul>
+<p>“tied to” is doing a lot of work — formal causal definitions and DAGs in Ch 18.</p>
+<aside class="notes">
+<p>The general structure. Shot zone influences which player takes the shot (Gordon shoots from the rim, Klay shoots threes) AND influences whether it goes in (rim shots are easier). The aggregate association between <em>player</em> and <em>FG%</em> is therefore confounded by zone.</p>
+<p>Don’t get into DAGs today — just name the structure and forward-point to Ch 18.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-7" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2></h2>
+<div class="prompt">
+<p><strong>Bonferroni rejected <span class="math inline">H_0</span> for both Gordon and Thompson. Both rejections are statistically real.</strong></p>
+<p>what <em>kind</em> of question would each rejection answer correctly?</p>
+<p>what kind would it answer wrongly?</p>
+</div>
+<aside class="notes">
+<p><strong>DISCUSSION: think-pair-share (4 min).</strong> 1 min think; 2 min pair; debrief.</p>
+<p>Goal: get students to articulate that the same statistical result answers some questions correctly and others incorrectly.</p>
+<p>If stuck: “if a coach is choosing between Klay and Gordon for a wide-open 3-pointer, what does the aggregate FG% tell them?”</p>
+<p>Key insights: - <strong>Right question for the test:</strong> “is this player’s shot mix unusual compared to league?” — yes, both differ from league (Gordon shoots more rim, Klay more threes). - <strong>Wrong question for the test:</strong> “is this player a better shooter?” — answered backwards. Klay is the better shooter at every zone. - The math didn’t lie. We pointed it at the wrong question.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-limits-of-corrections" class="slide level2">
+<h2>the limits of corrections</h2>
+<p>multiple testing corrections (Bonferroni, BH) protect against <strong>finding effects that aren’t there</strong>.</p>
+<div class="fragment">
+<p>they do <strong>nothing</strong> to protect against finding effects that <strong>are</strong> there but reflect the <strong>wrong mechanism</strong>.</p>
+</div>
+<div class="fragment">
+<p>next chapter: regression lets us <strong>adjust for confounders</strong> by including them in the model.</p>
+<aside class="notes">
+<p>The synthesis. Multiple testing corrections control false-positive rates. They do not assign meaning to the effects they identify. A rejected null can still be confounded.</p>
+<p>Forward pointer: Ch 12 (regression) gives us a tool to adjust for confounders directly. We won’t get to causal inference proper until Ch 18, but regression already lets us “control for” zone in a way that aggregates can’t.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-8" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p><em>“if you torture the data long enough, it will confess to anything.”</em></p>
+<p>— Ronald Coase</p>
+</div>
+<aside class="notes">
+<p>The first aphorism. Frames the multiple-testing half: torture by running many tests gives a “result” that doesn’t mean what it appears to.</p>
+<p>(Coase’s original wording was “…Nature will confess.” The popular paraphrase is what we show.)</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="today-right-answer-wrong-question" class="slide level2">
+<h2>today: right answer, wrong question</h2>
+<p><strong>multiple testing — fix the threshold</strong></p>
+<ul>
+<li><span class="math inline">m</span> tests at <span class="math inline">\alpha</span> → expect <span class="math inline">m \cdot \alpha</span> false positives</li>
+<li>Bonferroni controls FWER; BH controls FDR</li>
+<li>replication crisis = same arithmetic across labs</li>
+</ul>
+<div class="fragment">
+<p><strong>confounding — fix the question</strong></p>
+<ul>
+<li>correlation can reflect a third variable</li>
+<li>Simpson’s paradox: aggregate trend reverses inside subgroups</li>
+<li>significant ≠ the right question</li>
+</ul>
+</div>
+<div class="fragment">
+<blockquote>
+<p><em>correlation is not causation.</em></p>
+</blockquote>
+<aside class="notes">
+<p>Summary slide — revisit the agenda with one takeaway per item.</p>
+<p>The ‘correlation is not causation’ tagline lands as a closing kicker on the confounding section — partner to the Coase aphorism for multiple testing on the previous slide. Ch 18 returns to this with the formal causal apparatus.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="next-regression" class="slide level2">
+<h2>next: regression</h2>
+<p>Bonferroni and BH protect us from <strong>false</strong> discoveries.</p>
+<p>they don’t protect us from <strong>wrong-mechanism</strong> discoveries.</p>
+<div class="fragment">
+<p><strong>Ch 12</strong>: include the confounder in the model — adjust the question, not just the threshold.</p>
+<aside class="notes">
+<p>Forward pointer framed as a question Bonferroni and BH can’t answer.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="one-minute-feedback" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2>one-minute feedback</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
+<ol type="1">
+<li>what was the most useful thing you learned today?</li>
+<li>what was the most confusing?</li>
+</ol>
+<p><strong><a href="https://docs.google.com/forms/d/e/1FAIpQLScokCu2Rsz7zZw7XTOzsE_OBODr6iHjB1ErOw0zizorHD0zXg/viewform?usp=pp_url&amp;entry.1875336381=Slides&amp;entry.1608396530=11">give feedback</a></strong></p>
+</div><div class="column" style="width:40%;">
+<p><img data-src="images/pollev-qr.png" width="300"></p>
+</div></div>
+<aside class="notes">
+<p>Closing ritual. Keep the slide up until the room clears.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+
+
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+
+        height: 1080,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

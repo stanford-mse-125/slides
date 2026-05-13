@@ -1,0 +1,1770 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/tabby.min.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.37">
+
+  <meta name="author" content="Madeleine Udell">
+  <title>MSE 125 — Slides – Lecture 15: Clustering — K-Means</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto-7e9863cd0ef9c70c3784d80bfe5ce18d.css">
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css">
+  <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Lecture 15: Clustering — K-Means</h1>
+  <p class="subtitle">MSE 125 — Applied Statistics</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Madeleine Udell 
+</div>
+</div>
+</div>
+
+  <p class="date">Monday, May 18, 2026</p>
+</section>
+<section id="logistics" class="slide level2">
+<h2>logistics</h2>
+<ul>
+<li><strong>HW 4</strong> out today — Airbnb PCA + clustering + Kaggle challenge</li>
+<li><strong>Quiz 7</strong> Wednesday May 20 — PCA + clustering</li>
+<li><strong>project midterm</strong> returned this week</li>
+</ul>
+<aside class="notes">
+<p><strong>START RECORDING.</strong></p>
+<p>HW 4 covers Ch 12–15 (regression inference + diagnostics, trees, PCA + clustering). Part B is a Kaggle-style prediction challenge — best test-set score using anything you like. Quiz 7 covers the unsupervised pair (PCA Wednesday last week + clustering today).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-brief" class="slide level2">
+<h2>the brief</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<h3 id="airbnb-host-nyc">Airbnb host, NYC</h3>
+<p>goal: figure out <strong>who you compete with</strong> so you can price against them</p>
+<p>a cozy Brooklyn studio doesn’t compete with a Manhattan penthouse</p>
+<p><strong>ask the data: what is my competitive set?</strong></p>
+</div><div class="column" style="width:45%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/lec15/cell-12-output-1.png" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
+</figure>
+</div>
+</div></div>
+<aside class="notes">
+<p>The decision frame: a host wants a competitive set so they can price against comparable listings. Last lecture’s PCA gave us <em>directions</em>; today we want <em>groups</em>.</p>
+<p>The image is visual furniture — students will see it again in block 1 as the (disappointing) first-run output. Don’t analyze it on this slide. Don’t preview the comparison in block 3.</p>
+<p>The chapter’s punchline: clustering will dutifully produce three groups. <strong>Which three</strong> depends entirely on which features we hand it. If we include latitude and longitude, the clusters basically become boroughs — useless, because the host already knows the borough column. Drop lat/lon and the clusters become market segments (budget vs.&nbsp;moderate vs.&nbsp;premium) — actionable.</p>
+<p>About 1 min.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="today" class="slide level2">
+<h2>today</h2>
+<ul>
+<li class="fragment"><strong>k-means</strong> — assign, recompute, repeat</li>
+<li class="fragment"><strong>choosing k, checking stability</strong> — what the standard tools tell you (and what they don’t)</li>
+<li class="fragment"><strong>your features pick your clusters</strong> — and that’s the whole game</li>
+</ul>
+<aside class="notes">
+<p>Three beats. Block 1: the algorithm + a first run. Block 2: the validation tools (elbow, silhouette, seed stability) — none of them oracle the answer. Block 3: the chapter’s reveal — drop lat/lon, get genuinely useful segments. Plus real-world cases where the same mistake mattered.</p>
+<p>About 30 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="bridge-from-pca" class="slide level2">
+<h2>bridge from PCA</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>PCA</th>
+<th>k-means</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>structure found</td>
+<td><strong>directions</strong> of variance</td>
+<td><strong>groups</strong> of rows</td>
+</tr>
+<tr class="even">
+<td>representation</td>
+<td>continuous (low-dim coords)</td>
+<td>discrete (one label per row)</td>
+</tr>
+<tr class="odd">
+<td>standardize first</td>
+<td>yes — distances depend on units</td>
+<td>yes — same reason</td>
+</tr>
+<tr class="even">
+<td>labels needed</td>
+<td>no</td>
+<td>no</td>
+</tr>
+</tbody>
+</table>
+<p><strong>both are unsupervised. PCA compresses; k-means clusters.</strong></p>
+<aside class="notes">
+<p>The bridge slide. PCA (last lecture) found low-dimensional <em>directions</em> — every row got a continuous PC1, PC2 score. K-means today finds <em>groups</em> — every row gets one discrete cluster label.</p>
+<p>Both are unsupervised — no y column, no “right answer” to predict. Both rely on Euclidean distance, so both need standardization for the same reason.</p>
+<p>There’s also a deeper connection (mathematically, both approximate the data matrix in low rank — PCA with continuous coordinates, k-means with one-hot indicators) but that’s a connection for a more advanced class, not for slide 5.</p>
+<p>About 90 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>assign, recompute, repeat</p>
+</div>
+</section>
+<section id="the-data" class="slide level2">
+<h2>the data</h2>
+<p>five Airbnb listings — what we hand the algorithm</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>price</th>
+<th>bedrooms</th>
+<th>accommodates</th>
+<th>reviews</th>
+<th>room type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>75</td>
+<td>1</td>
+<td>2</td>
+<td>142</td>
+<td>private room</td>
+</tr>
+<tr class="even">
+<td>220</td>
+<td>2</td>
+<td>4</td>
+<td>38</td>
+<td>entire home</td>
+</tr>
+<tr class="odd">
+<td>65</td>
+<td>0</td>
+<td>1</td>
+<td>305</td>
+<td>shared room</td>
+</tr>
+<tr class="even">
+<td>410</td>
+<td>3</td>
+<td>6</td>
+<td>11</td>
+<td>entire home</td>
+</tr>
+<tr class="odd">
+<td>95</td>
+<td>1</td>
+<td>2</td>
+<td>87</td>
+<td>private room</td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p><strong>no <code>y</code> column. no “right answer”. the algorithm finds structure on its own.</strong></p>
+<aside class="notes">
+<p>Toy table — five listings. The point: an unsupervised problem looks identical to a supervised one <em>except</em> there’s no <span class="math inline">y</span> column. We’re not predicting anything; we’re asking the data to reveal structure.</p>
+<p><code>room_type</code> is categorical — we’ll need to one-hot encode it before running k-means (the algorithm uses Euclidean distance, and “private room” being 1 vs.&nbsp;“entire home” being 2 has no meaningful distance).</p>
+<p>About 60 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="k-means-in-four-steps" class="slide level2">
+<h2>k-means in four steps</h2>
+<div class="definition-box">
+<div class="def-term">
+<p>k-means clustering</p>
+</div>
+<p>partition <span class="math inline">n</span> points into <span class="math inline">k</span> groups by repeating:</p>
+<ol type="1">
+<li><strong>assign</strong> each point to the nearest centroid</li>
+<li><strong>recompute</strong> each centroid as the mean of its assigned points</li>
+</ol>
+<p>until assignments stop changing</p>
+</div>
+<div class="fragment">
+<ul>
+<li><strong>centroid</strong> — the mean of all points in a cluster</li>
+<li>starts from <span class="math inline">k</span> random centroids</li>
+<li>converges in finite steps (assignments are discrete; objective only goes down)</li>
+</ul>
+<aside class="notes">
+<p>The algorithm in a definition box. Two operations: assign points to centroids, recompute centroids from their assigned points. Iterate.</p>
+<p>The two glosses: - <strong>centroid</strong> = cluster mean (one per cluster) - finite convergence — there are finitely many ways to assign <span class="math inline">n</span> points to <span class="math inline">k</span> clusters, and each step strictly decreases (or holds) the objective. So we can’t cycle forever.</p>
+<p>About 60 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="watch-it-iterate" class="slide level2">
+<h2>watch it iterate</h2>
+
+<img data-src="images/lec15/cell-8-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"><aside class="notes">
+<p>The 2D viz from the chapter — clustering Airbnb on just <strong>price</strong> and <strong>number of reviews</strong> (standardized) so we can plot it. <span class="math inline">k=3</span>. Three colors are three clusters; the X markers are the centroids.</p>
+<p>Panel 1: random initial centroids. Panel 2-3: centroids move toward the centers of their assigned points. Panel 4: stable — assignments have basically stopped changing.</p>
+<p>The motion is the algorithm. Each panel: every point picks its nearest X; then each X moves to the average of its new neighborhood. Repeat.</p>
+<p>About 60 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-objective" class="slide level2">
+<h2>the objective</h2>
+<div class="definition-box">
+<div class="def-term">
+<p>inertia (within-cluster sum of squares)</p>
+</div>
+<p><span class="math display">\text{inertia} = \sum_{k=1}^{K} \sum_{i \in C_k} \|x_i - \mu_k\|^2</span></p>
+<p>total squared distance from each point to its assigned centroid</p>
+</div>
+<div class="fragment">
+<ul>
+<li>each iteration <strong>strictly decreases</strong> inertia (or holds it)</li>
+<li>objective is <strong>non-convex</strong> — different starts can land at different local minima</li>
+</ul>
+<aside class="notes">
+<p>The formal objective. K-means minimizes the sum of squared distances from each point to its assigned centroid. <span class="math inline">C_k</span> is the set of indices assigned to cluster <span class="math inline">k</span>; <span class="math inline">\mu_k</span> is that cluster’s centroid.</p>
+<p>Two key properties: 1. <strong>Each step monotonically decreases inertia</strong> — that’s how we know it converges. The assignment step picks the nearest centroid (can’t increase any term); the recompute step uses the mean (which minimizes squared distance from a set of points). Both reduce inertia.</p>
+<ol start="2" type="1">
+<li><strong>Non-convex.</strong> Different random initial centroids can converge to different local minima. We’ll come back to this in block 2 — the algorithm is not deterministic across random seeds.</li>
+</ol>
+<p>About 90 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="one-more-thing-first-standardize" class="slide level2">
+<h2>one more thing first — <strong>standardize</strong></h2>
+<p>k-means uses Euclidean distance</p>
+<p>→ a feature in <strong>dollars</strong> (range 10–10,000) dominates a feature in <strong>degrees latitude</strong> (range 40.5–40.9)</p>
+<div class="fragment">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>feature</th>
+<th>unstandardized range</th>
+<th>influence on distance</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>price</td>
+<td>10–10,000</td>
+<td>enormous</td>
+</tr>
+<tr class="even">
+<td>latitude</td>
+<td>40.5–40.9</td>
+<td>invisible</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="fragment">
+<p><strong>same lesson as PCA: standardize before any distance-based method</strong></p>
+<aside class="notes">
+<p>Standardization is essential for k-means — exactly the same reason as PCA (last lecture). Both use Euclidean distance; both let the largest-magnitude feature dominate if you don’t standardize.</p>
+<p>The Airbnb concrete: price spans four orders of magnitude; latitude spans 0.4 degrees. Without standardization, all the “distance” between two listings is just their price difference. Latitude contributes essentially nothing.</p>
+<p>If anyone asks why we don’t just scale price down — that’s exactly what standardization does, just symmetrically across all features. <code>StandardScaler</code> subtracts the mean and divides by the standard deviation of each column.</p>
+<p>About 60 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="run-it-all-the-features" class="slide level2">
+<h2>run it — all the features</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a></a>features <span class="op">=</span> [<span class="st">'price'</span>, <span class="st">'latitude'</span>, <span class="st">'longitude'</span>, <span class="st">'accommodates'</span>,</span>
+<span id="cb1-2"><a></a>            <span class="st">'bedrooms'</span>, <span class="st">'number_of_reviews'</span>, <span class="st">'availability_365'</span>,</span>
+<span id="cb1-3"><a></a>            <span class="st">'minimum_nights'</span>] <span class="op">+</span> room_dummies</span>
+<span id="cb1-4"><a></a></span>
+<span id="cb1-5"><a></a>X <span class="op">=</span> StandardScaler().fit_transform(listings[features])</span>
+<span id="cb1-6"><a></a></span>
+<span id="cb1-7"><a></a>kmeans <span class="op">=</span> KMeans(n_clusters<span class="op">=</span><span class="dv">3</span>, random_state<span class="op">=</span><span class="dv">42</span>, n_init<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb1-8"><a></a>listings[<span class="st">'cluster'</span>] <span class="op">=</span> kmeans.fit_predict(X)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="fragment">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource text number-lines code-with-copy"><code class="sourceCode"><span id="cb2-1"><a></a>Cluster sizes:</span>
+<span id="cb2-2"><a></a>0    13,442</span>
+<span id="cb2-3"><a></a>1       651</span>
+<span id="cb2-4"><a></a>2    15,049</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<aside class="notes">
+<p>The actual fit. Eight numerical features + four one-hot columns for room_type. Standardize, fit, predict.</p>
+<p>Three clusters of very unequal size: ~16k, ~12k, and a tiny ~700. That tiny cluster is interesting — could be a niche segment (large groups? entire-floor rentals?) or could be a numerical artifact.</p>
+<p><code>random_state=42</code> makes this reproducible; <code>n_init=10</code> runs the algorithm 10 times from different random starts and keeps the best (lowest inertia). More on <code>n_init</code> in block 2.</p>
+<p>About 75 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="look-at-the-clusters" class="slide level2">
+<h2>look at the clusters</h2>
+
+<img data-src="images/lec15/cell-12-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:70.0%"><div class="fragment">
+<p><strong>they trace geography.</strong> is that useful?</p>
+<aside class="notes">
+<p>The map. Clusters plotted by longitude, latitude. The dominant cluster (green) covers Manhattan, Brooklyn, much of Queens. The other two carve out Queens/Bronx and a scattered third.</p>
+<p>The visual punchline: the clusters mostly follow geography. They look like (a slightly garbled version of) boroughs.</p>
+<p>Is that useful? <strong>Not really.</strong> We already have a <code>neighbourhood_group_cleansed</code> column with five boroughs. K-means just spent its effort rediscovering it — and badly.</p>
+<p>Hold this for block 3 — we’ll fix it there. For now: the algorithm ran, produced clusters, and the result is anticlimactic.</p>
+<p>About 1 min.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-1" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2></h2>
+<div class="prompt">
+<p><strong>before we move on — predict.</strong></p>
+<p>we got clusters. what’s the <strong>first question</strong> you should ask before reporting them to your host?</p>
+<p>pick <strong>one</strong>.</p>
+<ul>
+<li>is k=3 the right number?</li>
+<li>are the clusters stable across reruns?</li>
+<li>what do the clusters actually represent?</li>
+<li>would different features give different clusters?</li>
+</ul>
+</div>
+<aside class="notes">
+<p><strong>DISCUSSION: poll (2 min).</strong> Quick hands. No debrief beyond a sentence — this sets up the rest of the lecture.</p>
+<p>All four are <em>correct</em> questions. The lecture answers them in order: - <strong>k=3?</strong> → block 2 (elbow + silhouette) - <strong>stable?</strong> → block 2 (random seeds + ARI) - <strong>what do they represent?</strong> → block 3 (interpret profiles) - <strong>different features?</strong> → block 3 (the reveal)</p>
+<p>The point of the poll is to make students commit to a concern before we tour them. Whatever they pick is fine. If you want a one-line debrief: “all four are necessary — clustering looks easy because it runs. validating it is the hard part.”</p>
+<p>About 2 min.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-2" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>choose k. check stability. neither will save you.</p>
+</div>
+</section>
+<section id="elbow-silhouette-the-standard-tools" class="slide level2">
+<h2>elbow + silhouette: the standard tools</h2>
+<div class="definition-box">
+<div class="def-term">
+<p>elbow method</p>
+</div>
+<p>plot <strong>inertia</strong> vs.&nbsp;<span class="math inline">k</span>; look for a bend where adding clusters stops helping much</p>
+</div>
+<div class="definition-box">
+<div class="def-term">
+<p>silhouette score</p>
+</div>
+<p>for each point: how similar to its own cluster vs.&nbsp;the nearest other cluster</p>
+<p>range <span class="math inline">[-1, 1]</span>: near <span class="math inline">+1</span> = sits comfortably in its cluster, <span class="math inline">0</span> = on a boundary, <span class="math inline">-1</span> = probably misassigned</p>
+</div>
+<aside class="notes">
+<p>Two definitions stacked. <strong>Elbow</strong>: inertia always decreases as <span class="math inline">k</span> grows (more clusters → smaller within-cluster distances), so we don’t pick on inertia directly — we pick on <em>where it stops decreasing fast</em>. <strong>Silhouette</strong>: a per-point quality score in [-1, 1], averaged across all points; the higher, the more cleanly separated.</p>
+<p>These are the two heuristics every clustering tutorial reaches for. Watch what they say on real data.</p>
+<p>About 90 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="elbow-plot-no-bend" class="slide level2">
+<h2>elbow plot — no bend</h2>
+
+<img data-src="images/lec15/cell-14-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"><div class="fragment">
+<ul>
+<li><strong>no clear bend</strong> — inertia decreases steadily, typical of real data</li>
+<li>silhouette peaks at <span class="math inline">k=2</span>: just split the data in half</li>
+<li>both are <strong>inconclusive</strong></li>
+</ul>
+<aside class="notes">
+<p>The two diagnostic plots from the chapter — elbow on the left, silhouette on the right.</p>
+<p><strong>Left (elbow):</strong> inertia drops smoothly from ~245k at <span class="math inline">k=2</span> down to ~120k at <span class="math inline">k=10</span>. No bend. The annotation reads “no clear elbow — typical of real data.” This is what students will see on most real clustering problems: the curve is monotone and smooth, and the choice of <span class="math inline">k</span> is arbitrary.</p>
+<p><strong>Right (silhouette):</strong> peaks at <span class="math inline">k=2</span> (~0.30), drops as <span class="math inline">k</span> grows. The highest silhouette comes from the most trivial cluster structure: split into two halves.</p>
+<p>Takeaway: on this dataset, the two standard heuristics give different answers, and neither is decisive. <strong>Choosing <span class="math inline">k</span> is a judgment call, not a formula.</strong></p>
+<p>If asked: these heuristics aren’t useless — they can rule out clearly bad choices (e.g., silhouette score crashing toward 0 at <span class="math inline">k=15</span> tells you not to use 15). But they don’t <em>pick</em> <span class="math inline">k</span> for you.</p>
+<p>About 2 min.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-3" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2></h2>
+<div class="prompt">
+<p><strong>predict: same data, same k, different runs.</strong></p>
+<p>we run k-means <strong>10 times</strong> with <span class="math inline">k=3</span>, each time from a different random initialization. (no other change.)</p>
+<p>how often do the 10 runs produce the <strong>same clusters</strong>?</p>
+<ul>
+<li><ol type="a">
+<li>always — the algorithm is deterministic</li>
+</ol></li>
+<li><ol start="2" type="a">
+<li>usually — small differences, basically the same</li>
+</ol></li>
+<li><ol start="3" type="a">
+<li>sometimes — depends on the data</li>
+</ol></li>
+<li><ol start="4" type="a">
+<li>rarely — the algorithm jumps to different solutions</li>
+</ol></li>
+</ul>
+</div>
+<aside class="notes">
+<p><strong>DISCUSSION: poll (2 min).</strong> Set up the seed-instability reveal.</p>
+<p>Most students think clustering is deterministic — “same data, same algorithm, same answer”. Wrong. K-means starts from random centroids, the objective is non-convex, and different starts can converge to different local minima.</p>
+<p>Target: <strong>(c)</strong> — sometimes. Most pairs agree, but a meaningful fraction disagree by a lot. Reveal on the next slide.</p>
+<p>If anyone picks (a): “let’s check.”</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="different-seeds-different-clusters" class="slide level2">
+<h2>different seeds, different clusters</h2>
+<div class="definition-box">
+<div class="def-term">
+<p>adjusted Rand index (ARI)</p>
+</div>
+<p>agreement between two clusterings, adjusted for chance</p>
+<ul>
+<li><span class="math inline">\text{ARI} = 1</span> → identical clusters</li>
+<li><span class="math inline">\text{ARI} = 0</span> → random agreement</li>
+</ul>
+</div>
+<div class="fragment">
+<p>so we can compare two runs of k-means with one number</p>
+<aside class="notes">
+<p>The ARI is how we’ll quantify agreement between two clusterings. For any pair of points, ask: do both runs put them together, or split them apart?</p>
+<p>ARI = 1 means the two runs partition every pair the same way (identical clusters, up to relabeling). ARI = 0 means the two runs agree no more than chance.</p>
+<p>Compared to plain Rand index: ARI subtracts off the agreement you’d expect from randomly relabeling, so it’s a fair score even when one clustering is much more unbalanced than the other.</p>
+<p>About 60 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="runs-pairwise-ari" class="slide level2">
+<h2>10 runs, pairwise ARI</h2>
+
+<img data-src="images/lec15/cell-21-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:55.0%"><div class="fragment">
+<ul>
+<li>most pairs agree perfectly (ARI = 1.00)</li>
+<li>runs <strong>3</strong> and <strong>7</strong> are <em>different</em> clusterings (ARI ≈ 0.72, 0.76)</li>
+<li><strong>same data, same algorithm, same k → not the same clusters</strong></li>
+</ul>
+<aside class="notes">
+<p>The heatmap from the chapter. Each cell is the ARI between two of the 10 runs (with <code>n_init=1</code>, so each is one random start).</p>
+<p>Most cells are dark red — ARI = 1.00, runs landed on identical clusters. But two rows pop: runs 3 and 7 sit at ARI ≈ 0.72 and 0.76 against every other run. They found different local minima.</p>
+<p>This is real-life clustering: most runs converge to the same answer, a few find different solutions, and you can’t tell from the algorithm output which solution is the “right” one. There’s no global ranking — they’re all local optima.</p>
+<p>About 90 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="sklearns-defenses-and-their-limits" class="slide level2">
+<h2>sklearn’s defenses (and their limits)</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a></a><span class="co"># sklearn defaults:</span></span>
+<span id="cb3-2"><a></a>KMeans(n_clusters<span class="op">=</span><span class="dv">3</span>, n_init<span class="op">=</span><span class="dv">10</span>, init<span class="op">=</span><span class="st">'k-means++'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><strong><code>n_init=10</code></strong> — runs k-means 10 times, keeps the lowest-inertia run</li>
+<li><strong><code>k-means++</code></strong> — picks initial centroids that are spread apart, not random rows</li>
+</ul>
+<div class="fragment">
+<p>helps. <strong>doesn’t fix it.</strong> different choices of <code>random_state</code> can still land on different solutions.</p>
+<aside class="notes">
+<p>What sklearn does by default. <code>n_init=10</code> is a major defense — out of 10 random starts, you keep the best one. <code>k-means++</code> initialization picks initial centroids that are spread apart (algorithmic: pick the first centroid randomly; pick each subsequent centroid with probability proportional to squared distance to the nearest existing centroid). Together these dramatically reduce — but do not eliminate — sensitivity to the random seed.</p>
+<p>The earlier heatmap used <code>n_init=1</code> to expose the raw instability. With <code>n_init=10</code>, you’ll see fewer disagreements, but the underlying issue (multiple local minima) hasn’t gone away.</p>
+<p>About 60 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="what-does-cluster-1-mean" class="slide level2">
+<h2>what does “Cluster 1” mean?</h2>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Warning</strong></p>
+</div>
+<div class="callout-content">
+<p>if your clusters change when the seed changes, the labels carry <strong>no portable meaning</strong>.</p>
+<p>“Cluster 1” in one run is not “Cluster 1” in the next — and may not be the same set of points at all.</p>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>→ never report cluster labels (<code>'1'</code>, <code>'2'</code>, <code>'3'</code>) — report <strong>profiles</strong> (“budget”, “moderate”, “premium”)</p>
+<aside class="notes">
+<p>The interpretation gotcha. K-means doesn’t label the clusters — it just produces them. The integer labels are arbitrary; sklearn assigns them in the order the algorithm happens to discover the centroids.</p>
+<p>Practical rule: never put <code>cluster_id = 1</code> in a report. Profile the cluster (avg price, room type, location) and name it for what it captures. “Budget shared rooms” is portable; “Cluster 1” is not.</p>
+<p>About 60 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-4" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2></h2>
+<div class="prompt">
+<p><strong>you have to ship something. it’s monday.</strong></p>
+<p>your host wants the three competitive segments by friday. elbow plot is gradual, silhouette peaks at <span class="math inline">k=2</span>, two of the 10 runs disagree.</p>
+<p><strong>name two concrete things you’d do before reporting any of the clusters.</strong></p>
+</div>
+<aside class="notes">
+<p><strong>DISCUSSION: think-pair-share (5 min).</strong> 1 min think + 2 min pair + 2 min debrief.</p>
+<p>Target answers (collect any 2): 1. <strong>Run with <code>n_init=50</code> (or higher) and a fixed seed.</strong> Buys stability at the cost of compute. 2. <strong>Profile every cluster</strong> — mean feature values per cluster — and name them. Don’t report integer labels. 3. <strong>Try a different feature set</strong> and see if the clusters change qualitatively. Foreshadows block 3. 4. <strong>Visualize the clusters on at least two 2D slices</strong> (price vs.&nbsp;reviews, lat vs.&nbsp;lon, accommodates vs.&nbsp;price) — different views reveal different structure. 5. <strong>Decide whether <span class="math inline">k=3</span> matches what the host needs</strong> — three competitive tiers might be what they want regardless of the math. 6. <strong>Drop features you don’t trust</strong> (e.g., lat/lon if you already know boroughs from another column).</p>
+<p>Key insight: the validation tools don’t pick <span class="math inline">k</span> for you; they let you rule out bad choices. Beyond that, <strong>clustering is a judgment call you defend with profiles, not a formula you compute</strong>.</p>
+<p>If a pair says “give up and use random forest” — fine but reframe: clustering is descriptive, not predictive. We’re not trying to predict anything; we’re trying to summarize structure.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-5" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>your features pick your clusters</p>
+</div>
+</section>
+<section id="the-same-data-two-feature-sets" class="slide level2">
+<h2>the same data, two feature sets</h2>
+<div class="columns">
+<div class="column" style="width:48%;">
+<p><strong>with lat/lon</strong></p>
+<p><code>price, lat, lon, accommodates, bedrooms, reviews, availability, minimum_nights, room_type</code></p>
+</div><div class="column" style="width:4%;">
+
+</div><div class="column" style="width:48%;">
+<p><strong>without lat/lon</strong></p>
+<p><code>price, accommodates, bedrooms, reviews, availability, minimum_nights, room_type</code></p>
+</div></div>
+<div class="fragment">
+<p>drop <strong>two columns</strong> out of ten. same data, same <span class="math inline">k</span>, same standardization.</p>
+</div>
+<div class="fragment">
+<p>how different can the clusters be?</p>
+<aside class="notes">
+<p>Frame the experiment. We’re going to rerun k-means with one change: remove latitude and longitude. Everything else identical — same data, same <span class="math inline">k=3</span>, same standardization, same algorithm.</p>
+<p>Two columns out of ten. How big a difference can that make?</p>
+<p>Predict-then-reveal — students should expect some difference, but the magnitude is the surprise.</p>
+<p>About 30 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="the-reveal" class="slide level2">
+<h2>the reveal</h2>
+
+<img data-src="images/lec15/cell-17-output-1.png" class="quarto-figure quarto-figure-center r-stretch" style="width:95.0%"><div class="fragment">
+<p><strong>left</strong>: lat/lon in → clusters trace geography &nbsp;&nbsp; <strong>right</strong>: lat/lon out → clusters mix across the map</p>
+<aside class="notes">
+<p>The chapter’s central reveal. Two NYC maps, both colored by k-means cluster, both at <span class="math inline">k=3</span>.</p>
+<p><strong>Left (with lat/lon):</strong> clusters are sharply separated on the map. Green covers Manhattan and central Brooklyn; the others split the rest. Geographically clean, <em>because we handed the algorithm geography</em>.</p>
+<p><strong>Right (without lat/lon):</strong> the three colors are mixed across the same map. Geography is no longer a primary axis — the clusters are organized around something else (price, room type, size).</p>
+<p>The pedagogical moment: <strong>same data, same algorithm, same <span class="math inline">k</span>, two columns difference — totally different story.</strong> Block 2’s elbow plot and silhouette score wouldn’t have told you which to prefer.</p>
+<p>About 2 min. Let it sit.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="what-the-right-side-clusters-actually-capture" class="slide level2">
+<h2>what the right-side clusters actually capture</h2>
+<div class="fragment fade-in" data-fragment-index="1">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>cluster</th>
+<th>size</th>
+<th>avg price</th>
+<th>avg bedrooms</th>
+<th>top room type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>13,438</td>
+<td><strong>$77</strong></td>
+<td>1.1</td>
+<td>private room</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>15,053</td>
+<td><strong>$186</strong></td>
+<td>1.9</td>
+<td>entire home/apt</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>651</td>
+<td><strong>$57</strong></td>
+<td>0.4</td>
+<td>shared room</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="fragment fade-in" data-fragment-index="2">
+<ul>
+<li><strong>budget</strong> (shared room, low price, small)</li>
+<li><strong>moderate</strong> (private room, moderate price)</li>
+<li><strong>premium</strong> (entire apartment, high price, larger)</li>
+</ul>
+</div>
+<aside class="notes">
+<p>Profile the right-side clusters by their mean feature values. Three clean strata emerge: - <strong>Cluster 2</strong> (~650 listings): shared rooms, ~$57/night — the budget end. - <strong>Cluster 0</strong> (~13k): private rooms, ~$77 — moderate. - <strong>Cluster 1</strong> (~15k): entire apartments, ~$186 — premium.</p>
+<p>Reviews per listing are roughly similar across the three; the split is on room type and price. These are competitive sets a host can actually price against: “I’m in the moderate-private-room set; here’s what they charge.”</p>
+<p>Compare to the left-side (with lat/lon) profile — which would have collapsed to “Manhattan-ish vs.&nbsp;Brooklyn-ish vs.&nbsp;outer-borough-ish.” The host already has that column.</p>
+<p>About 90 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="why-did-latlon-dominate" class="slide level2">
+<h2>why did lat/lon dominate?</h2>
+<div class="fragment">
+<p>two features → <strong>spatial separation is strong and clean</strong></p>
+<p>a Manhattan listing and a Bronx listing are <strong>standard-deviations apart</strong> in (lat, lon)</p>
+</div>
+<div class="fragment">
+<p>every other feature gets drowned out</p>
+</div>
+<div class="fragment">
+<p><strong>moral</strong>: if a feature carries clean geometric separation, it will dominate the cluster boundaries</p>
+<aside class="notes">
+<p>Why lat/lon are so dominating. In NYC, the spatial spread (~0.4 degrees lat × 0.3 degrees lon) is large relative to typical within-borough variation, so once we standardize, <strong>a cross-borough listing pair is several standard deviations apart in (lat, lon)</strong>. That swamps the more subtle separations in price, room type, etc.</p>
+<p>The general principle: any feature whose values cleanly separate the data into geometric clumps will dominate k-means. ZIP code, neighborhood, even time-of-listing if the data spans years. These features can be useful for prediction but <strong>swamp</strong> clustering toward whatever they already encode.</p>
+<p>About 60 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="section-6" class="slide level2 discussion-slide" data-background-color="#2a9d8f">
+<h2></h2>
+<div class="prompt">
+<p><strong>which features would you drop?</strong></p>
+<p>your host wants competitive segments for <strong>pricing</strong>. for each feature, decide: <strong>keep, drop, or it depends</strong>.</p>
+<ul>
+<li><code>latitude</code>, <code>longitude</code></li>
+<li><code>neighbourhood_group_cleansed</code> (Manhattan / Brooklyn / …)</li>
+<li><code>host_id</code></li>
+<li><code>last_review_date</code></li>
+<li><code>description</code> text length</li>
+</ul>
+<p><strong>defend each choice in one sentence.</strong></p>
+</div>
+<aside class="notes">
+<p><strong>DISCUSSION: think-pair-share (5 min).</strong> 2 min think + 2 min pair + 1 min debrief.</p>
+<p>Target answers: - <strong>lat/lon</strong>: <strong>drop</strong> — we just saw this. The host already knows the borough; including geography makes clustering rediscover it. - <strong>neighbourhood_group_cleansed</strong>: <strong>drop</strong> (same reason as lat/lon, just discrete). If you really want geography, model it separately by stratifying. - <strong>host_id</strong>: <strong>drop</strong> — identifier, not a feature. Including it would create one-cluster-per-host nonsense. - <strong>last_review_date</strong>: <strong>it depends</strong> — could indicate activity/staleness (useful) or time-since-listing-creation (less useful). At minimum convert to days-since. - <strong>description text length</strong>: <strong>it depends</strong> — could proxy effort, listing quality, or just verbosity. Worth a try in a robustness pass.</p>
+<p>Key insight: feature selection IS the cluster-design step. The algorithm doesn’t decide; you do. <strong>Defend each feature by what segment-relevant information it carries</strong>.</p>
+<p>This is the lecture’s central skill. The math is twenty lines of Python. The thinking is here.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="genes-mirror-geography" class="slide level2">
+<h2>genes mirror geography</h2>
+<p>PCA on <strong>197,000 SNPs</strong> from 1,387 Europeans. no geographic info given to the algorithm.</p>
+<div class="fragment">
+<p>it drew us a <strong>map of Europe</strong></p>
+</div>
+<div class="fragment">
+<ul>
+<li>PC1 vs.&nbsp;latitude: <span class="math inline">r^2 = 0.71</span></li>
+<li>PC2 vs.&nbsp;longitude: <span class="math inline">r^2 = 0.72</span></li>
+<li>50% of people placed within 310 km of birthplace</li>
+</ul>
+</div>
+<div class="fragment">
+<p><strong>math result</strong>: PCA on spatial data <em>generically</em> produces these patterns when similarity decays with distance</p>
+<p><span class="source">Novembre et al., <em>Nature</em> 2008; Novembre &amp; Stephens, <em>Nature Genetics</em> 2008</span></p>
+<aside class="notes">
+<p>The canonical case. Novembre et al.&nbsp;2008 ran PCA on ~197K SNPs across 1,387 individuals from across Europe. They handed the algorithm no geographic information whatsoever — just the genotypes. The first two principal components, when plotted, reproduced the map of Europe.</p>
+<p>The temptation is to read this as “the algorithm discovered hidden population structure.” The same research community published the math showing otherwise: Novembre &amp; Stephens 2008 (<em>Nature Genetics</em>) proved that <strong>PCA on any spatial data with distance-decaying similarity will produce gradient and sinusoidal patterns generically</strong> — no historical demographic event required. François et al.&nbsp;2010 went further: under range-expansion simulations, PC1 can orient <em>perpendicular</em> to the true expansion direction.</p>
+<p>So the famous Cavalli-Sforza interpretation of European PC1 as “Neolithic farmers walking west” is unidentified by this method — the gradient is built into PCA on spatial data, not into European prehistory.</p>
+<p>Consequence: these maps are routinely misappropriated to support biological-race claims, which the actual authors explicitly reject. The “clusters” reflect geographic sampling structure and continuous clines, not discrete groups.</p>
+<p>90-second story for class: “We gave the algorithm DNA, with zero geographic info. It drew us a map. Did it discover hidden populations? Or did it rediscover the obvious — your neighbors share more ancestry with you than strangers do? The math says the second.”</p>
+<p>The bridge to lec15: same algorithm family (k-means and PCA both partition by Euclidean distance after standardization), same lesson. Feature set in → structure out, and the structure mostly reflects what we put in.</p>
+<p>About 2 min.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="predictive-policing-finds-the-police" class="slide level2">
+<h2>predictive policing finds the police</h2>
+<p>Lum &amp; Isaac, 2016 — PredPol replication on Oakland 2010 drug arrest data</p>
+<div class="fragment">
+<p><strong>predicted hotspots</strong>: West Oakland + International Blvd <strong>~200×</strong> more drug arrests there than elsewhere</p>
+</div>
+<div class="fragment">
+<p><strong>true drug use</strong> (NSDUH survey): roughly <strong>uniform</strong> across the city</p>
+</div>
+<div class="fragment">
+<blockquote>
+<p>black residents would be targeted at roughly <strong>twice</strong> the rate of whites — despite roughly even drug use</p>
+</blockquote>
+<p><span class="source">Lum &amp; Isaac, <em>Significance</em> 2016</span></p>
+<aside class="notes">
+<p>Same lesson, much higher stakes. Lum and Isaac reimplemented PredPol — a real predictive-policing product deployed in Santa Cruz, LAPD, and others — on Oakland’s 2010 drug arrest records. PredPol’s only feature was where past arrests happened.</p>
+<p>The algorithm’s hotspots concentrated in West Oakland and along International Boulevard: about 200× the arrest density of “non-hotspot” areas. They then compared to estimated true drug use (from the National Survey on Drug Use and Health combined with Census demographics) — which is roughly uniform across Oakland.</p>
+<p>The clusters traced <strong>arrest patterns, not crime patterns</strong>. Because that’s the feature the algorithm got. Feed the model “where we arrest people,” and it will tell you “arrest more people there.” The feedback loop closes itself: predict a hotspot → patrol there → more arrests → tomorrow’s model more confident.</p>
+<p>Quantitative consequence the paper drove home: under PredPol, Black residents would face about 2× the policing exposure of white residents, residents of other non-white races about 1.5×, despite roughly even underlying drug use across groups.</p>
+<p>Policy consequence: Santa Cruz banned predictive policing in 2020 (first US city), LAPD ended its contract that year. This paper is the central empirical citation in the AI fairness literature.</p>
+<p>For class: “Same algorithm, two feature sets. Train on arrests, you get a map of where we already police. Train on a public-health survey, you get a map of where drugs are. Different maps. The choice between them is a <em>policy</em> decision in <em>statistics</em> clothing.”</p>
+<p>About 2 min.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="sixteen-personality-types-or-four-coin-flips-at-the-median" class="slide level2">
+<h2>sixteen personality types — or four coin-flips at the median</h2>
+<p>MBTI assigns each test-taker to one of 16 “types” by binarizing four trait scores at zero.</p>
+<div class="fragment">
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Warning</strong></p>
+</div>
+<div class="callout-content">
+<p><strong>the underlying scores are roughly normal, with the mode at the cutpoint</strong></p>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<ul>
+<li>~50% of takers get a <strong>different type</strong> on retest within weeks</li>
+<li>$20M/yr industry; used by 89 of the Fortune 100</li>
+</ul>
+</div>
+<div class="fragment">
+<p>the “types” are the bars to the <strong>left and right</strong> of one arbitrary line through a bell curve</p>
+<p><span class="source">McCrae &amp; Costa, <em>J. Personality</em> 1989; Bess &amp; Harvey, <em>J. Personality Assessment</em> 2002</span></p>
+<aside class="notes">
+<p>The cleanest demonstration of feature-induced clusters: the Myers-Briggs Type Indicator. MBTI assigns each test-taker to one of 16 personality types via four binary axes (E/I, S/N, T/F, J/P). The procedure is: score each axis on a continuous scale, then cut at zero. Above zero → letter A; below → letter B.</p>
+<p>McCrae &amp; Costa 1989 (<em>J. of Personality</em>) and Bess &amp; Harvey 2002 (<em>J. of Personality Assessment</em>) showed: the underlying scores on each axis are roughly normally distributed, with the <em>mode</em> (most common score) sitting right at the cutoff. So the “types” are produced by cutting a unimodal continuum at its densest point — guaranteeing that small score perturbations re-classify the person. About 50% of test-takers get a different type on retest within a few weeks.</p>
+<p>Bess &amp; Harvey specifically debunked earlier “bimodality” reports as artifacts of BILOG default quadrature settings: when finer numerical settings were used, the score distributions became strongly center-weighted, not bimodal.</p>
+<p>So MBTI’s 16 types are an <em>imposed</em> structure, not a discovered one. The clusters exist because the test designer wrote them in.</p>
+<p>Consequence: ~$20M/year industry; used by 89 of the Fortune 100 in hiring, team-building, career counseling. Decisions made on the basis of a clustering structure the data doesn’t actually have.</p>
+<p>Cross-domain pattern: in three independent fields — genetics, policing, psychology — the same lesson recurs because <strong>clustering’s first job is to mirror its inputs, not to discover something independent of them</strong>.</p>
+<p>About 2 min.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="same-lesson-three-fields" class="slide level2">
+<h2>same lesson, three fields</h2>
+<ul>
+<li class="fragment"><strong>genetics</strong>: PCA on SNPs → map of Europe (geography, not biology)</li>
+<li class="fragment"><strong>policing</strong>: cluster on arrest locations → map of policing (not crime)</li>
+<li class="fragment"><strong>psychology</strong>: binarize trait scores → 16 types (not real categories)</li>
+<li class="fragment"><strong>Airbnb (today)</strong>: cluster with lat/lon → boroughs (not market segments)</li>
+</ul>
+<div class="fragment">
+<p><strong>clustering’s first job is to mirror its inputs, not to discover something independent of them</strong></p>
+<aside class="notes">
+<p>The synthesis slide. Four examples, one mechanism. Whatever feature set you hand the algorithm dominates the clusters you get.</p>
+<p>This is the deepest version of the lecture’s lesson. Students should leave with the instinct: <strong>before I trust any cluster summary, I ask what features were fed in and what they encode</strong>.</p>
+<p>About 60 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="the-clustering-gotcha-checklist" class="slide level2">
+<h2>the clustering gotcha checklist</h2>
+<p>before reporting any cluster, ask:</p>
+<ul>
+<li class="fragment"><strong>what features did I include?</strong> — geography, IDs, dates often dominate</li>
+<li class="fragment"><strong>what features did I drop, and why?</strong> — feature choice is the model</li>
+<li class="fragment"><strong>is <span class="math inline">k</span> defensible?</strong> — elbow + silhouette + business reason</li>
+<li class="fragment"><strong>are the clusters stable?</strong> — <code>n_init=50</code>, multiple seeds, ARI &gt; 0.9</li>
+<li class="fragment"><strong>can I name each cluster from its profile?</strong> — if not, you have an artifact</li>
+<li class="fragment"><strong>does the clustering answer a question someone has?</strong> — if no, don’t ship</li>
+</ul>
+<aside class="notes">
+<p>Six-item checklist. This is the chapter’s “what an uncritical analysis skips” list, reframed as the questions a careful analyst asks before reporting.</p>
+<p>Order matters: features first (the biggest lever), then k, then stability, then interpretation, then decision-relevance. Each one is a single sentence that, if asked, would catch a common failure.</p>
+<p>About 90 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="demo-clustering-in-the-notebook" class="slide level2">
+<h2>demo: clustering in the notebook</h2>
+<div style="text-align: center; font-size: 1.3em; margin: 1em 0;">
+<p><strong><a href="https://colab.research.google.com/github/stanford-mse-125/web/blob/main/notebooks/lec15-clustering.ipynb">colab.research.google.com/…/lec15-clustering.ipynb</a></strong></p>
+</div>
+<p>what to watch:</p>
+<ul>
+<li>toggle <code>lat/lon</code> in the feature set — watch the clusters flip</li>
+<li>sweep <code>n_init</code> from 1 to 50 — watch ARI agreement climb</li>
+<li>try <span class="math inline">k = 2, 3, 5, 8</span> — read the profiles, not the labels</li>
+</ul>
+<aside class="notes">
+<p>Demo slide. Notebook has the full pipeline; the three knobs above are the experiments worth running live or as homework.</p>
+<p>If running short: skip the notebook in lecture, point at it as homework.</p>
+<p>About 30 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="summary" class="slide level2">
+<h2>summary</h2>
+<ul>
+<li class="fragment"><strong>k-means</strong> — assign, recompute, repeat; minimizes inertia <span class="math inline">\sum_k \sum_{i \in C_k} \|x_i - \mu_k\|^2</span></li>
+<li class="fragment"><strong>standardize</strong> — same lesson as PCA, Euclidean distance can’t see units</li>
+<li class="fragment"><strong>elbow + silhouette</strong> — sanity checks, not oracles</li>
+<li class="fragment"><strong>non-deterministic</strong> — different seeds, different clusters; use <code>n_init</code> + ARI to check stability</li>
+<li class="fragment"><strong>your features pick your clusters</strong> — the biggest lever, and the analyst’s responsibility</li>
+</ul>
+<aside class="notes">
+<p>Five takeaways, in the order they were covered.</p>
+<p>The fifth — “your features pick your clusters” — is the headline. If a student takes one thing from the lecture, this is it.</p>
+<p>About 1 min.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-7" class="slide level2 dark-slide" data-background-color="#2E2D29">
+<h2></h2>
+<div class="big-text">
+<p>all models are wrong, but some are useful</p>
+</div>
+<aside class="notes">
+<p>George Box. The clusters aren’t “true” categories hiding in the data. They’re a simplification we built — and the question to ask is whether that simplification helps someone make a better decision.</p>
+<p>In our case: yes, if we drop lat/lon and report market segments to the host. No, if we hand the borough column back to them.</p>
+<p>About 15 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="next-when-validation-isnt-enough" class="slide level2">
+<h2>next: when validation isn’t enough</h2>
+<p>we’ve trained models, tested them, validated them.</p>
+<div class="fragment">
+<p>what happens when the world <strong>changes</strong> after we deploy?</p>
+</div>
+<div class="fragment">
+<ul>
+<li><strong>temporal leakage</strong> — random splits leak future information</li>
+<li><strong>feedback loops</strong> — predictions change the outcome</li>
+<li><strong>Goodhart’s law</strong> — every target becomes a target</li>
+</ul>
+<aside class="notes">
+<p>Forward pointer to Ch 16. We’ve spent the course building and validating models. Ch 16 asks the question those tools can’t answer: <strong>what breaks when the data changes</strong>? Three failure modes that don’t show up in any train/test split.</p>
+<p>The setup question: random train/test only works if past data looks like future data. What if it doesn’t?</p>
+<p>About 45 sec.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="feedback" class="slide level2">
+<h2>feedback</h2>
+<div class="quarto-layout-panel" data-layout="[20, 80]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 20.0%;justify-content: center;">
+<p><img data-src="images/feedback-qr-lec01.png" width="280"></p>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 80.0%;justify-content: flex-start;">
+<p><strong><a href="https://forms.gle/feedback">forms.gle/feedback</a></strong></p>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 20.0%;justify-content: flex-start;">
+<p>what worked? what didn’t? what’s still confusing?</p>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>Standard feedback slide. Same form as previous lectures.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+
+
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+
+        height: 1080,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

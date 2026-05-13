@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>lec03-data-munging – MSE 125 — Slides</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-244ce1b9ec229af56bb6f90d24b3371d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">MSE 125 — Slides</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+
+
+
+
+<section id="lecture-3-data-munging-facilitation-script" class="level1">
+<h1>Lecture 3: Data Munging — Facilitation Script</h1>
+<p><strong>Total time:</strong> 80 minutes (~75 planned + 5 buffer) <strong>Notebook:</strong> <a href="https://colab.research.google.com/github/stanford-mse-125/book/blob/main/notebooks/lec03-munging.ipynb">Colab link</a> <strong>Chapter:</strong> Book chapter 3 (<code>lec03-munging.qmd</code>)</p>
+<hr>
+<section id="pre-class-setup" class="level2">
+<h2 class="anchored" data-anchor-id="pre-class-setup">Pre-class setup</h2>
+<ul>
+<li>Open the Colab notebook and clear all outputs</li>
+<li>Test that the notebook runs (scorecard.csv loads, field_of_study.csv loads)</li>
+<li>Have the slide deck open in presenter view</li>
+<li>Check that the feedback QR code link works</li>
+<li>Bookmark the Stanford earnings section of the notebook — you’ll want to show it live</li>
+</ul>
+<hr>
+</section>
+<section id="opening-6-min" class="level2">
+<h2 class="anchored" data-anchor-id="opening-6-min">Opening (6 min)</h2>
+<section id="concept-check-from-lec02-2-min" class="level3">
+<h3 class="anchored" data-anchor-id="concept-check-from-lec02-2-min">Concept check from lec02 (2 min)</h3>
+<p><strong>Slide:</strong> “concept check from last time”</p>
+<p>Display the Airbnb question. Give 15 seconds of silent thought. Advance to reveal the question: “what information would you need?”</p>
+<p>Students should say: comparable listings, location, neighborhood, season, amenities. Push back if anyone says “just the average”: “the average of what? All SF listings? All 4-bedrooms? All 4-bedrooms within a mile?” This sets up today’s theme: every analytical choice is a decision.</p>
+</section>
+<section id="hook-reinhart-rogoff-2-min" class="level3">
+<h3 class="anchored" data-anchor-id="hook-reinhart-rogoff-2-min">Hook: Reinhart-Rogoff (2 min)</h3>
+<p><strong>Slide:</strong> montage — debt-vs-GDP chart</p>
+<p>“2010. Two Harvard economists publish a paper that becomes the foundation for austerity budgets across Europe. Government debt above 90% of GDP means negative growth — that’s the headline. Three years later, a grad student trying to replicate their results for a homework assignment discovers the error.”</p>
+</section>
+<section id="the-spreadsheet-1-min" class="level3">
+<h3 class="anchored" data-anchor-id="the-spreadsheet-1-min">The spreadsheet (1 min)</h3>
+<p><strong>Slide:</strong> “the spreadsheet”</p>
+<p>“Here’s the actual spreadsheet. The formula at the bottom says AVERAGE L30 to L44. But the data goes to row 49. Five countries — Australia, Austria, Belgium, Canada, Denmark — are excluded. The corrected result flips the finding from minus 0.1% to plus 2.2%.”</p>
+<p>Let students absorb. Don’t rush this.</p>
+</section>
+<section id="three-data-disasters-1-min" class="level3">
+<h3 class="anchored" data-anchor-id="three-data-disasters-1-min">Three data disasters (1 min)</h3>
+<p><strong>Slide:</strong> “three data disasters”</p>
+<p>Three columns. Read each briefly: “A cell range. A row limit. An auto-conversion. Three different tools, one pattern: a tool made a decision without warning.”</p>
+</section>
+<section id="dark-slide" class="level3">
+<h3 class="anchored" data-anchor-id="dark-slide">Dark slide</h3>
+<p><strong>Slide:</strong> “every cleaning decision changes the answer”</p>
+<p>Pause 3 seconds. Don’t speak.</p>
+</section>
+<section id="agenda-30-sec" class="level3">
+<h3 class="anchored" data-anchor-id="agenda-30-sec">Agenda (30 sec)</h3>
+<p><strong>Slide:</strong> “today’s concepts”</p>
+<p>Read the five items quickly. “By the end of class, you’ll have a checklist for every new dataset.”</p>
+</section>
+<section id="recap-30-sec" class="level3">
+<h3 class="anchored" data-anchor-id="recap-30-sec">Recap (30 sec)</h3>
+<p><strong>Slide:</strong> “recap: what we found last time”</p>
+<p>Brief. “Last time: Airbnb data was relatively tidy. NaN for missing values, pandas handled it. But we noticed some dtypes looked wrong. Today: real datasets are rarely so cooperative.”</p>
+<hr>
+</section>
+</section>
+<section id="block-1-the-many-faces-of-missing-data-20-min-total" class="level2">
+<h2 class="anchored" data-anchor-id="block-1-the-many-faces-of-missing-data-20-min-total">Block 1: The many faces of missing data (20 min total)</h2>
+<section id="dark-slide-5-sec" class="level3">
+<h3 class="anchored" data-anchor-id="dark-slide-5-sec">Dark slide (5 sec)</h3>
+<p><strong>Slide:</strong> “block 1: the many faces of missing data”</p>
+</section>
+<section id="college-scorecard-introduction-2-min" class="level3">
+<h3 class="anchored" data-anchor-id="college-scorecard-introduction-2-min">College Scorecard introduction (2 min)</h3>
+<p><strong>Slide:</strong> “today’s dataset: College Scorecard”</p>
+<p>“The US Department of Education publishes this every year. 7,700 institutions, 122 columns. It has something most datasets don’t: a data dictionary, methodology documentation, public updates. Before you clean a dataset, ask where it came from.”</p>
+<p>Advance to reveal the Kaggle contrast. “Contrast: a random CSV on Kaggle with no documentation. You can’t even know if the data was collected or generated by an AI.”</p>
+</section>
+<section id="data-provenance-definition-1-min" class="level3">
+<h3 class="anchored" data-anchor-id="data-provenance-definition-1-min">Data provenance definition (1 min)</h3>
+<p><strong>Slide:</strong> “data provenance”</p>
+<p>Show definition box. Then advance through the checkmarks. “In the AI era, provenance is breaking down — synthetic datasets, undocumented web scrapes, training data contamination.”</p>
+</section>
+<section id="privacysuppressed-3-min" class="level3">
+<h3 class="anchored" data-anchor-id="privacysuppressed-3-min">PrivacySuppressed (3 min)</h3>
+<p><strong>Slides:</strong> “a column that should be numeric” → “the culprit: PrivacySuppressed”</p>
+<p>First slide: “MD_EARN_WNE_P10. Median earnings 10 years after enrollment. Should be a number. dtype: string.” Pause. “Why?”</p>
+<p>Advance to reveal. “PrivacySuppressed. A human-readable phrase sitting in a numeric column. 480 schools. One string forces the entire column to be non-numeric.”</p>
+</section>
+<section id="missingness-zoo-1-min" class="level3">
+<h3 class="anchored" data-anchor-id="missingness-zoo-1-min">Missingness zoo (1 min)</h3>
+<p><strong>Slide:</strong> “the missingness zoo”</p>
+<p>Walk through the table quickly. “NaN is the easy case — pandas handles it. Everything else requires active detection.” Don’t dwell on each row.</p>
+</section>
+<section id="demo-scorecard-exploration-5-min" class="level3">
+<h3 class="anchored" data-anchor-id="demo-scorecard-exploration-5-min">Demo: Scorecard exploration (5 min)</h3>
+<p><strong>Slide:</strong> Demo slide</p>
+<p>Switch to the notebook. Show: 1. Load scorecard, check dtypes, note the <code>str</code> columns 2. Find non-numeric values in MD_EARN_WNE_P10 3. Count PrivacySuppressed across all columns (7 columns affected) 4. Bin schools by enrollment size, show suppression rate by size</p>
+<p>Don’t run the entire chapter — just enough to establish the pattern.</p>
+</section>
+<section id="discussion-1-privacysuppressed-bias-5-min" class="level3">
+<h3 class="anchored" data-anchor-id="discussion-1-privacysuppressed-bias-5-min">Discussion 1: PrivacySuppressed bias (5 min)</h3>
+<p><strong>Slide:</strong> discussion — “if you drop those rows…”</p>
+<p>“Think for one minute: if you drop the PrivacySuppressed rows, what kind of schools remain? Would the average earnings go up or down?”</p>
+<p>After 1 min think + 2 min pair: take 2-3 responses.</p>
+<p><strong>If stuck:</strong> “Think about which schools have small cohorts — rural? specialized? under-resourced?”</p>
+<p><strong>Key insight:</strong> Dropping these rows removes small, rural, specialized schools. The remaining sample is biased toward large institutions. Average earnings probably goes up — small schools tend to serve lower-earning populations. This is selection bias.</p>
+</section>
+<section id="missingness-is-not-random-1-min" class="level3">
+<h3 class="anchored" data-anchor-id="missingness-is-not-random-1-min">Missingness is not random (1 min)</h3>
+<p><strong>Slide:</strong> bar chart — suppression by size</p>
+<p>“Nearly a third of the smallest schools are suppressed. Among 2,000+ students: about 1%. This isn’t random.”</p>
+</section>
+<section id="mcarmarmnar-2-min" class="level3">
+<h3 class="anchored" data-anchor-id="mcarmarmnar-2-min">MCAR/MAR/MNAR (2 min)</h3>
+<p><strong>Slide:</strong> “three patterns of missingness”</p>
+<p>Show definition box. “MCAR: truly random — mold destroys random records. MAR: depends on things we can see — older patients skip surveys, and we have their age. MNAR: depends on the missing value itself — the sickest patients don’t report, and we never observe their outcomes.”</p>
+<p>Advance to reveal: “College Scorecard earnings: MNAR. Small cohort means suppressed. Small schools are systematically different.”</p>
+<p>Vivid example from the book: “In ambulance data, a missing heart rate often means the EMTs were too busy saving the patient. The missing value is the signal.”</p>
+<hr>
+</section>
+</section>
+<section id="block-2-joining-datasets-18-min-total" class="level2">
+<h2 class="anchored" data-anchor-id="block-2-joining-datasets-18-min-total">Block 2: Joining datasets (18 min total)</h2>
+<section id="dark-slide-5-sec-1" class="level3">
+<h3 class="anchored" data-anchor-id="dark-slide-5-sec-1">Dark slide (5 sec)</h3>
+<p><strong>Slide:</strong> “block 2: joining datasets”</p>
+</section>
+<section id="why-join-1-min" class="level3">
+<h3 class="anchored" data-anchor-id="why-join-1-min">Why join? (1 min)</h3>
+<p><strong>Slide:</strong> “why join?”</p>
+<p>“The Scorecard comes in two files. Institution-level: one row per school. Program-level: one row per school-program pair.” Advance to reveal the questions. “To answer richer questions, we need to combine them.”</p>
+</section>
+<section id="inner-join-vs.-left-join-3-min" class="level3">
+<h3 class="anchored" data-anchor-id="inner-join-vs.-left-join-3-min">Inner join vs.&nbsp;left join (3 min)</h3>
+<p><strong>Slides:</strong> toy example → inner join → left join (3 slides)</p>
+<p>Show the Students and Majors tables side by side. “Before I show you the result — which students survive an inner join on major_id?” Take quick answers.</p>
+<p>Advance to inner join result. “Alice and Bob survive. Carol is gone — no match for 103. History is gone — no match for 104. Neither table warns you.”</p>
+<p>Advance to left join. “All three students survive. Carol’s major becomes NaN — a signal that she has no matching major. That signal is lost in an inner join.”</p>
+</section>
+<section id="one-to-many-2-min" class="level3">
+<h3 class="anchored" data-anchor-id="one-to-many-2-min">One-to-many (2 min)</h3>
+<p><strong>Slide:</strong> “one-to-many: row multiplication”</p>
+<p>Show left and right tables. “Two rows on the left, three on the right, all with key A.” Pause. “How many rows in the result?”</p>
+<p>Advance to reveal. “Six. 2 × 3 = 6. Joins can GROW your data, not just shrink it.”</p>
+</section>
+<section id="defense-check-your-key-1-min" class="level3">
+<h3 class="anchored" data-anchor-id="defense-check-your-key-1-min">Defense: check your key (1 min)</h3>
+<p><strong>Slide:</strong> “defense: check your key before joining”</p>
+<p>Show the assert. “One line of code. An assert that passes is documentation. An assert that fails is an alarm.”</p>
+</section>
+<section id="discussion-2-predict-join-row-count-5-min" class="level3">
+<h3 class="anchored" data-anchor-id="discussion-2-predict-join-row-count-5-min">Discussion 2: Predict join row count (5 min)</h3>
+<p><strong>Slide:</strong> discussion — “predict: how many rows…”</p>
+<p>“The scorecard has 7,703 institutions. Programs has 228,000 rows across 5,500 institutions. How many rows will the inner join produce? More or fewer than 7,703?”</p>
+<p>Most students will say “fewer” — they’re thinking of inner joins as filters. The answer is ~216,000 — a massive expansion because each institution matches to many programs.</p>
+<p><strong>If stuck:</strong> “Each institution matches to many programs. Stanford alone has 180+.”</p>
+<p><strong>Key insight:</strong> The inner join is one-to-many — it expands, not contracts. Students who predicted “fewer” were thinking about key overlap (correct for one-to-one joins) but missed the one-to-many expansion.</p>
+</section>
+<section id="demo-join-explosion-3-min" class="level3">
+<h3 class="anchored" data-anchor-id="demo-join-explosion-3-min">Demo: join explosion (3 min)</h3>
+<p><strong>Slide:</strong> Demo slide</p>
+<p>Switch to notebook. Show: 1. The assert on UNITID uniqueness 2. The inner join: 7,703 → ~216,000 rows 3. The left join: preserves all 7,703 institutions 4. The bar chart comparing row counts</p>
+<p>“7,700 rows became 216,000. And neither join warned you.”</p>
+</section>
+<section id="after-every-join-2-min" class="level3">
+<h3 class="anchored" data-anchor-id="after-every-join-2-min">After every join (2 min)</h3>
+<p><strong>Slide:</strong> “after every join: check row counts”</p>
+<p>Walk through the table. “Inner joins can gain AND lose rows at the same time — one-to-many expansion plus unmatched key dropping. Left joins gain rows but don’t lose them.”</p>
+<p>Advance to reveal: “The join type is a decision, not a default.”</p>
+<hr>
+</section>
+</section>
+<section id="block-3-when-tools-betray-you-25-min-total" class="level2">
+<h2 class="anchored" data-anchor-id="block-3-when-tools-betray-you-25-min-total">Block 3: When tools betray you (25 min total)</h2>
+<section id="dark-slide-5-sec-2" class="level3">
+<h3 class="anchored" data-anchor-id="dark-slide-5-sec-2">Dark slide (5 sec)</h3>
+<p><strong>Slide:</strong> “block 3: when tools betray you”</p>
+</section>
+<section id="three-approaches-to-missing-earnings-3-min" class="level3">
+<h3 class="anchored" data-anchor-id="three-approaches-to-missing-earnings-3-min">Three approaches to missing earnings (3 min)</h3>
+<p><strong>Slide:</strong> “three approaches to missing earnings”</p>
+<p>Show the table. “Same question, three approaches. Drop rows, fill with mean, ignore NaN. They all give the same mean.”</p>
+<p>Advance to reveal: “If they all give the same mean, why does it matter?”</p>
+<p>“Approach 1 removes entire rows — those schools vanish from every column. Approach 2 shrinks the standard deviation — every imputed value sits at the center. Approach 3 lets pandas skip NaN column by column.”</p>
+</section>
+<section id="the-damage-group-comparisons-2-min" class="level3">
+<h3 class="anchored" data-anchor-id="the-damage-group-comparisons-2-min">The damage: group comparisons (2 min)</h3>
+<p><strong>Slide:</strong> bar chart — missing by ownership</p>
+<p>“36% of for-profit schools have missing earnings. 9% of public schools. Dropping rows changes WHICH schools remain.”</p>
+<p>Advance: “This is informative missingness — the absence of data tells you something about the institution.”</p>
+</section>
+<section id="discussion-3-ai-dropna-trust-7-min" class="level3">
+<h3 class="anchored" data-anchor-id="discussion-3-ai-dropna-trust-7-min">Discussion 3: AI dropna trust (7 min)</h3>
+<p><strong>Slide:</strong> discussion — “an AI calls .dropna()…”</p>
+<p>“An AI ‘cleans’ the Scorecard by calling dropna and reports average earnings of $45,000. Name two questions you’d ask, focused on what was lost in the cleaning step.”</p>
+<p><strong>If stuck:</strong> “How many rows survived? Are the dropped rows systematically different? What was the missingness rate?”</p>
+<p><strong>Key insight:</strong> The questions to ask: (1) How many rows survived — what fraction of the data was lost? (2) Are the dropped schools systematically different — were small/for-profit schools disproportionately dropped? (3) Which approach was used and why?</p>
+</section>
+<section id="stanford-case-study-3-min" class="level3">
+<h3 class="anchored" data-anchor-id="stanford-case-study-3-min">Stanford case study (3 min)</h3>
+<p><strong>Slide:</strong> “Stanford: a case study in hidden complexity”</p>
+<p>“Median earnings: $86,000. SAT average: 1465. Sounds good?”</p>
+<p>Advance to reveal: “$86K qualifies as ‘Low Income’ in Santa Clara County. The threshold for one person is $111,700.”</p>
+<p>Advance to the three factors: “Title IV only — many Stanford students don’t take federal aid. 10 years after enrollment — includes years in grad school. All fields pooled — CS at $139K, English at $31K.”</p>
+<p>“The gap between the Scorecard number and your expectations is itself a data-cleaning lesson.”</p>
+</section>
+<section id="type-coercion-2-min" class="level3">
+<h3 class="anchored" data-anchor-id="type-coercion-2-min">Type coercion (2 min)</h3>
+<p><strong>Slide:</strong> “type coercion: tools that corrupt data”</p>
+<p>“pd.to_numeric with errors=‘coerce’ converts PrivacySuppressed to NaN. No warning, no count.” Show the defense code. “Always check what you lost.”</p>
+</section>
+<section id="sentinel-values-1-min" class="level3">
+<h3 class="anchored" data-anchor-id="sentinel-values-1-min">Sentinel values (1 min)</h3>
+<p><strong>Slide:</strong> “sentinel values”</p>
+<p>Quick. “-999 looks like a number. Mean WITH sentinels: -208°F. Mean WITHOUT: 72.9°F. Unlike NaN, sentinel values participate in every computation.”</p>
+</section>
+<section id="identifier-trap-1-min" class="level3">
+<h3 class="anchored" data-anchor-id="identifier-trap-1-min">Identifier trap (1 min)</h3>
+<p><strong>Slide:</strong> “the identifier trap”</p>
+<p>Quick. “OPEID with leading zeros — stored as integer, zeros vanish. Later join against zero-padded strings: zero matches, no error. ZIP codes, phone numbers, IDs: codes, not numbers.”</p>
+</section>
+<section id="discussion-4-chatgpt-roi-ranking-5-min" class="level3">
+<h3 class="anchored" data-anchor-id="discussion-4-chatgpt-roi-ranking-5-min">Discussion 4: ChatGPT ROI ranking (5 min)</h3>
+<p><strong>Slide:</strong> discussion — “you upload the Scorecard to ChatGPT…”</p>
+<p>“ChatGPT ranks schools by raw MD_EARN_WNE_P10 after dropping all missing data. Stanford is #47. Small groups: identify at least two problems.”</p>
+<p><strong>If stuck:</strong> “How many rows survived the dropna? What does MD_EARN_WNE_P10 actually measure — and who’s in the sample?”</p>
+<p><strong>Key insight:</strong> (1) Raw earnings confounded by selectivity — high-SAT schools admit students who’d earn well anywhere. (2) Dropping rows loses most small/for-profit schools. (3) The metric pools all fields and measures 10yr after enrollment. (4) May not be reproducible across sessions.</p>
+</section>
+<section id="why-we-write-code-1-min" class="level3">
+<h3 class="anchored" data-anchor-id="why-we-write-code-1-min">Why we write code (1 min)</h3>
+<p><strong>Slide:</strong> “why we write code”</p>
+<p>Quick. Two columns: spreadsheets hide logic, code makes decisions visible. “Good code is deterministic.”</p>
+</section>
+<section id="ai-analysis-vs.-ai-assisted-code-1-min" class="level3">
+<h3 class="anchored" data-anchor-id="ai-analysis-vs.-ai-assisted-code-1-min">AI analysis vs.&nbsp;AI-assisted code (1 min)</h3>
+<p><strong>Slide:</strong> comparison table</p>
+<p>Walk through three rows. “Use AI to write code, not to replace understanding.”</p>
+<hr>
+</section>
+</section>
+<section id="closing-6-min" class="level2">
+<h2 class="anchored" data-anchor-id="closing-6-min">Closing (6 min)</h2>
+<section id="data-munging-checklist-2-min" class="level3">
+<h3 class="anchored" data-anchor-id="data-munging-checklist-2-min">Data munging checklist (2 min)</h3>
+<p><strong>Slide:</strong> “data munging checklist”</p>
+<p>Walk through all 8 items briefly. “This is the checklist you run every time you encounter a new dataset. Each item connects to a concrete example from today.”</p>
+</section>
+<section id="tukey-quote-30-sec" class="level3">
+<h3 class="anchored" data-anchor-id="tukey-quote-30-sec">Tukey quote (30 sec)</h3>
+<p><strong>Slide:</strong> blockquote</p>
+<p>Read aloud. Let it sit for 3 seconds.</p>
+</section>
+<section id="synthesis-1-min" class="level3">
+<h3 class="anchored" data-anchor-id="synthesis-1-min">Synthesis (1 min)</h3>
+<p><strong>Slide:</strong> “synthesis”</p>
+<p>Map each bullet back to the lecture: “Missing data — block 1. Joins — block 2. Every cleaning choice — the whole lecture. Code makes decisions visible — the Reinhart-Rogoff opening. Domain knowledge — the Stanford case study.”</p>
+</section>
+<section id="forward-pointer-30-sec" class="level3">
+<h3 class="anchored" data-anchor-id="forward-pointer-30-sec">Forward pointer (30 sec)</h3>
+<p><strong>Slide:</strong> “next time: linear algebra”</p>
+<p>“We can clean and join data. Now we need a language for modeling it. Vectors, linear combinations, column space.”</p>
+</section>
+<section id="logistics-30-sec" class="level3">
+<h3 class="anchored" data-anchor-id="logistics-30-sec">Logistics (30 sec)</h3>
+<p><strong>Slide:</strong> “before next class”</p>
+<p>“Read Chapter 3. Try the notebook. Quiz 1 is Wednesday — covers Lectures 1 through 3.”</p>
+</section>
+<section id="feedback-1-min" class="level3">
+<h3 class="anchored" data-anchor-id="feedback-1-min">Feedback (1 min)</h3>
+<p><strong>Slide:</strong> feedback QR code</p>
+<p>“One minute. What was most useful? What was most confusing? Scan the QR code.”</p>
+<hr>
+</section>
+</section>
+<section id="timing-notes" class="level2">
+<h2 class="anchored" data-anchor-id="timing-notes">Timing notes</h2>
+<ul>
+<li><strong>If running long:</strong> Skip the identifier trap slide (36 sec) and abbreviate the AI comparison table (just say the punchline).</li>
+<li><strong>If running short:</strong> Expand the Stanford case study with live notebook exploration of program-level earnings. Show the PrivacySuppressed entries for MS&amp;E. Let students browse their own majors.</li>
+<li><strong>Block 3 is the densest section.</strong> If time is tight, the checklist slide and AI-vs-code slide can be abbreviated since they recap ideas already demonstrated.</li>
+</ul>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
